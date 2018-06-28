@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>{{beer.name}}</h1>
+  <div>Style: {{beer.style}}</div>
+  <div>ABV: {{beer.abv}}%</div>
+  <div>IBU: {{beer.ibu}}</div>
+  <div>Brewery: {{beer.brewery}}</div>
+  <div>Location: {{beer.location}}</div>
+  <div>Site: <a href="{{beer.website}}" target="_blank">{{beer.website}}</a></div>
+  <hr>
+  <h4>Description</h4>
+  <hr>
+  <div>
+    <p>{{beer.description | safe}}</p>
+  </div>
+{% endblock %}
