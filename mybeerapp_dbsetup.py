@@ -22,7 +22,7 @@ try:
         sql = """CREATE TABLE IF NOT EXISTS myflaskapp.list_history (
                 id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(100),
-                style VARCHAR(50),
+                style VARCHAR(100),
                 abv VARCHAR(10),
                 ibu VARCHAR(10),
                 brewery VARCHAR(100),
