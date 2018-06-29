@@ -192,12 +192,12 @@ def dashboard():
 # Beer Form Class
 class BeerForm(Form):
     name = StringField('Name', [validators.Length(min=1, max=100)])
-    style = StringField('Style', [validators.Length(min=4, max=50)])
-    abv = StringField('Abv', [validators.Length(min=1, max=10)])
-    ibu = StringField('Ibu', [validators.Length(min=1, max=10)])
-    brewery = StringField('Brewery', [validators.Length(min=6, max=100)])
-    location = StringField('Location', [validators.Length(min=6, max=255)])
-    website = StringField('Website', [validators.Length(min=6, max=255)])
+    style = StringField('Style', [validators.Length(min=0, max=50)])
+    abv = StringField('Abv', [validators.Length(min=0, max=10)])
+    ibu = StringField('Ibu', [validators.Length(min=0, max=10)])
+    brewery = StringField('Brewery', [validators.Length(min=0, max=100)])
+    location = StringField('Location', [validators.Length(min=0, max=255)])
+    website = StringField('Website', [validators.Length(min=0, max=255)])
     description = TextAreaField('Description', [validators.Length(min=0)])
 
 # Add Beer
