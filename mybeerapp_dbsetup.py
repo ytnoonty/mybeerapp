@@ -38,7 +38,7 @@ try:
                 id_history INT(100)
                 )"""
         cursor.execute(sql)
-	
+
 	sql = """INSERT INTO myflaskapp.list_current (id_history) VALUES ("1")"""
 	cursor.execute(sql)
         sql = """INSERT INTO myflaskapp.list_current (id_history) VALUES ("2")"""
@@ -71,8 +71,18 @@ try:
 	cursor.execute(sql)
         sql = """INSERT INTO myflaskapp.list_current (id_history) VALUES ("16")"""
 	cursor.execute(sql)
+        sql = """INSERT INTO myflaskapp.list_current (id_history) VALUES ("17")"""
+	cursor.execute(sql)
+        sql = """INSERT INTO myflaskapp.list_current (id_history) VALUES ("18")"""
+	cursor.execute(sql)
+        sql = """INSERT INTO myflaskapp.list_current (id_history) VALUES ("19")"""
+	cursor.execute(sql)
+        sql = """INSERT INTO myflaskapp.list_current (id_history) VALUES ("20")"""
+	cursor.execute(sql)
+        sql = """INSERT INTO myflaskapp.list_current (id_history) VALUES ("21")"""
+	cursor.execute(sql)
+
         connection.commit()
 
 finally:
         connection.close()
-
