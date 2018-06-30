@@ -28,25 +28,49 @@ mysql = MySQL(app)
 def index():
     return render_template('home.html')
 
+# Total history of beers
 @app.route('/about')
 def about():
     # Create cursor
     cur = mysql.connection.cursor()
 
-    # Get articles
+    # Get beers
     result = cur.execute("SELECT * FROM list_history ORDER BY name ASC")
-
     beers = cur.fetchall()
+
+    # Close connection
+    cur.close()
 
     if result > 0:
         return render_template('about.html', beers=beers)
     else:
         msg = 'No Beers Found'
     return render_template('about.html', msg=msg)
-    # Close connection
-    cur.close()
     # return render_template('about.html', beershistory=BeersHistory)
 
+# Screen to print list
+@app.route('/beers_print')
+def beers_print():
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get beers
+    result = cur.execute("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history")
+    # result = cur.execute("""SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history BETWEEN 16 AND 21""")
+    beers = cur.fetchall()
+    # app.logger.info(len(beers))
+    beers_01_16 = beers[0:16]
+    beers_17_21 = beers[16:21]
+    # app.logger.info(len(beers_17_21))
+    # Close connection
+    cur.close()
+
+    if result > 0:
+        return render_template('beers_print.html', beers=beers_01_16, beers1721=beers_17_21)
+    else:
+        msg = 'No Beers Found'
+    return render_template('beers_print.html', msg=msg)
+
+# Current list of whats on tap
 @app.route('/beers')
 def beers():
     # Create cursor
@@ -56,13 +80,14 @@ def beers():
     result = cur.execute("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history")
     beers = cur.fetchall()
 
+    # Close connection
+    cur.close()
+
     if result > 0:
         return render_template('beers.html', beers=beers)
     else:
         msg = 'No Beers Found'
     return render_template('beers.html', msg=msg)
-    # Close connection
-    cur.close()
 
 # Single Beer
 @app.route('/beer/<string:id>/')
@@ -73,7 +98,12 @@ def beer(id):
     # Get article
     result = cur.execute("SELECT * FROM list_history WHERE id = %s", [id])
 
+    # Get single beer
     beer = cur.fetchone()
+
+    # Close connection
+    cur.close()
+
     return render_template('beer.html', beer=beer)
 
 # Register Form Class
@@ -326,6 +356,11 @@ class CurrentBeerListForm(Form):
     beer14 = SelectField(u'Beer 14', coerce=int, option_widget=None)
     beer15 = SelectField(u'Beer 15', coerce=int, option_widget=None)
     beer16 = SelectField(u'Beer 16', coerce=int, option_widget=None)
+    beer17 = SelectField(u'Beer 17', coerce=int, option_widget=None)
+    beer18 = SelectField(u'Beer 18', coerce=int, option_widget=None)
+    beer19 = SelectField(u'Beer 19', coerce=int, option_widget=None)
+    beer20 = SelectField(u'Beer 20', coerce=int, option_widget=None)
+    beer21 = SelectField(u'Beer 21', coerce=int, option_widget=None)
 
 def getDefaultSelect(currentId):
     # Create cursor
@@ -347,6 +382,11 @@ def edit_beer_list():
     # Gets the whole list of query results
     beers = cur.fetchall()
 
+    # results = cur.execute("""SELECT * FROM list_history WHERE id BETWEEN "1" AND "17" ORDER BY name ASC""")
+    # beers = cur.fetchall()
+    # results = cur.execute("""SELECT * FROM list_history WHERE id BETWEEN "17" AND "21" ORDER BY name ASC""")
+    # beers_17_21 = cur.fetchall()
+
     # Creates a beerDefault object from the CurrentBeerListDefault() Class
     # beerDefault = CurrentBeerListDefault()
 
@@ -367,6 +407,11 @@ def edit_beer_list():
     beer14select = getDefaultSelect('14')
     beer15select = getDefaultSelect('15')
     beer16select = getDefaultSelect('16')
+    beer17select = getDefaultSelect('17')
+    beer18select = getDefaultSelect('18')
+    beer19select = getDefaultSelect('19')
+    beer20select = getDefaultSelect('20')
+    beer21select = getDefaultSelect('21')
     app.logger.info(beer1select)
     form = CurrentBeerListForm(request.form,
         beer1=beer1select['id_history'],
@@ -384,7 +429,12 @@ def edit_beer_list():
         beer13=beer13select['id_history'],
         beer14=beer14select['id_history'],
         beer15=beer15select['id_history'],
-        beer16=beer16select['id_history']
+        beer16=beer16select['id_history'],
+        beer17=beer17select['id_history'],
+        beer18=beer18select['id_history'],
+        beer19=beer19select['id_history'],
+        beer20=beer20select['id_history'],
+        beer21=beer21select['id_history'],
     )
 
     form.beer1.choices = [(beer['id'], beer['name']) for beer in beers]
@@ -403,6 +453,12 @@ def edit_beer_list():
     form.beer14.choices = [(beer['id'], beer['name']) for beer in beers]
     form.beer15.choices = [(beer['id'], beer['name']) for beer in beers]
     form.beer16.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer17.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer18.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer19.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer20.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer21.choices = [(beer['id'], beer['name']) for beer in beers]
+
 
     if request.method == 'POST' and form.validate():
         beer1 = request.form['beer1']
@@ -421,6 +477,11 @@ def edit_beer_list():
         beer14 = request.form['beer14']
         beer15 = request.form['beer15']
         beer16 = request.form['beer16']
+        beer17 = request.form['beer17']
+        beer18 = request.form['beer18']
+        beer19 = request.form['beer19']
+        beer20 = request.form['beer20']
+        beer21 = request.form['beer21']
 
         # Create Cursor
         cur = mysql.connection.cursor()
@@ -442,6 +503,11 @@ def edit_beer_list():
         cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer14, '14'))
         cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer15, '15'))
         cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer16, '16'))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer17, '17'))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer18, '18'))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer19, '19'))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer20, '20'))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer21, '21'))
         # Commit
         mysql.connection.commit()
 
