@@ -121,12 +121,15 @@ def beers():
     # Get beers
     result = cur.execute("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history")
     beers = cur.fetchall()
+    beers = beers[0:16]
+    beers_01_08 = beers[0:8]
+    beers_08_16 = beers[8:16]
 
     # Close connection
     cur.close()
 
     if result > 0:
-        return render_template('beers.html', beers=beers)
+        return render_template('beers.html', beers=beers, beers0108=beers_01_08, beers0816=beers_08_16)
     else:
         msg = 'No Beers Found'
     return render_template('beers.html', msg=msg)
