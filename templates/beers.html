@@ -31,7 +31,7 @@
     {% endfor %}
   </table>
 
-  <div class="container">
+  <div id="example2" class="container">
     <div class="row">
       <div class="col-sm">
         <div class="list-group">
@@ -41,8 +41,8 @@
                 <h5 class="mb-1">{{beer.id}}. {{beer.name}}</h5>
                 <small>{{beer.abv}}% ABV {{beer.ibu}} IBU</small>
               </div>
-              <!-- <p class="mb-1">{{beer.brewery}} {{beer.location}}</p>
-              <small>{{beer.description |safe}}</small> -->
+              <p class="mb-1">{{beer.brewery}} {{beer.location}}</p>
+              <small>{{beer.description |safe}}</small>
             </a>
           {% endfor %}
         </div>
@@ -64,13 +64,13 @@
     </div>
   </div>
 
-  <div class="container">
+  <div id=example3 class="container">
     <div class="row">
       <div class="col-sm">
         <div class="list-group">
           <ul class="list-group-flush">
             {% for beer in beers0108 %}
-              <!-- <li class="list-group-item"><h4>{{beer.id}}.  {{beer.name}}</h4><br>{{beer.abv}}% ABV {{beer.ibu}} IBU <br>{{beer.brewery}} {{beer.location}} {{beer.description |safe}}</li> -->
+              <li class="list-group-item"><h4>{{beer.id}}.  {{beer.name}}</h4><br>{{beer.abv}}% ABV {{beer.ibu}} IBU <br>{{beer.brewery}} {{beer.location}} {{beer.description |safe}}</li>
               <li class="list-group-item"><h4>{{beer.id}}.  {{beer.name}}</h4><br>{{beer.abv}}% ABV {{beer.ibu}} IBU <br>{{beer.brewery}}</li>
             {% endfor %}
           </ul>
@@ -81,7 +81,7 @@
           <ul class="list-group-flush">
             {% for beer in beers0816 %}
               <li class="list-group-item"><h4>{{beer.id}}.  {{beer.name}}</h4><br>{{beer.abv}}% ABV {{beer.ibu}} IBU <br>{{beer.brewery}} {{beer.location}} {{beer.description |safe}}</li>
-              <!-- <li class="list-group-item"><h4>{{beer.id}}.  {{beer.name}}</h4><br>{{beer.abv}}% ABV {{beer.ibu}} IBU <br>{{beer.brewery}}</li> -->
+              <li class="list-group-item"><h4>{{beer.id}}.  {{beer.name}}</h4><br>{{beer.abv}}% ABV {{beer.ibu}} IBU <br>{{beer.brewery}}</li>
             {% endfor %}
           </ul>
         </div>
@@ -89,7 +89,7 @@
     </div>
   </div>
 
-  <div>
+  <div id="example4">
     <ul class="list-group-flush">
       {% for beer in beers %}
         <li class="list-group-item"><a href="{{beer.website}}" target="_blank">{{beer.id}}.  {{beer.name}}</a> {{beer.abv}}% ABV {{beer.ibu}} IBU {{beer.location}} {{beer.description |safe}}</li>
