@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
+from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, jsonify
 # from datahistory import BeersHistory
 # from data import Beers
 from flask_mysqldb import MySQL
@@ -19,51 +19,93 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # init MYSQL
 mysql = MySQL(app)
 
+def mysqlQuery(query, fetch):
+    cur = mysql.connection.cursor()
+    # Get beers
+    mysqlQuery = cur.execute(query)
+    if fetch == 'all':
+        result = cur.fetchall()
+    else:
+        result = cur.fetchone()
 
-# BeersHistory = BeersHistory()
-# Beers = Beers()
-
+    # Close connection
+    cur.close()
+    return result
 
 @app.route('/')
 def index():
     return render_template('home.html')
 
+##########################
+#testing AJAX
+@app.route('/proccess_print', methods=['GET', 'POST'])
+def proccess_print():
+    beers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
+    beers_01_16 = beers[0:5]
+    beers_17_21 = beers[16:21]
+
+    if beers > 0:
+        jsonify(beers);
+        return render_template('proccess_print.html', beers=beers, beers0116=beers_01_16, beers1721=beers_17_21)
+        # return render_template('beers_print.html', beers=beers)
+    else:
+        msg = 'No Beers Found'
+    return render_template('proccess_print.html', msg=msg, beers=beers)
+
+@app.route('/update', methods=['POST'])
+def update():
+    beers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
+    beers_01_16 = beers[0:5]
+    beers_17_21 = beers[16:21]
+
+    return jsonify(beers);
+
+#end testing AJAX
+##########################
+
 # Total history of beers
 @app.route('/about')
 def about():
-    # Create cursor
-    cur = mysql.connection.cursor()
+    # # Create cursor
+    # cur = mysql.connection.cursor()
+    #
+    # # Get beers
+    # result = cur.execute("SELECT * FROM list_history ORDER BY name ASC")
+    # beers = cur.fetchall()
+    #
+    # # Close connection
+    # cur.close()
 
-    # Get beers
-    result = cur.execute("SELECT * FROM list_history ORDER BY name ASC")
-    beers = cur.fetchall()
+    beers = mysqlQuery("SELECT * FROM list_history ORDER BY name ASC", "all")
 
-    # Close connection
-    cur.close()
-
-    if result > 0:
+    # if result > 0:
+    if beers:
         return render_template('about.html', beers=beers)
     else:
         msg = 'No Beers Found'
     return render_template('about.html', msg=msg)
-    # return render_template('about.html', beershistory=BeersHistory)
 
 # Screen to print list
 @app.route('/beers_print')
 def beers_print():
-    # Create cursor
-    cur = mysql.connection.cursor()
-    # Get beers
-    result = cur.execute("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history")
-    beers = cur.fetchall()
-    app.logger.info(len(beers))
+    # # Create cursor
+    # cur = mysql.connection.cursor()
+    # # Get beers
+    # result = cur.execute("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history")
+    # beers = cur.fetchall()
+    # # app.logger.info(len(beers))
+    # # beers_01_16 = beers[0:16]
+    # # beers_17_21 = beers[16:21]
+    # # app.logger.info(len(beers_17_21))
+    #
+    # # Close connection
+    # cur.close()
+
+    beers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
     beers_01_16 = beers[0:16]
     beers_17_21 = beers[16:21]
-    app.logger.info(len(beers_17_21))
-    # Close connection
-    cur.close()
 
-    if result > 0:
+    if beers > 0:
         return render_template('beers_print.html', beers=beers_01_16, beers1721=beers_17_21)
         # return render_template('beers_print.html', beers=beers)
     else:
@@ -517,10 +559,12 @@ def edit_beer_list():
         # app.logger.info(beer1)
         flash('Beer List Updated', 'success')
 
-        return redirect(url_for('edit_beer_list'))
-        # return redirect(url_for('beers'))
+        # return redirect(url_for('edit_beer_list'))
+        return redirect(url_for('proccess_print'))
 
     return render_template('edit_beer_list.html', beers=beers, form=form)
+    # return render_template('proccess_print.html', beers=beers, form=form)
+
     # Comment line above and uncomment line below to go to beerlist page after submitting the edit list form
     # return render_template('beers.html', beers=beers, form=form)
 
