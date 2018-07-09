@@ -1,6 +1,8 @@
+let flashMsgDiv = document.getElementById('flash-msg-div');
 
-// document.getElementById('edit-beerlist').addEventListener('click', loadBeerlist);
-// document.getElementById('update-print-page').addEventListener('click', loadBeerlist);
+
+
+
 loadBeerlist();
 
 
@@ -73,5 +75,11 @@ function loadBeerlist(e) {
 
   xhr.send();
   setTimeout(loadBeerlist,1000);
+
+  console.log(flashMsgDiv);
+
+  setTimeout(function(){
+    flashMsgDiv.style.display = 'none';
+  },1250);
   e.preventDefault();
 }
