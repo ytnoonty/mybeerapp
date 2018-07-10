@@ -1,5 +1,5 @@
 let flashMsgDiv = document.getElementById('flash-msg-div');
-loadBeerlist();
+// loadBeerlist();
 // loadScreenlist();
 
 
@@ -108,7 +108,7 @@ data0116.forEach(function(beer){
   `;
 });
 htmlTable += `</table>`;
-let table = document.querySelector('.table');
+let table = document.getElementById('beers-table');
 if (table !== null) {
   table.innerHTML = htmlTable;
 }

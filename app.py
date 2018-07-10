@@ -41,7 +41,7 @@ def index():
 @app.route('/proccess_print', methods=['GET', 'POST'])
 def proccess_print():
     beers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
-    beers_01_16 = beers[0:5]
+    beers_01_16 = beers[0:16]
     beers_17_21 = beers[16:21]
 
     if beers > 0:
