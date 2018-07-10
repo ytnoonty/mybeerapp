@@ -3,7 +3,7 @@
 {% block body %}
   <div class="row justify-content-center">
     <div class="row">
-      <div class="col-12">
+      <div  id="update-print-page" class="col-12">
         <img src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="image should be here">
       </div>
     </div>
@@ -16,8 +16,8 @@
     </div>
   </div>
 
-  <div>
-    <ul class="list-group-flush">
+  <div id="beer-list-div">
+    <ul id="beer-list-loop" class="list-group-flush">
     {% for beer in beers %}
       <li class="list-group-item"><a href="{{beer.website}}" target="{{beer.website}}">{{beer.id}}.  {{beer.name}}</a> - {{beer.abv}}% ABV - {{beer.ibu}} IBU - {{beer.location}} - {{beer.brewery}} {{beer.description |safe}}</li>
     {% endfor %}
@@ -49,7 +49,7 @@
     </div>
   </div>
   <div class="row justify-content-center">
-    <p>
+    <p id="month-p">
       <span class="mx-3">{{beers1721[0].name}}</span>
     </p>
   </div>
@@ -63,7 +63,7 @@
     </div>
   </div>
   <div class="row justify-content-center">
-    <p>
+    <p id="comingsoon-p">
       <span class="mx-4">{{beers1721[1].name}}</span>
       <span class="mx-4">{{beers1721[2].name}}</span>
       <span class="mx-4">{{beers1721[3].name}}</span>
