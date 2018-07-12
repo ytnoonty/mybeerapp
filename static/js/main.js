@@ -1,5 +1,5 @@
 let flashMsgDiv = document.getElementById('flash-msg-div');
-// loadBeerlist();
+loadBeerlist();
 // loadScreenlist();
 
 
@@ -45,17 +45,16 @@ function loadBeerlist(e) {
 
       htmlStuff = '';
 
-      htmlStuff += `<ul class='list-group-flush'>`;
+      htmlStuff += `<ul id="beer-list-loop" class='list-group-flush'>`;
 
       data0116.forEach(function(beer){
         let li = document.createElement('li');
         li.className = 'list-group-item';
         let a = document.createElement('a');
 
-        htmlStuff += `<li class='list-group-item'>${beer.id}.  <a href='${beer.website}' target='${beer.website}'>${beer.name}</a> - ${beer.abv}% ABV - ${beer.ibu} IBU - ${beer.location} - ${beer.brewery} - ${beer.description}</li>`;
+        htmlStuff += `<li id="list-group-item-pp" class='list-group-item'>${beer.id}.  <span class="larger-text"><a href='${beer.website}' target='${beer.website}'>${beer.name}</a></span> - ${beer.abv}% ABV - ${beer.ibu} IBU - ${beer.location} - ${beer.brewery}</li>`;
+         // - ${beer.description}</li>`;
 
-        // console.log(beer.id);
-        // console.log(beer.name);
       });
       htmlStuff += `</ul>`;
       // ul.innerHTML = htmlStuff;
@@ -66,7 +65,7 @@ function loadBeerlist(e) {
       let monthP = document.getElementById('month-p');
       // console.log(document.getElementById('month-p'));
       if (monthP !== null) {
-        monthP.innerHTML = `<span class="mx-3">${data1721[0].name}</span>`;
+        monthP.innerHTML = `<span class="mx-3 larger-text">${data1721[0].name}</span>`;
       }
 
       let comingsoonP = document.getElementById('comingsoon-p');
@@ -121,33 +120,37 @@ let example2 = document.getElementById('example2');
 let example2HTML = '';
 
 example2HTML = `<div class="row">
-  <div class="col-sm">
+  <div class="col-lg">
     <div class="list-group">`;
 data0108.forEach(function(beer){
   example2HTML += `<a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
           <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">${beer.id}. ${beer.name}</h5>
-            <small>${beer.abv}% ABV ${beer.ibu} IBU</small>
+            <h5 class="mb-1">${beer.id}. ${beer.name}</h5>`;
+            // <small>${beer.abv}% ABV ${beer.ibu} IBU</small>
+  example2HTML += `<small>${beer.abv}% ABV</small>
           </div>
-          <p class="mb-1">${beer.brewery} ${beer.location}</p>
-          <small>${beer.description}</small>
-        </a>`;
+          <p class="mb-1">${beer.brewery}</p>`;
+          // <p class="mb-1">${beer.brewery} ${beer.location}</p>
+          // <small>${beer.description}</small>
+  example2HTML += `</a>`;
 });
 example2HTML += `</div>
   </div>`;
 
 // second example right column
-example2HTML += `<div class="col-sm">
+example2HTML += `<div class="col-lg">
     <div class="list-group">`;
 data0816.forEach(function(beer){
   example2HTML += `<a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
           <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">${beer.id}. ${beer.name}</h5>
-            <small>${beer.abv}% ABV ${beer.ibu} IBU</small>
-          </div>
-          <p class="mb-1">${beer.brewery} ${beer.location}</p>
-          <small>${beer.description}</small>
-        </a>`;
+          <h5 class="mb-1">${beer.id}. ${beer.name}</h5>`;
+          // <small>${beer.abv}% ABV ${beer.ibu} IBU</small>
+  example2HTML += `<small>${beer.abv}% ABV</small>
+        </div>
+          <p class="mb-1">${beer.brewery}</p>`;
+          // <p class="mb-1">${beer.brewery} ${beer.location}</p>
+          // <small>${beer.description}</small>
+  example2HTML += `</a>`;
 });
 example2HTML += `</div>
   </div>`;
@@ -161,23 +164,25 @@ let example3HTML = '';
 
 example3HTML = `
 <div class="row">
-  <div class="col-sm">
+  <div class="col-lg">
     <div class="list-group">
-      <ul class="list-group-flush">`;
+      <ul class="list-group-flush container-fluid">`;
         data0108.forEach(function(beer){
           example3HTML += `
-          <li class="list-group-item"><h4>${beer.id}.  ${beer.name}</h4><br>${beer.abv}% ABV ${beer.ibu} IBU <br>${beer.brewery} ${beer.location} ${beer.description}</li>`
+          <li class="list-group-item row"><h4 class="col-sm">${beer.id}.  ${beer.name}<span class="ml-5"><small>${beer.abv}% ABV</small></span></h4><div class="mx-auto"><span class="col-sm">${beer.brewery}</span><span class="col-sm">${beer.brewery}</span><span class="col-sm">${beer.brewery}</span></div></li>`
+          // <li class="list-group-item"><h4>${beer.id}.  ${beer.name}</h4><br>${beer.abv}% ABV ${beer.ibu} IBU <br>${beer.brewery} ${beer.location} ${beer.description}</li>
         });
 example3HTML += `
       </ul>
     </div>
   </div>
-  <div class="col-sm">
+  <div class="col-lg">
     <div class="list-group">
       <ul class="list-group-flush">`;
       data0816.forEach(function(beer){
         example3HTML += `
-          <li class="list-group-item"><h4>${beer.id}.  ${beer.name}</h4><br>${beer.abv}% ABV ${beer.ibu} IBU <br>${beer.brewery} ${beer.location} ${beer.description}</li>`
+          <li class="list-group-item"><h4>${beer.id}.  ${beer.name}</h4>${beer.brewery}<br>${beer.abv}% ABV</li>`
+          // <li class="list-group-item"><h4>${beer.id}.  ${beer.name}</h4><br>${beer.abv}% ABV ${beer.ibu} IBU <br>${beer.brewery} ${beer.location} ${beer.description}</li>
         });
 example3HTML += `
       </ul>
@@ -187,6 +192,38 @@ example3HTML += `
 if (example3 !== null) {
   example3.innerHTML = example3HTML;
 }
+
+
+// example3HTML = `
+// <div class="row">
+//   <div class="col-lg">
+//     <div class="list-group">
+//       <ul class="list-group-flush">`;
+//         data0108.forEach(function(beer){
+//           example3HTML += `
+//           <li class="list-group-item"><h4>${beer.id}.  ${beer.name}<span class="ml-5"><small>${beer.abv}% ABV</small></span></h4>${beer.brewery}</li>`
+//           // <li class="list-group-item"><h4>${beer.id}.  ${beer.name}</h4><br>${beer.abv}% ABV ${beer.ibu} IBU <br>${beer.brewery} ${beer.location} ${beer.description}</li>
+//         });
+// example3HTML += `
+//       </ul>
+//     </div>
+//   </div>
+//   <div class="col-lg">
+//     <div class="list-group">
+//       <ul class="list-group-flush">`;
+//       data0816.forEach(function(beer){
+//         example3HTML += `
+//           <li class="list-group-item"><h4>${beer.id}.  ${beer.name}</h4>${beer.brewery}<br>${beer.abv}% ABV</li>`
+//           // <li class="list-group-item"><h4>${beer.id}.  ${beer.name}</h4><br>${beer.abv}% ABV ${beer.ibu} IBU <br>${beer.brewery} ${beer.location} ${beer.description}</li>
+//         });
+// example3HTML += `
+//       </ul>
+//     </div>
+//   </div>
+// </div>`;
+// if (example3 !== null) {
+//   example3.innerHTML = example3HTML;
+// }
 
 // FOURTH EXAMPLE
 let example4 = document.getElementById('example4');

@@ -1,19 +1,18 @@
-{% extends 'layout.html' %}
+{% extends 'layout_NoMenu.html' %}
 
 {% block body %}
-  <!-- <div id="testing-ajax">{{beers}}</div> -->
-  <!-- <div class="testing">{{beers|tojson}}</div> -->
+<div class="container full-screen">
   <div class="row justify-content-center">
     <div class="row">
       <div id="update-print-page" class="col-12">
-        <img src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="image should be here">
+        <img id="screen-list-img" src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="image should be here">
       </div>
     </div>
   </div>
   <div class="row justify-content-center">
     <div class="row">
       <div class="col-12">
-        <h2>What's On Tap</h2>
+        <h2 class="bold-font">What's On Tap</h2>
       </div>
     </div>
   </div>
@@ -21,7 +20,8 @@
   <div id="beer-list-div">
     <ul id="beer-list-loop" class="list-group-flush">
     {% for beer in beers0116 %}
-      <li class="list-group-item">{{beer.id}}.  <a href="{{beer.website}}" target="{{beer.website}}">{{beer.name}}</a> - {{beer.abv}}% ABV - {{beer.ibu}} IBU - {{beer.location}} - {{beer.brewery}} - {{beer.description |safe}}</li>
+      <li id="list-group-item-pp" class="list-group-item">{{beer.id}}.  <span class="larger-text"><a href="{{beer.website}}" target="{{beer.website}}">{{beer.name}}</a></span> - {{beer.abv}}% ABV - {{beer.ibu}} IBU - {{beer.location}} - {{beer.brewery}}</li>
+       <!-- - {{beer.description |safe}}</li> -->
     {% endfor %}
     </ul>
   </div>
@@ -52,11 +52,11 @@
   </div>
   <div class="row justify-content-center">
     <p id="month-p">
-      <span class="mx-3">{{beers1721[0].name}}</span>
+      <span class="mx-3 larger-text">{{beers1721[0].name}}</span>
     </p>
   </div>
 
-  <hr>
+  <!-- <hr>
   <div class="row justify-content-center">
     <div class="row">
       <div class="col-12">
@@ -71,7 +71,6 @@
       <span class="mx-4">{{beers1721[3].name}}</span>
       <span class="mx-3">{{beers1721[4].name}}</span>
     </p>
-  </div>
-
-
+  </div> -->
+</div>
 {% endblock %}
