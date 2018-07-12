@@ -1,5 +1,5 @@
 let flashMsgDiv = document.getElementById('flash-msg-div');
-// loadBeerlist();
+loadBeerlist();
 // loadScreenlist();
 
 
