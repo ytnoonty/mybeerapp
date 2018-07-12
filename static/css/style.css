@@ -11,7 +11,7 @@
 /* proccess_print.html */
 #screen-list-img {
   width: 75%;
-  margin: 15px 12.5% 0;
+  margin: 5px 12.5% 0;
 }
 #beer-list-div {
   width: 95%;
@@ -24,7 +24,7 @@
 }
 #list-group-item-pp {
   margin: 0;
-  padding: 5px 0;
+  padding: 1px 0;
 }
 .full-screen {
   height: 100vh;
