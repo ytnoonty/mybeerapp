@@ -11,7 +11,7 @@
 /* proccess_print.html */
 #screen-list-img {
   width: 75%;
-  margin: 5px 12.5% 0;
+  margin: 0px 12.5% 0;
 }
 #beer-list-div {
   width: 95%;
@@ -30,4 +30,39 @@
   height: 100vh;
   width: 90vw;
   margin: 0 auto;
+}
+
+
+/* beers_tv_screen.html */
+.smaller-span {
+  font-size: 1.25em;
+}
+.list-group-bts {
+  padding: 0px;
+}
+.full-page {
+  /* height: 100vh; */
+  /* overflow: hidden; */
+  background-image: url("/static/img/file-goes-here.ext");
+  background-repeat: no-repeat;
+  background-color: #000;
+  color: #fff;
+}
+.card  {
+  background: linear-gradient(#222,#000);
+}
+.italic-font {
+  font-style: italic;
+}
+.bold-font {
+  font-weight: bolder;
+}
+.font-med {
+  font-size: 1.25em;
+}
+table {
+  table-layout: fixed;
+}
+td {
+  width: 225px;
 }

@@ -1,0 +1,129 @@
+{% extends 'layout_NoMenu.html' %}
+
+{% block body %}
+<div class="full-page">
+  <div class="row justify-content-center">
+    <div class="row">
+      <div  id="update-print-page" class="col-12 mt-2 mb-2">
+        <img src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="image should be here">
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="row">
+      <div class="col-12">
+        <!-- <h2>Beer List</h2> -->
+      </div>
+    </div>
+  </div>
+
+  <!-- <div id="example2" class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg">
+        <div class="list-group">
+          {% for beer in beers0108 %}
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{beer.id}}. {{beer.name}}</h5>
+                <small>{{beer.abv}}% ABV</small>
+              </div>
+              <p class="mb-1">{{beer.brewery}}</p>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-lg">
+        <div class="list-group">
+          {% for beer in beers0816 %}
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{beer.id}}. {{beer.name}}</h5>
+                <small>{{beer.abv}}% ABV</small>
+              </div>
+              <p class="mb-1">{{beer.brewery}}</p>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <div id=example3 class="container-fluid">
+    <div class="row">
+      <div class="col-lg">
+        <div class="list-group">
+          <ul id="" class="list-group-flush list-group-bts">
+            {% for beer in beers0108 %}
+              <li class="card"><h2 class="italic-font bold-font">{{beer.name}}</h2><span class="smaller-span"><span class="bold-font">{{beer.style}}</span> - {{beer.abv}}% ABV - {{beer.ibu}} IBU - <span class="italic-font bold-font">{{beer.brewery}}</span> - {{beer.location}}</span></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg">
+        <div class="list-group">
+          <ul class="list-group-flush">
+            {% for beer in beers0816 %}
+              <li class="card"><h4 class="italic-font bold-font">{{beer.id}}.  {{beer.name}}</h4><br><span><span class="bold-font">{{beer.style}}</span>{{beer.abv}}% ABV {{beer.ibu}} IBU</span><span><span class="italic-font bold-font">{{beer.brewery}}</span> {{beer.location}}</span></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="row">
+      <div  id="update-print-page" class="col-12 mt-2 mb-2">
+        <img src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="image should be here">
+      </div>
+    </div>
+  </div>
+
+  <div id=example3 class="container-fluid">
+    <div class="row">
+      <div class="col-lg">
+        <div class="list-group">
+          <ul id="" class="list-group-flush list-group-bts">
+            {% for beer in beers0108 %}
+              <li class="card">
+                <h2 class="italic-font bold-font">{{beer.name}}</h2>
+                <table>
+                  <tr>
+                    <td><span class="bold-font">{{beer.style}}</span></td>
+                    <td> - {{beer.abv}}% ABV</td>
+                    <td> - {{beer.ibu}} IBU - </td>
+                    <td><span class="italic-font bold-font">{{beer.brewery}}</span></td>
+                    <td>{{beer.location}}</td>
+                  </tr>
+                </table>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg">
+        <div class="list-group">
+          <ul class="list-group-flush">
+            {% for beer in beers0816 %}
+              <li class="card">
+                <span class="font-med italic-font bold-font">{{beer.id}}.  {{beer.name}}</span>
+                <table>
+                  <tr>
+                    <td><span class="bold-font">{{beer.style}}</span></td>
+                    <td>{{beer.abv}}% ABV</td>
+                    <td>{{beer.ibu}} IBU</td>
+                  </tr>
+                  <tr>
+                    <td><span class="italic-font bold-font">{{beer.brewery}}</span></td>
+                    <td>{{beer.location}}</td>
+                  </tr>
+                </table>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+</div>
+{% endblock %}
