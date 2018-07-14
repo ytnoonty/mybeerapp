@@ -63,6 +63,36 @@ def update():
 #end testing AJAX
 ##########################
 
+##############################################
+# Begin Testing of TV screen layout
+##############################################
+
+# Current list of whats on tap screen testing
+@app.route('/beers_tv_screen')
+def beers_tv_screen():
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Get beers
+    result = cur.execute("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history")
+    beers = cur.fetchall()
+    beers = beers[0:16]
+    beers_01_08 = beers[0:8]
+    beers_08_16 = beers[8:16]
+
+    # Close connection
+    cur.close()
+
+    if result > 0:
+        return render_template('beers_tv_screen.html', beers=beers, beers0108=beers_01_08, beers0816=beers_08_16)
+    else:
+        msg = 'No Beers Found'
+    return render_template('beers_tv_screen.html', msg=msg)
+
+##############################################
+#End TV screen layout test
+##############################################
+
 # Total history of beers
 @app.route('/about')
 def about():
