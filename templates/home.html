@@ -3,7 +3,14 @@
 {% block body %}
   <div class="jumbotron jumbotron-fluid text-center">
     <div class="container">
-      <h1 class="display-4">Shamrock Jack's Beer List</h1>
+      <div class="row justify-content-center">
+        <div class="row">
+          <div  id="update-print-page" class="col-12 mt-2 mb-2">
+            <img src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="image should be here">
+          </div>
+        </div>
+      </div>
+      <h1 class="display-4">Beer List</h1>
       <p class="lead">To show you what's on tap at yours and our favorite bar.</p>
       {% if session.logged_in == NULL %}
         <a href="/register" class="btn btn-primary btn-lg">Register</a>
