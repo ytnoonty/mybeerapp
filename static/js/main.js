@@ -1,13 +1,13 @@
 let flashMsgDiv = document.getElementById('flash-msg-div');
 let updateProcessPrint = document.getElementById('update-tv-screen');
 
+loadBeerlist();
+// loadScreenlist();
+
 updateProcessPrint.addEventListener('click', function(e){
   window.location.reload();
   loadBeerlist();
 });
-
-loadBeerlist();
-// loadScreenlist();
 
 function loadBeerlist(e) {
   // console.log('testing function works');
@@ -51,22 +51,21 @@ function loadBeerlist(e) {
 ////////////////////////////////////////////////////////////
 // PROCCESS_PRINT.HTML UPDATE
 ////////////////////////////////////////////////////////////
+      let htmlStuff = '';
       htmlStuff = '';
 
       htmlStuff += `<ul id="beer-list-loop" class='list-group-flush'>`;
 
       data0116.forEach(function(beer){
         let li = document.createElement('li');
-        li.className = 'list-group-item';
-        let a = document.createElement('a');
-
+        // li.className = 'list-group-item';
         htmlStuff += `<li id="list-group-item-pp" class='list-group-item'>${beer.id}.  <span class="larger-text text-color">${beer.name}</span> - ${beer.abv}% ABV - ${beer.ibu} IBU - ${beer.location} - <span class="italic-font">${beer.brewery}</span></li>`;
-         // - ${beer.description}</li>`;
-
       });
+
       htmlStuff += `</ul>`;
       // ul.innerHTML = htmlStuff;
       if (beerListDiv !== null) {
+        console.log('htmlStuff');
         beerListDiv.innerHTML = htmlStuff;
       }
 
