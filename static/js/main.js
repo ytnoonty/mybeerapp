@@ -3,10 +3,41 @@ let updateProcessPrint = document.getElementById('update-tv-screen');
 
 updateProcessPrint.addEventListener('click', function(e){
   window.location.reload();
+  screenRefresh();
   loadBeerlist();
 });
+
+
 loadBeerlist();
 // loadScreenlist();
+
+function screenRefresh(){
+  let currentTime = new Date();
+  let hour = currentTime.getHours();
+  let min = currentTime.getMinutes();
+  let sec = currentTime.getSeconds();
+  let millSec = currentTime.getMilliseconds();
+  console.log('hour is: ' + hour);
+  console.log('min is: ' + min);
+  console.log('sec is: ' + sec);
+  console.log('millSec is: ' + millSec);
+  if ((hour == 6 || hour == 10 || hour == 14 || hour == 16 || hour == 18 || hour == 20 || hour == 22 || hour == 24) && min == 1 && sec == 1 && millSec < 250){
+    window.location.reload();
+    console.log('in the new function and minutes is: ' + min);
+    console.log('hour is: ' + hour);
+    console.log('min is: ' + min);
+    console.log('sec is: ' + sec);
+    console.log('millSec is: ' + millSec);
+    console.log('************************SCREEN UPDATED*******************');
+  }
+  // if (sec == 31 && millSec < 250){
+  //   window.location.reload();
+  //   console.log('in the new function and minutes is: ' + min);
+  //   console.log('sec is: ' + sec);
+  //   console.log('millSec is: ' + millSec);
+  //   console.log('************************SCREEN UPDATED*******************');
+  // }
+}
 
 function loadBeerlist(e) {
   // console.log('testing function works');
@@ -336,11 +367,10 @@ if (example6 !== null) {
   }
 
   xhr.send();
-  setTimeout(loadBeerlist,1000);
+  screenRefresh();
+  setTimeout(loadBeerlist,250);
   // setTimeout(loadScreenlist,1000);
 
-
-  // console.log(flashMsgDiv);
 
   setTimeout(function(){
     flashMsgDiv.style.display = 'none';
