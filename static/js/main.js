@@ -1,13 +1,12 @@
 let flashMsgDiv = document.getElementById('flash-msg-div');
 let updateProcessPrint = document.getElementById('update-tv-screen');
 
-loadBeerlist();
-// loadScreenlist();
-
 updateProcessPrint.addEventListener('click', function(e){
   window.location.reload();
   loadBeerlist();
 });
+loadBeerlist();
+// loadScreenlist();
 
 function loadBeerlist(e) {
   // console.log('testing function works');
@@ -309,7 +308,7 @@ example6HTML += `
               <tr>
                 <h1 class="italic-font bold-font card-img txt-clr-ylw"><span class="underline">${beer.name}</span></h1>
               </tr>
-              <tr class="font-lrg">
+              <tr class="font-med">
                 <td class="bold-font w-third">${beer.style}</td>
                 <td class="w-forth">ABV ${beer.abv}%</td>
                 <td class="italic-font bold-font w-third">${beer.brewery}</td>
