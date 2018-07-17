@@ -59,7 +59,7 @@ function loadBeerlist(e) {
       data0116.forEach(function(beer){
         let li = document.createElement('li');
         // li.className = 'list-group-item';
-        htmlStuff += `<li id="list-group-item-pp" class='list-group-item'>${beer.id}.  <span class="larger-text text-color">${beer.name}</span> - ${beer.abv}% ABV - ${beer.ibu} IBU - ${beer.location} - <span class="italic-font">${beer.brewery}</span></li>`;
+        htmlStuff += `<li id="list-group-item-pp" class='list-group-item'>${beer.id}.  <span class="larger-text text-color-grn">${beer.name}</span> - ${beer.abv}% ABV - ${beer.ibu} IBU - ${beer.location} - <span class="italic-font">${beer.brewery}</span></li>`;
       });
 
       htmlStuff += `</ul>`;
@@ -86,12 +86,12 @@ function loadBeerlist(e) {
       ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 // PROCCESS_PRINT.HTML UPDATE
+// /////////////////////////////////////////////
 
 
 // /////////////////////////////////////////////
+// // first example table element beers.html
 // /////////////////////////////////////////////
-//
-// // first example table element
 // let htmlTable = '';
 // htmlTable = `<tr>
 // <th></th>
@@ -122,12 +122,13 @@ function loadBeerlist(e) {
 // if (table !== null) {
 //   table.innerHTML = htmlTable;
 // }
-// // END first example table element
-//
-//
-//
-//
+// /////////////////////////////////////////////
+// // END first example table element beers.html
+// /////////////////////////////////////////////
+
+// /////////////////////////////////////////////
 // // second example left column
+// /////////////////////////////////////////////
 // let example2 = document.getElementById('example2');
 // let example2HTML = '';
 //
@@ -169,9 +170,14 @@ function loadBeerlist(e) {
 // if (example2 !== null) {
 //   example2.innerHTML = example2HTML;
 // }
+// /////////////////////////////////////////////
 // // END SECOND EXAMPLE
+// /////////////////////////////////////////////
+
+
 // ////////////////////////////////////////////////////////
 // // THIRD EXAMPLE
+// /////////////////////////////////////////////
 // let example3 = document.getElementById('example3');
 // let example3HTML = '';
 //
@@ -241,6 +247,7 @@ function loadBeerlist(e) {
 // ///////////////////////////////////////////////////////
 // // END EXAMPLE3
 // ///////////////////////////////////////////////////////
+
 //
 // // FOURTH EXAMPLE
 // let example4 = document.getElementById('example4');
@@ -276,10 +283,12 @@ example6HTML = `
         data0108.forEach(function(beer){
           example6HTML += `
           <li class="card">
-            <h1 class="italic-font bold-font card-img"><span class="underline">${beer.name}</span></h1>
             <table>
-              <tr class="font-lrg">
-                <td class="bold-font w-third card-img-before">${beer.style}</td>
+              <tr>
+                <h1 class="italic-font bold-font card-img txt-clr-ylw"><span class="underline">${beer.name}</span></h1>
+              </tr>
+              <tr class="font-med">
+                <td class="bold-font w-third">${beer.style}</td>
                 <td class="w-forth">ABV ${beer.abv}%</td>
                 <td class="italic-font bold-font w-third">${beer.brewery}</td>
               </tr>
@@ -296,10 +305,12 @@ example6HTML += `
         data0816.forEach(function(beer){
           example6HTML += `
           <li class="card">
-            <h1 class="italic-font bold-font card-img"><span class="underline">${beer.name}</span></h1>
             <table>
+              <tr>
+                <h1 class="italic-font bold-font card-img txt-clr-ylw"><span class="underline">${beer.name}</span></h1>
+              </tr>
               <tr class="font-lrg">
-                <td class="bold-font w-third card-img-before">${beer.style}</td>
+                <td class="bold-font w-third">${beer.style}</td>
                 <td class="w-forth">ABV ${beer.abv}%</td>
                 <td class="italic-font bold-font w-third">${beer.brewery}</td>
               </tr>

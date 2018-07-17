@@ -70,7 +70,7 @@ body {
   font-weight: bolder;
 }
 .font-med {
-  font-size: 1.25em;
+  font-size: 1.5em;
 }
 .font-lrg {
   font-size: 1.75em;
@@ -110,6 +110,11 @@ table {
 }
 
 /* process_print link color change */
-.text-color {
+.text-color-grn {
   color: green;
+}
+.txt-clr-ylw {
+  color: #F08F40;
+  text-shadow: -2px -2px #000,
+  2px 2px #000;
 }

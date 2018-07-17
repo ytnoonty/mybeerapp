@@ -165,10 +165,12 @@
           <ul id="" class="list-group-flush list-group-bts">
             {% for beer in beers0108 %}
               <li class="card">
-                <h1 class="italic-font bold-font card-img"><span class="underline">{{beer.name}}</span></h1>
                 <table>
+                  <tr>
+                    <h1 class="italic-font bold-font card-img"><span class="underline">{{beer.name}}</span></h1>
+                  </tr>
                   <tr class="font-lrg">
-                    <td class="bold-font w-third card-img-before">{{beer.style}}</td>
+                    <td class="bold-font w-third">{{beer.style}}</td>
                     <td class="w-forth">ABV {{beer.abv}}%</td>
                     <td class="italic-font bold-font w-third">{{beer.brewery}}</td>
                   </tr>
@@ -183,8 +185,10 @@
           <ul class="list-group-flush list-group-bts">
             {% for beer in beers0816 %}
               <li class="card">
-                <h1 class="italic-font bold-font card-img">{{beer.name}}</h1>
                 <table>
+                  <tr>
+                    <h1 class="italic-font bold-font card-img">{{beer.name}}</h1>
+                  </tr>
                   <tr class="font-lrg">
                     <td class="bold-font w-third">{{beer.style}}</td>
                     <td class="w-forth">ABV {{beer.abv}}%</td>
