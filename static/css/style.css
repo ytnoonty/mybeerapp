@@ -2,8 +2,6 @@ body {
   font-family: fira sans;
 }
 
-
-
 .container {
   margin: 25px;
   padding: 25px;
@@ -54,7 +52,10 @@ body {
   background-color: #000;
   color: #fff;
 }
-.card  {
+.card {
+  background: linear-gradient(#333,#000);
+}
+.cardvs  {
   background: linear-gradient(#333,#000);
 }
 .italic-font {
@@ -78,8 +79,12 @@ body {
 .font-color-gray {
   color: #888;
 }
+.no-btm-margin {
+  margin-bottom: 0;
+}
 table {
   table-layout: fixed;
+  padding-left: 100px;
 }
 .w-half {
   width: 300px;
@@ -97,16 +102,22 @@ table {
   width: 50px;
   background: red;
 }
-/*  image behing the number on beer_tv_screen */
+/*  image behind the number on beer_tv_screen */
 .card-img::before,
 .card-img::after,
 .card-img-before::before,
 .card-img-after::after {
   content: url("/static/img/34x40_irish-flag-shamrock.png");
 }
-.card-img {
-  margin-left: 5px;
-  margin-bottom: 0;
+ul {
+  list-style-image: url("/static/img/34x40_irish-flag-shamrock.png");
+  margin-left: 35px;
+}
+tr {
+  display: block;
+}
+.left-spacer {
+  margin-left: 10px;
 }
 
 /* process_print link color change */
