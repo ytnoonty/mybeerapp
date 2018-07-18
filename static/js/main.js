@@ -312,12 +312,12 @@ example6HTML = `
       // example6HTML += `<div></div>`;
         data0108.forEach(function(beer){
           example6HTML += `
-          <li class="card">
+          <li class="cardvs">
             <table>
               <tr>
-                <h1 class="italic-font bold-font card-img txt-clr-ylw"><span class="underline">${beer.name}</span></h1>
+                <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
               </tr>
-              <tr class="font-med">
+              <tr class="font-med left-spacer">
                 <td class="bold-font w-third">${beer.style}</td>
                 <td class="w-forth">ABV ${beer.abv}%</td>
                 <td class="italic-font bold-font w-third">${beer.brewery}</td>
@@ -334,12 +334,12 @@ example6HTML += `
       <ul class="list-group-flush list-group-bts">`;
         data0816.forEach(function(beer){
           example6HTML += `
-          <li class="card">
+          <li class="cardvs">
             <table>
               <tr>
-                <h1 class="italic-font bold-font card-img txt-clr-ylw"><span class="underline">${beer.name}</span></h1>
+                <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
               </tr>
-              <tr class="font-med">
+              <tr class="font-med left-spacer">
                 <td class="bold-font w-third">${beer.style}</td>
                 <td class="w-forth">ABV ${beer.abv}%</td>
                 <td class="italic-font bold-font w-third">${beer.brewery}</td>
@@ -352,6 +352,56 @@ example6HTML += `
     </div>
   </div>
 </div>`;
+// example6HTML = `
+// <div class="row">
+//   <div class="col-lg">
+//     <div class="list-group">
+//       <ul class="list-group-flush list-group-bts">`;
+//       //USED FOR TESTING THE ajax update
+//       //uncomment line below and reload browser or reboot pi
+//       // example6HTML += `<div></div>`;
+//         data0108.forEach(function(beer){
+//           example6HTML += `
+//           <li class="card card-img-before">
+//             <table>
+//               <tr>
+//                 <h1 class="italic-font bold-font txt-clr-ylw"><span class="underline">${beer.name}</span></h1>
+//               </tr>
+//               <tr class="font-med">
+//                 <td class="bold-font w-third">${beer.style}</td>
+//                 <td class="w-forth">ABV ${beer.abv}%</td>
+//                 <td class="italic-font bold-font w-third">${beer.brewery}</td>
+//               </tr>
+//             </table>
+//           </li>`
+//         });
+// example6HTML += `
+//       </ul>
+//     </div>
+//   </div>
+//   <div class="col-lg">
+//     <div class="list-group">
+//       <ul class="list-group-flush list-group-bts">`;
+//         data0816.forEach(function(beer){
+//           example6HTML += `
+//           <li class="card card-img-before">
+//             <table>
+//               <tr>
+//                 <h1 class="italic-font bold-font txt-clr-ylw"><span class="underline">${beer.name}</span></h1>
+//               </tr>
+//               <tr class="font-med">
+//                 <td class="bold-font w-third">${beer.style}</td>
+//                 <td class="w-forth">ABV ${beer.abv}%</td>
+//                 <td class="italic-font bold-font w-third">${beer.brewery}</td>
+//               </tr>
+//             </table>
+//           </li>`
+//         });
+// example6HTML += `
+//       </ul>
+//     </div>
+//   </div>
+// </div>`;
 if (example6 !== null) {
   example6.innerHTML = example6HTML;
 }
