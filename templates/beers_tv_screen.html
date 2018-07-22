@@ -2,202 +2,204 @@
 
 {% block body %}
 <div class="full-page">
-  <div class="row justify-content-center">
-    <div class="row">
-      <div  id="update-tv-screen" class="col-12 mt-2 mb-2">
-        <img src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="image should be here">
-      </div>
-    </div>
-  </div>
-  <div class="row justify-content-center">
-    <div class="row">
-      <div class="col-12">
-        <!-- <h2>Beer List</h2> -->
-      </div>
-    </div>
-  </div>
-
-<!-- /////////////////////////////////////////////////////////
-// BEGIN example 2
-///////////////////////////////////////////////////////// -->
-
-  <!-- <div id="example2" class="container">
+  <div class="wrapper">
     <div class="row justify-content-center">
-      <div class="col-lg">
-        <div class="list-group">
-          {% for beer in beers0108 %}
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{{beer.id}}. {{beer.name}}</h5>
-                <small>{{beer.abv}}% ABV</small>
-              </div>
-              <p class="mb-1">{{beer.brewery}}</p>
-            </a>
-          {% endfor %}
-        </div>
-      </div>
-      <div class="col-lg">
-        <div class="list-group">
-          {% for beer in beers0816 %}
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{{beer.id}}. {{beer.name}}</h5>
-                <small>{{beer.abv}}% ABV</small>
-              </div>
-              <p class="mb-1">{{beer.brewery}}</p>
-            </a>
-          {% endfor %}
+      <div class="row">
+        <div  id="update-tv-screen" class="col-12 mt-2 mb-2">
+          <img src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="image should be here">
         </div>
       </div>
     </div>
-  </div> -->
+    <div class="row justify-content-center">
+      <div class="row">
+        <div class="col-12">
+          <!-- <h2>Beer List</h2> -->
+        </div>
+      </div>
+    </div>
 
-<!-- /////////////////////////////////////////////////////////
-// END example 2
-///////////////////////////////////////////////////////// -->
+  <!-- /////////////////////////////////////////////////////////
+  // BEGIN example 2
+  ///////////////////////////////////////////////////////// -->
 
-<!-- /////////////////////////////////////////////////////////
-// BEGIN example 3
-///////////////////////////////////////////////////////// -->
-
-  <!-- <div id=example3 class="container-fluid">
-    <div class="row">
-      <div class="col-lg">
-        <div class="list-group">
-          <ul id="" class="list-group-flush list-group-bts">
+    <!-- <div id="example2" class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg">
+          <div class="list-group">
             {% for beer in beers0108 %}
-              <li class="card"><h2 class="italic-font bold-font">{{beer.name}}</h2><span class="smaller-span"><span class="bold-font">{{beer.style}}</span> - {{beer.abv}}% ABV - {{beer.ibu}} IBU - <span class="italic-font bold-font">{{beer.brewery}}</span> - {{beer.location}}</span></li>
+              <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">{{beer.id}}. {{beer.name}}</h5>
+                  <small>{{beer.abv}}% ABV</small>
+                </div>
+                <p class="mb-1">{{beer.brewery}}</p>
+              </a>
             {% endfor %}
-          </ul>
+          </div>
         </div>
-      </div>
-      <div class="col-lg">
-        <div class="list-group">
-          <ul class="list-group-flush">
+        <div class="col-lg">
+          <div class="list-group">
             {% for beer in beers0816 %}
-              <li class="card"><h4 class="italic-font bold-font">{{beer.id}}.  {{beer.name}}</h4><br><span><span class="bold-font">{{beer.style}}</span>{{beer.abv}}% ABV {{beer.ibu}} IBU</span><span><span class="italic-font bold-font">{{beer.brewery}}</span> {{beer.location}}</span></li>
+              <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">{{beer.id}}. {{beer.name}}</h5>
+                  <small>{{beer.abv}}% ABV</small>
+                </div>
+                <p class="mb-1">{{beer.brewery}}</p>
+              </a>
             {% endfor %}
-          </ul>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+  <!-- /////////////////////////////////////////////////////////
+  // END example 2
+  ///////////////////////////////////////////////////////// -->
+
+  <!-- /////////////////////////////////////////////////////////
+  // BEGIN example 3
+  ///////////////////////////////////////////////////////// -->
+
+    <!-- <div id=example3 class="container-fluid">
+      <div class="row">
+        <div class="col-lg">
+          <div class="list-group">
+            <ul id="" class="list-group-flush list-group-bts">
+              {% for beer in beers0108 %}
+                <li class="card"><h2 class="italic-font bold-font">{{beer.name}}</h2><span class="smaller-span"><span class="bold-font">{{beer.style}}</span> - {{beer.abv}}% ABV - {{beer.ibu}} IBU - <span class="italic-font bold-font">{{beer.brewery}}</span> - {{beer.location}}</span></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg">
+          <div class="list-group">
+            <ul class="list-group-flush">
+              {% for beer in beers0816 %}
+                <li class="card"><h4 class="italic-font bold-font">{{beer.id}}.  {{beer.name}}</h4><br><span><span class="bold-font">{{beer.style}}</span>{{beer.abv}}% ABV {{beer.ibu}} IBU</span><span><span class="italic-font bold-font">{{beer.brewery}}</span> {{beer.location}}</span></li>
+              {% endfor %}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="row justify-content-center">
-    <div class="row">
-      <div  id="update-print-page" class="col-12 mt-2 mb-2">
-        <img src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="image should be here">
-      </div>
-    </div>
-  </div> -->
-<!-- /////////////////////////////////////////////////////////
-// END example 3
-///////////////////////////////////////////////////////// -->
-
-<!-- /////////////////////////////////////////////////////////
-// BEGIN example 4
-///////////////////////////////////////////////////////// -->
-
-  <!-- <div id=example4 class="container-fluid">
-    <div class="row">
-      <div class="col-lg">
-        <div class="list-group">
-          <ul id="" class="list-group-flush list-group-bts">
-            {% for beer in beers0108 %}
-              <li class="card">
-                <h1 class="italic-font bold-font">{{beer.name}}</h1>
-                <table>
-                  <tr class="font-lrg">
-                    <td class="bold-font w-third">{{beer.style}}</td>
-                    <td class="w-forth">ABV {{beer.abv}}%</td>
-                    <td class="italic-font bold-font w-third">{{beer.brewery}}</td>
-                    <td class="w-forth">{{beer.location}}</td>
-                  </tr>
-                </table>
-              </li>
-            {% endfor %}
-          </ul>
+    <div class="row justify-content-center">
+      <div class="row">
+        <div  id="update-print-page" class="col-12 mt-2 mb-2">
+          <img src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="image should be here">
         </div>
       </div>
-      <div class="col-lg">
-        <div class="list-group">
-          <ul class="list-group-flush">
-            {% for beer in beers0816 %}
-              <li class="card">
-                <span class="font-med italic-font bold-font">{{beer.id}}.  {{beer.name}}</span>
-                <table>
-                  <tr>
-                    <td><span class="bold-font">{{beer.style}}</span></td>
-                    <td>{{beer.abv}}% ABV</td>
-                    <td>{{beer.ibu}} IBU</td>
-                  </tr>
-                  <tr>
-                    <td><span class="italic-font bold-font">{{beer.brewery}}</span></td>
-                    <td>{{beer.location}}</td>
-                  </tr>
-                </table>
-              </li>
-            {% endfor %}
-          </ul>
+    </div> -->
+  <!-- /////////////////////////////////////////////////////////
+  // END example 3
+  ///////////////////////////////////////////////////////// -->
+
+  <!-- /////////////////////////////////////////////////////////
+  // BEGIN example 4
+  ///////////////////////////////////////////////////////// -->
+
+    <!-- <div id=example4 class="container-fluid">
+      <div class="row">
+        <div class="col-lg">
+          <div class="list-group">
+            <ul id="" class="list-group-flush list-group-bts">
+              {% for beer in beers0108 %}
+                <li class="card">
+                  <h1 class="italic-font bold-font">{{beer.name}}</h1>
+                  <table>
+                    <tr class="font-lrg">
+                      <td class="bold-font w-third">{{beer.style}}</td>
+                      <td class="w-forth">ABV {{beer.abv}}%</td>
+                      <td class="italic-font bold-font w-third">{{beer.brewery}}</td>
+                      <td class="w-forth">{{beer.location}}</td>
+                    </tr>
+                  </table>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg">
+          <div class="list-group">
+            <ul class="list-group-flush">
+              {% for beer in beers0816 %}
+                <li class="card">
+                  <span class="font-med italic-font bold-font">{{beer.id}}.  {{beer.name}}</span>
+                  <table>
+                    <tr>
+                      <td><span class="bold-font">{{beer.style}}</span></td>
+                      <td>{{beer.abv}}% ABV</td>
+                      <td>{{beer.ibu}} IBU</td>
+                    </tr>
+                    <tr>
+                      <td><span class="italic-font bold-font">{{beer.brewery}}</span></td>
+                      <td>{{beer.location}}</td>
+                    </tr>
+                  </table>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-  </div> -->
+    </div> -->
 
-<!-- /////////////////////////////////////////////////////////
-// END example 4
-///////////////////////////////////////////////////////// -->
-<!-- /////////////////////////////////////////////////////////
-//example 6
-///////////////////////////////////////////////////////// -->
-  <!-- <div class="row justify-content-center">
-    <div class="row">
-      <div  id="update-print-page" class="col-12 mt-2 mb-2">
-        <img src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="image should be here">
-      </div>
-    </div>
-  </div> -->
-
-  <div id=example6 class="container-fluid">
-    <div class="row">
-      <div class="col-lg">
-        <div class="list-group">
-          <ul id="" class="list-group-flush list-group-bts">
-            {% for beer in beers0108 %}
-              <li class="cardvs">
-                <table>
-                  <tr>
-                    <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">{{beer.name}}</span></h1>
-                  </tr>
-                  <tr class="font-med left-spacer">
-                    <td class="bold-font w-third">{{beer.style}}</td>
-                    <td class="w-forth">ABV {{beer.abv}}%</td>
-                    <td class="italic-font bold-font w-third">{{beer.brewery}}</td>
-                  </tr>
-                </table>
-              </li>
-            {% endfor %}
-          </ul>
+  <!-- /////////////////////////////////////////////////////////
+  // END example 4
+  ///////////////////////////////////////////////////////// -->
+  <!-- /////////////////////////////////////////////////////////
+  //example 6
+  ///////////////////////////////////////////////////////// -->
+    <!-- <div class="row justify-content-center">
+      <div class="row">
+        <div  id="update-print-page" class="col-12 mt-2 mb-2">
+          <img src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="image should be here">
         </div>
       </div>
-      <div class="col-lg">
-        <div class="list-group">
-          <ul class="list-group-flush list-group-bts">
-            {% for beer in beers0816 %}
-              <li class="cardvs">
-                <table>
-                  <tr>
-                    <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">{{beer.name}}</span></h1>
-                  </tr>
-                  <tr class="font-med left-spacer">
-                    <td class="bold-font w-third">{{beer.style}}</td>
-                    <td class="w-forth">ABV {{beer.abv}}%</td>
-                    <td class="italic-font bold-font w-third">{{beer.brewery}}</td>
-                  </tr>
-                </table>
-              </li>
-            {% endfor %}
-          </ul>
+    </div> -->
+
+    <div id=example6 class="container-fluid">
+      <div class="row">
+        <div class="col-lg">
+          <div class="list-group">
+            <ul id="" class="list-group-flush list-group-bts">
+              {% for beer in beers0108 %}
+                <li class="cardvs">
+                  <table class="beer-screen-table">
+                    <tr class="beer-screen-tr">
+                      <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">{{beer.name}}</span></h1>
+                    </tr>
+                    <tr class="font-med left-spacer beer-screen-tr">
+                      <td class="bold-font w-third">{{beer.style}}</td>
+                      <td class="w-forth">ABV {{beer.abv}}%</td>
+                      <td class="italic-font bold-font w-third">{{beer.brewery}}</td>
+                    </tr>
+                  </table>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg">
+          <div class="list-group">
+            <ul class="list-group-flush list-group-bts">
+              {% for beer in beers0816 %}
+                <li class="cardvs">
+                  <table class="beer-screen-table">
+                    <tr class="beer-screen-tr">
+                      <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">{{beer.name}}</span></h1>
+                    </tr>
+                    <tr class="font-med left-spacer beer-screen-tr">
+                      <td class="bold-font w-third">{{beer.style}}</td>
+                      <td class="w-forth">ABV {{beer.abv}}%</td>
+                      <td class="italic-font bold-font w-third">{{beer.brewery}}</td>
+                    </tr>
+                  </table>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -250,10 +252,30 @@
       </div>
     </div>
   </div> -->
-
-
 <!-- /////////////////////////////////////////////////////////
 // END example 6
 ///////////////////////////////////////////////////////// -->
+
+  <!-- ***************************************** -->
+  <!-- START Ticker -->
+  <!-- ***************************************** -->
+  <div class="row bts-coming-soon">
+    <div class="ticker move-left">
+      <p class="p-bts-coming-soon bold-font">
+        <span class="txt-clr-wht">Beer 'O the Month:</span>
+        <span class="card-img txt-clr-ylw">{{beers1621[0].name}}</span>
+        <span class="txt-clr-wht">Tapping Soon:
+          <span class="card-img-before txt-clr-ylw">{{beers1621[1].name}}</span>
+          <span class="card-img-before txt-clr-ylw">{{beers1621[2].name}}</span>
+          <span class="card-img-before txt-clr-ylw">{{beers1621[3].name}}</span>
+          <span class="card-img txt-clr-ylw">{{beers1621[4].name}}</span>
+        </span>
+      </p>
+    </div>
+  </div>
+  <!-- ***************************************** -->
+  <!-- END Ticker -->
+  <!-- ***************************************** -->
+
 </div>
 {% endblock %}

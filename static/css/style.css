@@ -13,24 +13,24 @@ body {
 }
 
 /* proccess_print.html */
-#screen-list-img {
+.screen-list-img-pp {
   width: 75%;
   margin: 0px 12.5% 0;
 }
-#beer-list-div {
+.beer-list-div-pp {
   width: 95%;
   margin: 0 auto;
 }
-#beer-list-loop {
+.beer-list-loop-pp {
   width: 100%;
   padding: 0;
   margin: 0;
 }
-#list-group-item-pp {
+.list-group-item-pp {
   margin: 0;
   padding: 1px 0;
 }
-.full-screen {
+.full-screen-pp {
   height: 100vh;
   width: 90vw;
   margin: 0 auto;
@@ -82,13 +82,20 @@ body {
 .no-btm-margin {
   margin-bottom: 0;
 }
-table {
+.beer-screen-table {
   table-layout: fixed;
   padding-left: 100px;
 }
+.list-group-bts {
+  list-style-image: url("/static/img/34x40_irish-flag-shamrock.png");
+  margin-left: 35px;
+}
+.beer-screen-tr {
+  display: block;
+}
 .w-half {
   width: 300px;
-  background: blue;
+  /* background: blue; */
 }
 .w-third {
   width: 400px;
@@ -100,7 +107,7 @@ table {
 }
 .w-tenth {
   width: 50px;
-  background: red;
+  /* background: red; */
 }
 /*  image behind the number on beer_tv_screen */
 .card-img::before,
@@ -109,23 +116,72 @@ table {
 .card-img-after::after {
   content: url("/static/img/34x40_irish-flag-shamrock.png");
 }
-ul {
-  list-style-image: url("/static/img/34x40_irish-flag-shamrock.png");
-  margin-left: 35px;
-}
-tr {
-  display: block;
-}
 .left-spacer {
   margin-left: 10px;
 }
+.wrapper {
+  height: 100%;
+  /* background: red; */
+  margin-bottom: -75px;
+}
+
+.bts-coming-soon {
+  background: linear-gradient(#333,#000);
+  width: 100%;
+  height: 75px;
+  margin: 0 auto;
+  font-size: 3em;
+  /* background: green; */
+}
+.ticker {
+  margin: 0;
+  height: 100%;
+  /* background: blue; */
+}
+.p-bts-coming-soon {
+  margin: 0;
+  width: 100%;
+  /* background: green; */
+}
+.move-left {
+  animation: moveleft 30000ms linear forwards infinite;
+}
+@keyframes moveleft {
+  0% {
+    transform: translateX(1775.5px);
+  }
+  100% {
+    /* transform: translateX(-2634px); */
+    transform: translateX(-1317px);
+  }
+}
 
 /* process_print link color change */
-.text-color-grn {
-  color: green;
+.txt-clr-grn {
+  color: #08891d;
+}
+.txt-clr-grn-shdw {
+  color: #08891d;
+  text-shadow: 1px 1px #F08F40,
+  -1px -1px #F08F40,
+  -1px 1px #F08F40,
+  1px -1px #F08F40,
+  2px 2px #000,
+  -2px -2px #000,
+  -2px 2px #000,
+  2px -2px #000,
+  3px 3px #000,
+  -3px -3px #000,
+  -3px 3px #000,
+  3px -3px #000;
 }
 .txt-clr-ylw {
   color: #F08F40;
+  text-shadow: -2px -2px #000,
+  2px 2px #000;
+}
+.txt-clr-wht {
+  color: #fff;
   text-shadow: -2px -2px #000,
   2px 2px #000;
 }
