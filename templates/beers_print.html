@@ -16,10 +16,10 @@
     </div>
   </div>
 
-  <div id="beer-list-div">
-    <ul id="beer-list-loop" class="list-group-flush">
+  <div class="beer-list-div-bp">
+    <ul class="beer-list-loop-bp list-group-flush">
     {% for beer in beers %}
-      <li class="list-group-item"><a href="{{beer.website}}" target="{{beer.website}}">{{beer.id}}.  {{beer.name}}</a> - {{beer.abv}}% ABV - {{beer.ibu}} IBU - {{beer.location}} - {{beer.brewery}} {{beer.description |safe}}</li>
+      <li class="list-group-item-bp list-group-item">{{beer.id}}.  <span class="larger-text txt-clr-grn">{{beer.name}}</span> - {{beer.style}} - {{beer.abv}}% ABV - {{beer.ibu}} IBU - {{beer.location}} - <span class="italic-font">{{beer.brewery}}</span></li>
     {% endfor %}
     </ul>
   </div>
@@ -49,7 +49,7 @@
     </div>
   </div>
   <div class="row justify-content-center">
-    <p id="month-p">
+    <p class="month-p-bp">
       <span class="mx-3">{{beers1721[0].name}}</span>
     </p>
   </div>
@@ -63,11 +63,11 @@
     </div>
   </div>
   <div class="row justify-content-center">
-    <p id="comingsoon-p">
+    <p id="comingsoon-p-bp">
       <span class="mx-4">{{beers1721[1].name}}</span>
       <span class="mx-4">{{beers1721[2].name}}</span>
       <span class="mx-4">{{beers1721[3].name}}</span>
-      <!-- <span class="mx-3">{{beers1721[4].name}}</span> -->
+      <span class="mx-3">{{beers1721[4].name}}</span>
     </p>
   </div>
 {% endblock %}
