@@ -144,7 +144,7 @@ body {
   /* background: green; */
 }
 .move-left {
-  animation: moveleft 30000ms linear forwards infinite;
+  animation: moveleft 45000ms linear forwards infinite;
 }
 @keyframes moveleft {
   0% {
