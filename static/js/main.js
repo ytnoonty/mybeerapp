@@ -187,7 +187,7 @@ function loadBeerlist(e) {
 
       let monthPPP = document.getElementsByClassName('month-p-pp');
       if (monthPPP[0] !== undefined) {
-        monthPPP[0].innerHTML = `<span class="mx-3 larger-text txt-clr-grn">${data1721[0].name}</span> -  - <span class="bold-font italic-font">${data1721[0].style}</span>`;
+        monthPPP[0].innerHTML = `<span class="mx-3 larger-text txt-clr-grn">${data1721[0].name}</span> - <span class="bold-font italic-font">${data1721[0].style}</span>`;
       }
 
       let comingsoonPPP = document.getElementById('comingsoon-p-pp');
