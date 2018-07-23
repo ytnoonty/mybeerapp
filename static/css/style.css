@@ -177,6 +177,7 @@ body {
 }
 .txt-clr-ylw {
   color: #F08F40;
+  /* color: black; */
   text-shadow: -2px -2px #000,
   2px 2px #000;
 }
@@ -184,4 +185,8 @@ body {
   color: #fff;
   text-shadow: -2px -2px #000,
   2px 2px #000;
+}
+#comingsoon-p-pp > span {
+  display: block;
+  margin: 10px 0px;
 }
