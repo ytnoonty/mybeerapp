@@ -70,6 +70,9 @@ body {
 .bold-font {
   font-weight: bolder;
 }
+.font-sml {
+  font-size: 1.25em;
+}
 .font-med {
   font-size: 1.5em;
 }
@@ -115,6 +118,7 @@ body {
 .card-img-before::before,
 .card-img-after::after {
   content: url("/static/img/34x40_irish-flag-shamrock.png");
+  width: 50px;
 }
 .left-spacer {
   margin-left: 10px;
@@ -132,27 +136,48 @@ body {
   margin: 0 auto;
   font-size: 3em;
   /* background: green; */
+  position: relative;
 }
 .ticker {
+  width: 100%;
   margin: 0;
   height: 100%;
   /* background: blue; */
+  position: absolute;
 }
-.p-bts-coming-soon {
-  margin: 0;
+.list-bts-coming-soon {
   width: 100%;
+  padding: 0;
   /* background: green; */
+  list-style-type: none;
+  list-style:  none;
+  display: inline;
+  white-space: nowrap;
 }
+
+.list-bts-coming-soon li{
+   margin: 10px;
+   display: inline;
+   white-space: nowrap;
+}
+
+/* ul,
+li {
+  display: inline;
+  white-space: nowrap;
+} */
+
+
+
 .move-left {
-  animation: moveleft 45000ms linear forwards infinite;
+  animation: moveleft 55000ms linear forwards infinite;
 }
 @keyframes moveleft {
   0% {
-    transform: translateX(1775.5px);
+    transform: translateX(100vw);
   }
   100% {
-    /* transform: translateX(-2634px); */
-    transform: translateX(-1317px);
+    transform: translateX(-6000px);
   }
 }
 

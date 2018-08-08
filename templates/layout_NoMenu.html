@@ -7,7 +7,7 @@
   <title>Beer List App</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,400i,600,600i,800,800i" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,400i,600,600i,800,800i" rel="stylesheet">
 </head>
 <body>
   <!-- {% include 'includes/_navbar.html' %} -->
@@ -25,6 +25,7 @@
   <script type="text/javascript">
     CKEDITOR.replace('editor')
   </script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/animations.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

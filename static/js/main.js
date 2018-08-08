@@ -17,14 +17,186 @@ if (updateProcessPrint != null) {
 }
 
 // // loadTicker();
+// moveTheStuff();
+
 loadBeerlist();
 // // screenRefresh();
 
+function findPseudoElementWidth(el, position, property) {
+  let totalInfoWidth = 0;
+  position = ":" + position;
+  var infoWidth = window.getComputedStyle(
+    el, position
+  ).getPropertyValue(property);
+
+  infoWidth = parseInt(infoWidth.slice(0,2));
+  if (isNaN(infoWidth)) {
+    infoWidth = 0;
+  } else {
+  }
+
+  totalInfoWidth = infoWidth;
+  // console.log("position: " + position + " " + totalInfoWidth);
+  return totalInfoWidth;
+}
+
+function findElementWidth(el) {
+  // console.log("FINDING THE ELEMENT WIDTH");
+  // console.log(el);
+  let liInnerWidth = el.offsetWidth;
+  let widthStyle = getComputedStyle(el);
+  let marginLeftWidth = parseInt(widthStyle.marginLeft);
+  let marginRightWidth = parseInt(widthStyle.marginRight);
+  liTotalWidth = 0;
+  liTotalWidth += liInnerWidth;
+  liTotalWidth += marginLeftWidth;
+  liTotalWidth += marginRightWidth;
+  // console.log("liInnerTotalWidth = " + liTotalWidth);
+  // console.log(" ");
+  return liTotalWidth;
+}
 
 
-//////////////////////////////////////////////////////
-// START loadTicker()
-/////////////////////////////////////////////////////
+// function findPseudoElementWidth(el) {
+//   let infoWidthBefore = window.getComputedStyle(
+//     el, ":before"
+//   ).getPropertyValue("width");
+//   let infoWidthAfter = window.getComputedStyle(
+//     el, ":after"
+//   ).getPropertyValue("width");
+//   infoWidthBefore = parseInt(infoWidthBefore.slice(0,2));
+//   infoWidthAfter = parseInt(infoWidthAfter.slice(0,2));
+//   if (isNaN(infoWidthBefore)) {
+//     infoWidthBefore = 0;
+//   } else {
+//   }
+//   if (isNaN(infoWidthAfter)) {
+//     infoWidthAfter = 0;
+//   } else {
+//   }
+//   totalInfoWidth = infoWidthBefore + infoWidthAfter;
+//   console.log(totalInfoWidth);
+// }
+
+
+
+function moveTheStuff() {
+  let divTicker = document.querySelector(".ticker");
+  let liTicker = document.querySelectorAll(".info");
+  let ulTicker = document.querySelector(".list-bts-coming-soon");
+  let liTotalWidth = 0;
+  let tickerWidth = 0;
+
+  // let divTickerInnerWidth = divTicker.offsetWidth;
+  // let divTickerStyle = getComputedStyle(divTicker);
+  // let divTickerMarginLeftWidth = parseInt(divTickerStyle.marginLeft);
+  // let divTickerMarginRightWidth = parseInt(divTickerStyle.marginRight);
+  let totalDivTicker = 0;
+
+
+  let totalLiWidth = 0;
+  liTicker.forEach(function(tick){
+    let liInnerWidth = tick.offsetWidth;
+    let widthStyle = getComputedStyle(tick);
+    let marginLeftWidth = parseInt(widthStyle.marginLeft);
+    let marginRightWidth = parseInt(widthStyle.marginRight);
+
+    let beforePseudoWidth = findPseudoElementWidth(tick, "before", "width");
+    let afterPseudoWidth = findPseudoElementWidth(tick, "after", "width");
+    let elWidth = findElementWidth(tick);
+    let widthMovement = "";
+
+    // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    console.log("Total element width: " + (beforePseudoWidth + afterPseudoWidth + elWidth));
+    totalLiWidth += beforePseudoWidth + afterPseudoWidth + elWidth;
+    console.log("totalLiWidth: " + totalLiWidth);
+    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+
+
+    liTotalWidth = 0;
+    // liTotalWidth += totalInfoWidth;
+    liTotalWidth += liInnerWidth;
+    liTotalWidth += marginLeftWidth;
+    liTotalWidth += marginRightWidth;
+    console.log("liTotalWidth = " + liTotalWidth);
+
+    tickerWidth += liTotalWidth;
+    console.log("tickerWidth = " + tickerWidth);
+    console.log(" ");
+  });
+  widthMovement = "translateX(-" + totalLiWidth + "px)";
+  console.log("widthMovement = " + widthMovement);
+  let tickerDuration = totalLiWidth * 40;
+  console.log("tickerDuration = " + tickerDuration);
+
+  divTicker.animate([
+    { transform: 'translateX(100vw)'},
+    // { transform: widthMovement}
+    { transform: 'translateX(-100000px)'}
+  ], {
+    duration: tickerDuration,
+    iterations: Infinity
+  });
+
+}
+
+// function moveNode() {
+//   let newli = liTicker[0].cloneNode(true);
+//   liTicker[0].parentNode.removeChild(liTicker[0]);
+//   let ul = document.querySelector(".list-bts-coming-soon");
+//   ul.appendChild(newli);
+//   // ul.lastElementChild.removeAttribute("style");
+//   ul.lastElementChild.style.marginLeft = "0px";
+// }
+//
+// moveTicker();
+// function moveTicker() {
+//   let pos = 0;
+//   let id = setInterval(frame, 10);
+//
+//   tickerWidth = 0;
+//
+//   function frame() {
+//     // if (pos < -(liTicker[0].offsetWidth)) {
+//     if (pos < -(liTotalWidth)) {
+//       pos = 0;
+//
+//       moveNode();
+//
+//       liTicker = document.querySelectorAll(".info");
+//
+//       let liInnerWidth = liTicker[0].offsetWidth;
+//       let widthStyle = getComputedStyle(liTicker[0]);
+//       let marginLeftWidth = parseInt(widthStyle.marginLeft);
+//       let marginRightWidth = parseInt(widthStyle.marginRight);
+//
+//       console.log("liInnerWidth = " + liInnerWidth);
+//       console.log("marginLeftWidth = " + marginLeftWidth);
+//       console.log("marginRightWidth = " + marginRightWidth);
+//       liTotalWidth = 0;
+//       liTotalWidth += liInnerWidth;
+//       liTotalWidth += marginLeftWidth;
+//       liTotalWidth += marginRightWidth;
+//       console.log("pos = " + pos);
+//       console.log("liTotalWidth = " + liTotalWidth);
+//       console.log(" ");
+//
+//       // clearInterval(id);
+//       // pos = 0;
+//     } else {
+//       pos--;
+//       // console.log("pos = " + pos);
+//       // divTicker.style.top = '0' + 'px';
+//       // divTicker.style.left = pos + 'px';
+//       liTicker[0].style.marginLeft = pos + 'px';
+//     }
+//   }
+// }
+
+// ////////////////////////////////////////////////////
+// // START loadTicker()
+// ///////////////////////////////////////////////////
 // function loadTicker(e) {
 //   // console.log('testing function works');
 //   const xhr = new XMLHttpRequest();
@@ -68,16 +240,16 @@ loadBeerlist();
 //   setTimeout(loadTicker,250);
 //   e.preventDefault();
 // }
-//////////////////////////////////////////////////////
-// END loadTicker()
-/////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////
+// // END loadTicker()
+// ///////////////////////////////////////////////////
 
 
 //////////////////////////////////////////////////////
 // START screenRefresh()
 /////////////////////////////////////////////////////
 
-function screenRefresh(){
+function screenRefresh(e){
   let currentTime = new Date();
   let hour = currentTime.getHours();
   let min = currentTime.getMinutes();
@@ -105,7 +277,7 @@ function screenRefresh(){
 //////////////////////////////////////////////////////
 // START loadBeerlist()
 /////////////////////////////////////////////////////
-function loadBeerlist(e) {
+function loadBeerlist() {
   console.log('testing function works');
 
   const xhr = new XMLHttpRequest();
@@ -168,6 +340,7 @@ function loadBeerlist(e) {
 // END BEERS_PRINT.HTML UPDATE
 // /////////////////////////////////////////////
 
+
 /////////////////////////////////////////////////////////////
 // START PROCCESS_PRINT.HTML UPDATE
 /////////////////////////////////////////////////////////////
@@ -207,182 +380,8 @@ function loadBeerlist(e) {
 ////////////////////////////////////////////////
 
 
-// /////////////////////////////////////////////
-// // first example table element beers.html
-// /////////////////////////////////////////////
-// let htmlTable = '';
-// htmlTable = `<tr>
-// <th></th>
-// <th>Beer</th>
-// <th>Style</th>
-// <th>ABV</th>
-// <th>IBU</th>
-// <th>Brewery</th>
-// <th>Location</th>
-// <th>Description</th>
-// </tr>`;
-//
-// data0116.forEach(function(beer){
-//   htmlTable += `<tr>
-//     <td>${beer.id}.</td>
-//     <td>${beer.name}</td>
-//     <td>${beer.style}</td>
-//     <td>${beer.abv}%</td>
-//     <td>${beer.ibu}</td>
-//     <td>${beer.brewery}</td>
-//     <td>${beer.location}</td>
-//     <td>${beer.description}</td>
-//   </tr>
-//   `;
-// });
-// htmlTable += `</table>`;
-// let table = document.getElementById('beers-table');
-// if (table !== null) {
-//   table.innerHTML = htmlTable;
-// }
-// /////////////////////////////////////////////
-// // END first example table element beers.html
-// /////////////////////////////////////////////
 
 // /////////////////////////////////////////////
-// // second example left column
-// /////////////////////////////////////////////
-// let example2 = document.getElementById('example2');
-// let example2HTML = '';
-//
-// example2HTML = `<div class="row">
-//   <div class="col-lg">
-//     <div class="list-group">`;
-// data0108.forEach(function(beer){
-//   example2HTML += `<a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
-//           <div class="d-flex w-100 justify-content-between">
-//             <h5 class="mb-1">${beer.id}. ${beer.name}</h5>`;
-//             // <small>${beer.abv}% ABV ${beer.ibu} IBU</small>
-//   example2HTML += `<small>${beer.abv}% ABV</small>
-//           </div>
-//           <p class="mb-1">${beer.brewery}</p>`;
-//           // <p class="mb-1">${beer.brewery} ${beer.location}</p>
-//           // <small>${beer.description}</small>
-//   example2HTML += `</a>`;
-// });
-// example2HTML += `</div>
-//   </div>`;
-//
-// // second example right column
-// example2HTML += `<div class="col-lg">
-//     <div class="list-group">`;
-// data0816.forEach(function(beer){
-//   example2HTML += `<a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
-//           <div class="d-flex w-100 justify-content-between">
-//           <h5 class="mb-1">${beer.id}. ${beer.name}</h5>`;
-//           // <small>${beer.abv}% ABV ${beer.ibu} IBU</small>
-//   example2HTML += `<small>${beer.abv}% ABV</small>
-//         </div>
-//           <p class="mb-1">${beer.brewery}</p>`;
-//           // <p class="mb-1">${beer.brewery} ${beer.location}</p>
-//           // <small>${beer.description}</small>
-//   example2HTML += `</a>`;
-// });
-// example2HTML += `</div>
-//   </div>`;
-// if (example2 !== null) {
-//   example2.innerHTML = example2HTML;
-// }
-// /////////////////////////////////////////////
-// // END SECOND EXAMPLE
-// /////////////////////////////////////////////
-
-
-// ////////////////////////////////////////////////////////
-// // THIRD EXAMPLE
-// /////////////////////////////////////////////
-// let example3 = document.getElementById('example3');
-// let example3HTML = '';
-//
-// example3HTML = `
-// <div class="row">
-//   <div class="col-lg">
-//     <div class="list-group">
-//       <ul class="list-group-flush container-fluid">`;
-//         data0108.forEach(function(beer){
-//           example3HTML += `
-//           <li class="list-group-item row"><h4 class="col-sm">${beer.id}.  ${beer.name}<span class="ml-5"><small>${beer.abv}% ABV</small></span></h4><div class="mx-auto"><span class="col-sm">${beer.brewery}</span><span class="col-sm">${beer.brewery}</span><span class="col-sm">${beer.brewery}</span></div></li>`
-//           // <li class="list-group-item"><h4>${beer.id}.  ${beer.name}</h4><br>${beer.abv}% ABV ${beer.ibu} IBU <br>${beer.brewery} ${beer.location} ${beer.description}</li>
-//         });
-// example3HTML += `
-//       </ul>
-//     </div>
-//   </div>
-//   <div class="col-lg">
-//     <div class="list-group">
-//       <ul class="list-group-flush">`;
-//       data0816.forEach(function(beer){
-//         example3HTML += `
-//           <li class="list-group-item"><h4>${beer.id}.  ${beer.name}</h4>${beer.brewery}<br>${beer.abv}% ABV</li>`
-//           // <li class="list-group-item"><h4>${beer.id}.  ${beer.name}</h4><br>${beer.abv}% ABV ${beer.ibu} IBU <br>${beer.brewery} ${beer.location} ${beer.description}</li>
-//         });
-// example3HTML += `
-//       </ul>
-//     </div>
-//   </div>
-// </div>`;
-// if (example3 !== null) {
-//   example3.innerHTML = example3HTML;
-// }
-//
-//
-// example3HTML = `
-// <div class="row">
-//   <div class="col-lg">
-//     <div class="list-group">
-//       <ul class="list-group-flush">`;
-//         data0108.forEach(function(beer){
-//           example3HTML += `
-//           <li class="list-group-item"><h4>${beer.id}.  ${beer.name}<span class="ml-5"><small>${beer.abv}% ABV</small></span></h4>${beer.brewery}</li>`
-//           // <li class="list-group-item"><h4>${beer.id}.  ${beer.name}</h4><br>${beer.abv}% ABV ${beer.ibu} IBU <br>${beer.brewery} ${beer.location} ${beer.description}</li>
-//         });
-// example3HTML += `
-//       </ul>
-//     </div>
-//   </div>
-//   <div class="col-lg">
-//     <div class="list-group">
-//       <ul class="list-group-flush">`;
-//       data0816.forEach(function(beer){
-//         example3HTML += `
-//           <li class="list-group-item"><h4>${beer.id}.  ${beer.name}</h4>${beer.brewery}<br>${beer.abv}% ABV</li>`
-//           // <li class="list-group-item"><h4>${beer.id}.  ${beer.name}</h4><br>${beer.abv}% ABV ${beer.ibu} IBU <br>${beer.brewery} ${beer.location} ${beer.description}</li>
-//         });
-// example3HTML += `
-//       </ul>
-//     </div>
-//   </div>
-// </div>`;
-// if (example3 !== null) {
-//   example3.innerHTML = example3HTML;
-// }
-
-// ///////////////////////////////////////////////////////
-// // END EXAMPLE3
-// ///////////////////////////////////////////////////////
-
-//
-// // FOURTH EXAMPLE
-// let example4 = document.getElementById('example4');
-// let example4HTML = '';
-//
-// example4HTML = `<ul class="list-group-flush">`;
-//         data0116.forEach(function(beer){
-//           example4HTML += `<li class="list-group-item"><a href="${beer.website}" target="_blank">${beer.id}.  ${beer.name}</a> ${beer.abv}% ABV ${beer.ibu} IBU ${beer.location} ${beer.description}</li>`
-//         });
-// example4HTML += `</ul>`;
-// if (example4 !== null) {
-//   example4.innerHTML = example4HTML;
-// }
-//
-// ///////////////////////////////////////////////////////
-// // END EXAMPLE4
-// ///////////////////////////////////////////////////////
 
 
 /////////////////////////////////////
@@ -405,7 +404,7 @@ example6HTML = `
               <tr>
                 <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
               </tr>
-              <tr class="font-med left-spacer beer-screen-tr">
+              <tr class="left-spacer beer-screen-tr">
                 <td class="bold-font w-third">${beer.style}</td>
                 <td class="w-forth">ABV ${beer.abv}%</td>
                 <td class="italic-font bold-font w-third">${beer.brewery}</td>
@@ -427,7 +426,7 @@ example6HTML += `
               <tr>
                 <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
               </tr>
-              <tr class="font-med left-spacer beer-screen-tr">
+              <tr class="left-spacer beer-screen-tr">
                 <td class="bold-font w-third">${beer.style}</td>
                 <td class="w-forth">ABV ${beer.abv}%</td>
                 <td class="italic-font bold-font w-third">${beer.brewery}</td>
@@ -457,26 +456,36 @@ let beer1 = document.querySelector(".info1");
 tickerhtml = `${data1721[0].name}`;
 if (beer1 != null) {
   beer1.innerHTML = tickerhtml;
+  let width = beer1.offsetWidth;
+  console.log("info1 width: " + width);
 }
 let beer2 = document.querySelector(".info2");
 tickerhtml = `${data1721[1].name}`;
 if (beer2 != null) {
   beer2.innerHTML = tickerhtml;
+  let width = beer2.offsetWidth;
+  console.log("info2 width: " + width);
 }
 let beer3 = document.querySelector(".info3");
 tickerhtml = `${data1721[2].name}`;
 if (beer3 != null) {
   beer3.innerHTML = tickerhtml;
+  let width = beer3.offsetWidth;
+  console.log("info3 width: " + width);
 }
 let beer4 = document.querySelector(".info4");
 tickerhtml = `${data1721[3].name}`;
 if (beer4 != null) {
   beer4.innerHTML = tickerhtml;
+  let width = beer4.offsetWidth;
+  console.log("info4 width: " + width);
 }
 let beer5 = document.querySelector(".info5");
 tickerhtml = `${data1721[4].name}`;
 if (beer5 != null) {
   beer5.innerHTML = tickerhtml;
+  let width = beer5.offsetWidth;
+  console.log("info5 width: " + width);
 }
 
 // let tickerhtml = '';
@@ -506,6 +515,7 @@ if (beer5 != null) {
   }
 
   xhr.send();
+  // moveTheStuff();
   console.log('BEFORE REFRESH');
   // setTimeout(screenRefresh(),5000);
   screenRefresh();
@@ -518,6 +528,7 @@ if (beer5 != null) {
   setTimeout(loadBeerlist,10000);
 
   e.preventDefault();
+  // return true;
 
 }
 
