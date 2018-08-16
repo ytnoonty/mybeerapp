@@ -48,16 +48,16 @@ updateScreens();
 function updateScreens() {
   movement = getMovement(infoTicker);
   duration = getDuration(infoTicker);
-  console.log("oldMovement: " + oldMovement);
-  console.log("oldMovement: " + oldMovement + "   movement: " + movement)
+  // console.log("oldMovement: " + oldMovement);
+  // console.log("oldMovement: " + oldMovement + "   movement: " + movement)
   if (oldMovement != movement) {
     oldMovement = movement;
-    console.log("oldMovement in the IF: " + oldMovement);
+    // console.log("oldMovement in the IF: " + oldMovement);
     if (divTicker != null) {
       animateTicker(divTicker, movement, duration);
     }
   }
-  console.log("*************UPDATING SCREENS*************");
+  // console.log("*************UPDATING SCREENS*************");
   loadBeerlist();
   updateProccess_print();
   updateExample6();
@@ -80,7 +80,7 @@ function screenRefresh() {
     refreshed = true;
     // console.log("hour: " + hour + "  min: " + min + "  sec: " + sec + "     refreshed: " + refreshed);
   }
-  if ((hour == 2 || hour == 14) && min == 1 && (sec >= 0 && sec < 12) && refreshed == true) {
+  if ((hour == 2 || hour == 11 || hour == 14 || hour == 23) && min == 1 && (sec >= 0 && sec < 12) && refreshed == true) {
     refreshCount++;
     refreshed = !refreshed;
     window.location.reload();
@@ -96,7 +96,7 @@ function screenRefresh() {
 // START loadBeerlist()
 //////////////////////////////////////////////////////
 function loadBeerlist(e) {
-  console.log('*************TESTING loadBeerlist*************');
+  // console.log('*************TESTING loadBeerlist*************');
   const xhr = new XMLHttpRequest();
   // console.log('READYSTATE1', xhr.readyState);
   // Open
@@ -158,7 +158,7 @@ function loadBeerlist(e) {
 // START updateProccess_print(e) UPDATE
 //////////////////////////////////////////////////////
 function updateProccess_print(e) {
-  console.log('*************TESTING updateProccess_print*************');
+  // console.log('*************TESTING updateProccess_print*************');
   const xhr = new XMLHttpRequest();
   // console.log('READYSTATE1', xhr.readyState);
   // Open
