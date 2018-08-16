@@ -57,6 +57,7 @@ body {
 }
 .cardvs  {
   background: linear-gradient(#333,#000);
+  height: 10vh;
 }
 .italic-font {
   font-style: italic;
@@ -69,6 +70,9 @@ body {
 }
 .bold-font {
   font-weight: bolder;
+}
+.font-test {
+  font-size: 5em;
 }
 .font-sml {
   font-size: 1.25em;
@@ -108,6 +112,10 @@ body {
   width: 200px;
   /* background: #555; */
 }
+.w-fifth {
+  width: 125px;
+  /* background: #ccc; */
+}
 .w-tenth {
   width: 50px;
   /* background: red; */
@@ -126,13 +134,15 @@ body {
 .wrapper {
   height: 100%;
   /* background: red; */
-  margin-bottom: -75px;
+  /* margin-bottom: -75px; */
+  margin-bottom: -8vh;
 }
 
 .bts-coming-soon {
   background: linear-gradient(#333,#000);
   width: 100%;
-  height: 75px;
+  /* height: 75px; */
+  height: 8vh;
   margin: 0 auto;
   font-size: 3em;
   /* background: green; */
@@ -169,7 +179,7 @@ li {
 
 
 
-.move-left {
+/* .move-left {
   animation: moveleft 55000ms linear forwards infinite;
 }
 @keyframes moveleft {
@@ -179,7 +189,7 @@ li {
   100% {
     transform: translateX(-6000px);
   }
-}
+} */
 
 /* process_print link color change */
 .txt-clr-grn {
@@ -187,6 +197,7 @@ li {
 }
 .txt-clr-grn-shdw {
   color: #08891d;
+  /* color: purple; */
   text-shadow: 1px 1px #F08F40,
   -1px -1px #F08F40,
   -1px 1px #F08F40,

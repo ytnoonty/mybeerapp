@@ -81,6 +81,8 @@ try:
 	cursor.execute(sql)
         sql = """INSERT INTO myflaskapp.list_current (id_history) VALUES ("21")"""
 	cursor.execute(sql)
+	sql = """INSERT INTO myflaskapp.list_current (id_history) VALUES ("21")"""
+	cursor.execute(sql)
 
         connection.commit()
 
