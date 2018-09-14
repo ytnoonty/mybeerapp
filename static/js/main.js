@@ -224,6 +224,68 @@ function updateProccess_print(e) {
 // END updateProccess_print(e) UPDATE
 //////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////
+// START EASY AJAX.JS updateExample6()
+//////////////////////////////////////////////////////
+function updateAllBeersEasyHttp() {
+  const http = new easyHTTP;
+  // Create POST
+  http.postRecieve('/updateBeers', function(err, post) {
+    // console.log('************NEW POST BEGIN postRecieve***************');
+    if (err) {
+      console.log(err);
+    } else {
+      updateAllBeers(post);
+    }
+  }); // END function http.postRecieve()
+} // END FUNCTION updateExample6()
+//////////////////////////////////////////////////////
+// END EASY AJAX.JS updateExample6()
+//////////////////////////////////////////////////////
+
+///////////////////////////////////////////////
+// START  updateAllBeers()
+///////////////////////////////////////////////
+function updateAllBeers(data) {
+  // console.log("WHAT IS IN THE POST VAR: " + data);
+  // console.log('**********NEW POST END OF NEW POST REQUEST**********');
+  // console.log("NEW POST this.responseText: " + data);
+    data = JSON.parse(data);
+  // console.log('data: ' + data);
+  // console.log('******************NEW POST  END OF PARSING JSON DATA *****************');
+  // console.log('******************NEW POST  END OF DATA0116 *****************');
+  // console.log('******************NEW POST  END postRecieve *****************');
+  let bottleBeersEl = document.getElementById('bottle-beers-list');
+  let bottleBeersHTML = '';
+  data.forEach(function(beer){
+    // console.log("beer.name: " + beer.name);
+    // console.log("beer.Selection: " + beer.draft_bottle_selection);
+    // console.log("");
+    if (beer.draft_bottle_selection == 'Bottle' || beer.draft_bottle_selection == 'Both') {
+      bottleBeersHTML += `
+        <li class="list-group-item-bb list-group-item"><span class="larger-text txt-clr-grn">${beer.name}</span> - <span class="bold-font italic-font">${beer.style}</span> - ${beer.abv}% ABV - ${beer.ibu} IBU - ${beer.location} - <span class="italic-font">${beer.brewery}</span></li>
+      `
+    }
+  });
+
+  if (bottleBeersEl !== null) {
+    // console.log(bottleBeersHTML);
+    //USED FOR TESTING THE ajax update
+    //uncomment next line below and reload browser or reboot pi
+    // bottleBeersHTML += `<div></div>`;
+    bottleBeersEl.innerHTML = bottleBeersHTML;
+  }
+  // console.log(bottleBeersHTML);
+  ///////////////////////////////////////////////
+  // END updateAllBeers()
+  ///////////////////////////////////////////////
+}
+//////////////////////////////////////////////////////
+// END AJAX UPDATE FOR DRAFTBOTTLE MENU
+//////////////////////////////////////////////////////
+
+
+
 
 //////////////////////////////////////////////////////
 // START EASY AJAX.JS updateExample6()
@@ -523,9 +585,9 @@ function exampleSix(data) {
 //   xhr.send();
 //   e.preventDefault();
 // }
-// //////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////
 // // END
-// //////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////
 //
 
 
@@ -533,7 +595,7 @@ function exampleSix(data) {
 // START loadTicker()
 //////////////////////////////////////////////////////
 function loadTicker() {
-  // console.log('*************TESTING loadTicker*************');
+// console.log('*************TESTING loadTicker*************');
   const xhr = new XMLHttpRequest();
 
   xhr.open('POST', '/update', true);

@@ -6,6 +6,7 @@ from flask import Flask, render_template, flash, redirect, url_for, session, req
 # from data import Beers
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, RadioField validators
+from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, RadioField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
 
@@ -66,6 +67,41 @@ def updateBeers():
     return jsonify(beers)
 #end testing AJAX
 ##########################
+
+
+##############################################
+# BEGIN ALL MENU
+##############################################
+@app.route('/draft_beers', methods=['GET', 'POST'])
+def draft_beers():
+    beers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
+    beers_01_16 = beers[0:16]
+    beers_17_22 = beers[16:22]
+
+    if beers > 0:
+        jsonify(beers);
+        return render_template('draft_beers.html', beers=beers, beers0116=beers_01_16, beers1722=beers_17_22)
+        # return render_template('beers_print.html', beers=beers)
+    else:
+        msg = 'No Beers Found'
+    return render_template('draft_beers.html', msg=msg, beers=beers)
+
+
+@app.route('/bottle_beers', methods=['GET', 'POST'])
+def bottle_beers():
+
+    beers = mysqlQuery("SELECT * FROM list_history ORDER BY name ASC", "all")
+    app.logger.info(beers)
+    if beers > 0:
+        jsonify(beers);
+        return render_template('bottle_beers.html', beers=beers)
+    else:
+        msg = 'No Beers Found'
+    return render_template('bottle_beers.html', msg=msg, beers=beers)
+##############################################
+# END ALL MENU
+##############################################
+
 
 ##############################################
 # BEGIN ALL MENU
@@ -322,6 +358,9 @@ def dashboard():
     # Close connection
     cur.close()
 
+    # Close connection
+    cur.close()
+
     if result > 0:
         return render_template('dashboard.html', beers=beers)
     else:
@@ -339,7 +378,7 @@ class BeerForm(Form):
     location = StringField('Location', [validators.Length(min=0, max=255)])
     website = StringField('Website', [validators.Length(min=0, max=255)])
     description = TextAreaField('Description', [validators.Length(min=0)])
-    #########################radio button to choose draft or bottle or both
+#########################radio button to choose draft or bottle or both
     draftBottle = RadioField(u'Beer Choice', choices=[('Draft','Draft'), ('Bottle','Bottle'), ('Both','Both')])
 
 # Add Beer
@@ -365,6 +404,8 @@ def add_beer():
         app.logger.info(draftBottle)
         app.logger.info('name')
 
+        app.logger.info(name)
+        app.logger.info(draftBottle)
         # Create Cursor
         cur = mysql.connection.cursor()
 
@@ -410,8 +451,6 @@ def edit_beer(id):
     form.description.data = beer['description']
     form.draftBottle.data = beer['draft_bottle_selection']
 
-
-
     if request.method == 'POST' and form.validate():
         name = request.form['name']
         style = request.form['style']
@@ -423,14 +462,11 @@ def edit_beer(id):
         description = request.form['description']
         draftBottle = request.form['draftBottle']
         draftBottle = request.form['draftBottle']
-
-
         # Create Cursor
         cur = mysql.connection.cursor()
 
         # Execute
         cur.execute("UPDATE list_history SET name=%s, style=%s, abv=%s, ibu=%s, brewery=%s, location=%s, website=%s, description=%s, draft_bottle_selection=%s WHERE id=%s", (name, style, abv, ibu, brewery, location, website, description, draftBottle, id))
-        
         # Commit
         mysql.connection.commit()
 
