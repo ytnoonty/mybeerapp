@@ -17,20 +17,24 @@ body {
   width: 75%;
   margin: 0px 12.5% 0;
 }
-.beer-list-div-pp {
+.beer-list-div-pp,
+.beer-list-div-bb {
   width: 95%;
   margin: 0 auto;
 }
-.beer-list-loop-pp {
+.beer-list-loop-pp,
+.beer-list-loop-bb {
   width: 100%;
   padding: 0;
   margin: 0;
 }
-.list-group-item-pp {
+.list-group-item-pp,
+.list-group-item-bb {
   margin: 0;
   padding: 1px 0;
 }
-.full-screen-pp {
+.full-screen-pp,
+.full-screen-bb {
   height: 100vh;
   width: 90vw;
   margin: 0 auto;
@@ -225,4 +229,8 @@ li {
 #comingsoon-p-pp > span {
   display: block;
   margin: 10px 0px;
+}
+#subnavbar li {
+  display: inline;
+  text-align: center;
 }
