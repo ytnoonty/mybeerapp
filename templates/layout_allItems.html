@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Beer List App</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,400i,600,600i,800,800i" rel="stylesheet">
+</head>
+<body>
+  <div class="row justify-content-center">
+    <div class="row">
+      <div id="update-print-page" class="col-12">
+        <img class="screen-list-img-pp" src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="image should be here">
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="bold-font">What's On Tap</h2>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="row">
+      <div class="col-12">
+        {% include 'includes/_subnavbar.html' %}
+      </div>
+    </div>
+  </div>
+  <div class="container mx-auto">
+    <div id="flash-msg-div">
+      {% include 'includes/_messages.html' %}
+    </div>
+    {% block body %}
+    {% endblock %}
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <!-- <script src="//cdn.ckeditor.com/4.9.1/basic/ckeditor.js"></script> -->
+  <!-- <script type="text/javascript">
+    CKEDITOR.replace('editor')
+  </script> -->
+  <script type="text/javascript" src="{{ url_for('static', filename='js/ajax.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/animations.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
