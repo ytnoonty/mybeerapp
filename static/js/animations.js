@@ -191,7 +191,7 @@ function getDuration(liTicker) {
 
   widthMovement = "translateX(-" + totalLiWidth + "px)";
   // console.log("widthMovement = " + widthMovement);
-  let tickerDuration = totalLiWidth * 12;
+  let tickerDuration = totalLiWidth * 10;
   // console.log("tickerDuration = " + tickerDuration);
   return tickerDuration;
 }

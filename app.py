@@ -5,7 +5,7 @@ from flask import Flask, render_template, flash, redirect, url_for, session, req
 # from datahistory import BeersHistory
 # from data import Beers
 from flask_mysqldb import MySQL
-from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, validators
+from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, RadioField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
 
@@ -33,6 +33,10 @@ def mysqlQuery(query, fetch):
     cur.close()
     return result
 
+@app.route('/testing')
+def testing():
+    return render_template('testing.html')
+
 @app.route('/')
 def index():
     return render_template('home.html')
@@ -56,13 +60,51 @@ def proccess_print():
 @app.route('/update', methods=['POST'])
 def update():
     beers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
-    beers_01_16 = beers[0:5]
+    beers_01_16 = beers[0:16]
     beers_17_22 = beers[16:22]
-
     return jsonify(beers);
 
+@app.route('/updateBeers', methods=['POST'])
+def updateBeers():
+    beers = mysqlQuery("SELECT * FROM list_history ORDER BY name ASC", "all")
+    return jsonify(beers)
+
+@app.route('/updateTappingNext', methods=['POST'])
+def updateTappingNext():
+    nextBeers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_on_next", "all")
+    return jsonify(nextBeers)
 #end testing AJAX
 ##########################
+
+
+##############################################
+# BEGIN ALL MENU
+##############################################
+@app.route('/draft_beers', methods=['GET', 'POST'])
+def draft_beers():
+    beers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
+    beers_01_16 = beers[0:16]
+    beers_17_22 = beers[16:22]
+    if beers > 0:
+        jsonify(beers);
+        return render_template('draft_beers.html', beers=beers, beers0116=beers_01_16, beers1722=beers_17_22)
+        # return render_template('beers_print.html', beers=beers)
+    else:
+        msg = 'No Beers Found'
+    return render_template('draft_beers.html', msg=msg, beers=beers)
+@app.route('/bottle_beers', methods=['GET', 'POST'])
+def bottle_beers():
+    beers = mysqlQuery("SELECT * FROM list_history ORDER BY name ASC", "all")
+    app.logger.info(beers)
+    if beers > 0:
+        jsonify(beers);
+        return render_template('bottle_beers.html', beers=beers)
+    else:
+        msg = 'No Beers Found'
+    return render_template('bottle_beers.html', msg=msg, beers=beers)
+##############################################
+# END ALL MENU
+##############################################
 
 ##############################################
 # Begin Testing of TV screen layout
@@ -282,19 +324,21 @@ def logout():
 def dashboard():
     # Create cursor
     cur = mysql.connection.cursor()
-
     # Get articles
     result = cur.execute("SELECT * FROM list_history ORDER BY name ASC")
-
     beers = cur.fetchall()
+    # Close connection
+    cur.close()
+
+    # Close connection
+    cur.close()
 
     if result > 0:
         return render_template('dashboard.html', beers=beers)
     else:
         msg = 'No Beers Found'
     return render_template('dashboard.html', msg=msg)
-    # Close connection
-    cur.close()
+
 
 # Beer Form Class
 class BeerForm(Form):
@@ -306,12 +350,17 @@ class BeerForm(Form):
     location = StringField('Location', [validators.Length(min=0, max=255)])
     website = StringField('Website', [validators.Length(min=0, max=255)])
     description = TextAreaField('Description', [validators.Length(min=0)])
+#########################radio button to choose draft or bottle or both
+    draftBottle = RadioField(u'Beer Choice', choices=[('Draft','Draft'), ('Bottle','Bottle'), ('Both','Both')])
 
 # Add Beer
 @app.route('/add_beer', methods=['GET', 'POST'])
 @is_logged_in
 def add_beer():
     form = BeerForm(request.form)
+
+    form.draftBottle.data = "Draft"
+
     if request.method == 'POST' and form.validate():
         name = form.name.data
         style = form.style.data
@@ -321,12 +370,19 @@ def add_beer():
         location = form.location.data
         website = form.website.data
         description = form.description.data
+#########################radio button to choose draft or bottle or both
+        # draftBottle = form.draftBottle.data
+        draftBottle = request.form['draftBottle']
+        app.logger.info(draftBottle)
         app.logger.info('name')
+
+        app.logger.info(name)
+        app.logger.info(draftBottle)
         # Create Cursor
         cur = mysql.connection.cursor()
 
         # Execute
-        cur.execute("INSERT INTO list_history(name, style, abv, ibu, brewery, location, website, description) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", (name, style, abv, ibu, brewery, location, website, description))
+        cur.execute("INSERT INTO list_history(name, style, abv, ibu, brewery, location, website, description, draft_bottle_selection) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)", (name, style, abv, ibu, brewery, location, website, description, draftBottle))
 
         # Commit
         mysql.connection.commit()
@@ -365,7 +421,7 @@ def edit_beer(id):
     form.location.data = beer['location']
     form.website.data = beer['website']
     form.description.data = beer['description']
-
+    form.draftBottle.data = beer['draft_bottle_selection']
 
     if request.method == 'POST' and form.validate():
         name = request.form['name']
@@ -376,13 +432,13 @@ def edit_beer(id):
         location = request.form['location']
         website = request.form['website']
         description = request.form['description']
-
+        draftBottle = request.form['draftBottle']
+        draftBottle = request.form['draftBottle']
         # Create Cursor
         cur = mysql.connection.cursor()
 
         # Execute
-        cur.execute("UPDATE list_history SET name=%s, style=%s, abv=%s, ibu=%s, brewery=%s, location=%s, website=%s, description=%s WHERE id=%s", (name, style, abv, ibu, brewery, location, website, description, id))
-
+        cur.execute("UPDATE list_history SET name=%s, style=%s, abv=%s, ibu=%s, brewery=%s, location=%s, website=%s, description=%s, draft_bottle_selection=%s WHERE id=%s", (name, style, abv, ibu, brewery, location, website, description, draftBottle, id))
         # Commit
         mysql.connection.commit()
 
@@ -441,11 +497,39 @@ class CurrentBeerListForm(Form):
     #tickerHeadline
     beer22 = SelectField(u'Ticker Headline', coerce=int, option_widget=None)
 
+# Class for the beer list
+class NextBeerListForm(Form):
+    beer1 = SelectField(u'Beer 1', coerce=int, option_widget=None)
+    beer2 = SelectField(u'Beer 2', coerce=int, option_widget=None)
+    beer3 = SelectField(u'Beer 3', coerce=int, option_widget=None)
+    beer4 = SelectField(u'Beer 4', coerce=int, option_widget=None)
+    beer5 = SelectField(u'Beer 5', coerce=int, option_widget=None)
+    beer6 = SelectField(u'Beer 6', coerce=int, option_widget=None)
+    beer7 = SelectField(u'Beer 7', coerce=int, option_widget=None)
+    beer8 = SelectField(u'Beer 8', coerce=int, option_widget=None)
+    beer9 = SelectField(u'Beer 9', coerce=int, option_widget=None)
+    beer10 = SelectField(u'Beer 10', coerce=int, option_widget=None)
+    beer11 = SelectField(u'Beer 11', coerce=int, option_widget=None)
+    beer12 = SelectField(u'Beer 12', coerce=int, option_widget=None)
+    beer13 = SelectField(u'Beer 13', coerce=int, option_widget=None)
+    beer14 = SelectField(u'Beer 14', coerce=int, option_widget=None)
+    beer15 = SelectField(u'Beer 15', coerce=int, option_widget=None)
+    beer16 = SelectField(u'Beer 16', coerce=int, option_widget=None)
+
 def getDefaultSelect(currentId):
     # Create cursor
     cur = mysql.connection.cursor()
     # Get the total beer list
     result = cur.execute("SELECT id_history FROM list_current WHERE id=%s", [currentId])
+    thisBeer = cur.fetchone()
+    app.logger.info(thisBeer)
+    return thisBeer
+
+def getDefaultNextSelect(nextId):
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get the total beer list
+    result = cur.execute("SELECT id_on_next FROM list_current WHERE id=%s", [nextId])
     thisBeer = cur.fetchone()
     app.logger.info(thisBeer)
     return thisBeer
@@ -617,6 +701,142 @@ def edit_beer_list():
 
     # Comment line above and uncomment line below to go to beerlist page after submitting the edit list form
     # return render_template('beers.html', beers=beers, form=form)
+
+##############################################
+# BEGIN ON_TAP_NEXT SCREEN
+##############################################
+@app.route('/on_tap_next', methods=['GET', 'POST'])
+@is_logged_in
+def on_tap_next():
+    currentBeers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
+    currentBeers = currentBeers[0:16]
+    nextBeers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_on_next", "all")
+    return render_template('on_tap_next.html', currentBeers=currentBeers, nextBeers=nextBeers)
+
+@app.route('/on_tap_next_editor', methods=['GET','POST'])
+@is_logged_in
+def on_tap_next_editor():
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get the total beer list
+    results = cur.execute("SELECT * FROM list_history ORDER BY name ASC")
+    # Gets the whole list of query results
+    beers = cur.fetchall()
+
+    currentBeers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
+
+    # Call the getDefaultNextSelect() method to get id_history from list_current table
+    beer1select = getDefaultNextSelect('1')
+    beer2select = getDefaultNextSelect('2')
+    beer3select = getDefaultNextSelect('3')
+    beer4select = getDefaultNextSelect('4')
+    beer5select = getDefaultNextSelect('5')
+    beer6select = getDefaultNextSelect('6')
+    beer7select = getDefaultNextSelect('7')
+    beer8select = getDefaultNextSelect('8')
+    beer9select = getDefaultNextSelect('9')
+    beer10select = getDefaultNextSelect('10')
+    beer11select = getDefaultNextSelect('11')
+    beer12select = getDefaultNextSelect('12')
+    beer13select = getDefaultNextSelect('13')
+    beer14select = getDefaultNextSelect('14')
+    beer15select = getDefaultNextSelect('15')
+    beer16select = getDefaultNextSelect('16')
+
+
+    app.logger.info(beer1select)
+    form = NextBeerListForm(request.form,
+        beer1=beer1select['id_on_next'],
+        beer2=beer2select['id_on_next'],
+        beer3=beer3select['id_on_next'],
+        beer4=beer4select['id_on_next'],
+        beer5=beer5select['id_on_next'],
+        beer6=beer6select['id_on_next'],
+        beer7=beer7select['id_on_next'],
+        beer8=beer8select['id_on_next'],
+        beer9=beer9select['id_on_next'],
+        beer10=beer10select['id_on_next'],
+        beer11=beer11select['id_on_next'],
+        beer12=beer12select['id_on_next'],
+        beer13=beer13select['id_on_next'],
+        beer14=beer14select['id_on_next'],
+        beer15=beer15select['id_on_next'],
+        beer16=beer16select['id_on_next'],
+    )
+
+    form.beer1.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer2.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer3.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer4.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer5.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer6.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer7.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer8.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer9.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer10.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer11.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer12.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer13.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer14.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer15.choices = [(beer['id'], beer['name']) for beer in beers]
+    form.beer16.choices = [(beer['id'], beer['name']) for beer in beers]
+
+    if request.method == 'POST' and form.validate():
+        beer1 = request.form['beer1']
+        beer2 = request.form['beer2']
+        beer3 = request.form['beer3']
+        beer4 = request.form['beer4']
+        beer5 = request.form['beer5']
+        beer6 = request.form['beer6']
+        beer7 = request.form['beer7']
+        beer8 = request.form['beer8']
+        beer9 = request.form['beer9']
+        beer10 = request.form['beer10']
+        beer11 = request.form['beer11']
+        beer12 = request.form['beer12']
+        beer13 = request.form['beer13']
+        beer14 = request.form['beer14']
+        beer15 = request.form['beer15']
+        beer16 = request.form['beer16']
+
+        # Create Cursor
+        cur = mysql.connection.cursor()
+
+        # Execute
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer1, '1'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer2, '2'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer3, '3'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer4, '4'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer5, '5'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer6, '6'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer7, '7'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer8, '8'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer9, '9'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer10, '10'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer11, '11'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer12, '12'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer13, '13'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer14, '14'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer15, '15'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer16, '16'))
+
+        # Commit
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+
+        # app.logger.info(beer1)
+        flash('Beer List Updated', 'success')
+
+        # return redirect(url_for('edit_beer_list'))
+        return redirect(url_for('on_tap_next_editor'))
+
+    return render_template('on_tap_next_editor.html', beers=beers, currentBeers=currentBeers, form=form)
+
+##############################################
+# END ON_TAP_NEXT SCREEN
+##############################################
 
 if __name__ == '__main__':
     app.secret_key='secret123'

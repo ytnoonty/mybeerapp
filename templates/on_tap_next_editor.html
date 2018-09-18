@@ -1,0 +1,182 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>On Tap Next Editor</h1>
+  {% from "includes/_formhelpers.html" import  render_field %}
+  <!-- <form id="edit_form" method="POST" action="" onsubmit="alert('crap in a bag!'); return true"> -->
+  <div class="">
+    <form id="edit_form" method="POST" action="#" onsubmit="">
+    <!-- <form id="edit_form" method="POST" action="" onsubmit="updateScreens();"> -->
+      <table class="table table-striped">
+        <tr>
+          <th></th>
+          <th>On Tap Now</th>
+          <td><div></div></td>
+          <th>Next to Tap</th>
+        </tr>
+        <tr>
+          <td>1.</td>
+          <td><div class="currentBeer">{{currentBeers[0].brewery}} {{currentBeers[0].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer1, class_="form-control edit-beer1") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>2.</td>
+          <td><div class="currentBeer">{{currentBeers[1].brewery}} {{currentBeers[1].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer2, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>3.</td>
+          <td><div class="currentBeer">{{currentBeers[2].brewery}} {{currentBeers[2].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer3, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>4.</td>
+          <td><div class="currentBeer">{{currentBeers[3].brewery}} {{currentBeers[3].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer4, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>5.</td>
+          <td><div class="currentBeer">{{currentBeers[4].brewery}} {{currentBeers[4].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer5, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>6.</td>
+          <td><div class="currentBeer">{{currentBeers[5].brewery}} {{currentBeers[5].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer6, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>7.</td>
+          <td><div class="currentBeer">{{currentBeers[6].brewery}} {{currentBeers[6].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer7, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>8.</td>
+          <td><div class="currentBeer">{{currentBeers[7].brewery}} {{currentBeers[7].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer8, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>9.</td>
+          <td><div class="currentBeer">{{currentBeers[8].brewery}} {{currentBeers[8].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer9, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>10.</td>
+          <td><div class="currentBeer">{{currentBeers[9].brewery}} {{currentBeers[9].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer10, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>11.</td>
+          <td><div class="currentBeer">{{currentBeers[10].brewery}} {{currentBeers[10].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer11, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>12.</td>
+          <td><div class="currentBeer">{{currentBeers[11].brewery}} {{currentBeers[11].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer12, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>13.</td>
+          <td><div class="currentBeer">{{currentBeers[12].brewery}} {{currentBeers[12].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer13, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>14.</td>
+          <td><div class="currentBeer">{{currentBeers[13].brewery}} {{currentBeers[13].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer14, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>15.</td>
+          <td><div class="currentBeer">{{currentBeers[14].brewery}} {{currentBeers[14].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer15, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>16.</td>
+          <td><div class="currentBeer">{{currentBeers[15].brewery}} {{currentBeers[15].name}}</div></td>
+          <td><i class="arrow"></i></td>
+          <td>
+            <div class="form-group">
+              {{ render_field(form.beer16, class_="form-control") }}
+            </div>
+          </td>
+        </tr>
+      </table>
+      <!-- <p><input id="edit-beerlist" class="btn btn-primary" type="submit" value="Submit"></p> -->
+      <p><input id="edit-beerlist" class="btn btn-primary" type="click" value="Submit"></p>
+    </form>
+  </div>
+{% endblock %}

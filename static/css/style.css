@@ -226,3 +226,53 @@ li {
   display: block;
   margin: 10px 0px;
 }
+
+i {
+  border: solid #555;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+.arrow {
+  transform: rotate(-45deg);
+}
+
+
+/* ***************************** */
+/* BEGIN TESTING.HTML */
+/* ***************************** */
+.polling_message {
+  color: yellow;
+  float: left;
+  margin-right: 2%;
+  font-size: 3em;
+}
+
+.view_port {
+  background-color: black;
+  height: 75px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.cylon_eye {
+  background-color: #aaa;
+  background-image: linear-gradient(to right,
+      rgba(0, 0, 0, .9) 10%,
+      rgba(0, 0, 0, .6) 25%,
+      rgba(0, 0, 0, .3) 50%,
+      rgba(0, 0, 0, .6) 75%,
+      rgba(0, 0, 0, .9) 90%);
+  color: white;
+  height: 100%;
+  width: 30%;
+
+  -webkit-animation: 15s linear 0s infinite alternate move_eye;
+          animation: 15s linear 0s infinite alternate move_eye;
+}
+
+@-webkit-keyframes move_eye { from { margin-left: -20%; } to { margin-left: 100%; }  }
+        @keyframes move_eye { from { margin-left: -20%; } to { margin-left: 100%; }  }
+/* ***************************** */
+/* END TESTING.HTML */
+/* ***************************** */

@@ -60,10 +60,12 @@ function updateScreens() {
   // console.log("*************UPDATING SCREENS*************");
   loadBeerlist();
   updateProccess_print();
+  updateOnTapCurrent();
+  updateOnTapNext();
   updateExample6();
   loadTicker();
   screenRefresh();
-  setTimeout(updateScreens, 10000);
+  setTimeout(updateScreens, 2000);
 }
 
 //////////////////////////////////////////////////////
@@ -218,7 +220,71 @@ function updateProccess_print(e) {
 // END updateProccess_print(e) UPDATE
 //////////////////////////////////////////////////////
 
-
+//////////////////////////////////////////////////////
+// START EASY AJAX.JS updateOnTapCurrent()
+//////////////////////////////////////////////////////
+function updateOnTapCurrent() {
+  const http = new easyHTTP;
+  // Create POST
+  http.postRecieve('/update', function(err, post) {
+    // console.log('****************updateTappingNext*****************')
+    if (err) {
+      console.log(err);
+    } else {
+      tappingCurrent(post);
+    }
+  });
+}
+function tappingCurrent(data) {
+  data = JSON.parse(data);
+  data = data.slice(0,16);
+  let tapCurrentTr = document.querySelectorAll(".currentBeer");
+  let x = 0;
+  let trInnerHTML = "";
+  if (tapCurrentTr !== null) {
+    data.forEach(function(beer){
+      trInnerHTML = `${beer.brewery} ${beer.name}`;
+      if (tapCurrentTr[x] != undefined) {
+        tapCurrentTr[x].innerHTML = trInnerHTML;
+      }
+      x++;
+    });
+  }
+}
+//////////////////////////////////////////////////////
+// END EASY AJAX.JS updateOnTapCurrent()
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+// START EASY AJAX.JS updateOnTapNext()
+//////////////////////////////////////////////////////
+function updateOnTapNext() {
+  const http = new easyHTTP;
+  // Create POST
+  http.postRecieve('/updateTappingNext', function(err, post) {
+    // console.log('****************updateTappingNext*****************')
+    if (err) {
+      console.log(err);
+    } else {
+      tappingNext(post);
+    }
+  });
+}
+function tappingNext(data) {
+  data = JSON.parse(data);
+  let tapNextTr = document.querySelectorAll(".nextBeer");
+  let x = 0;
+  let trInnerHTML = "";
+  data.forEach(function(beer){
+    trInnerHTML = `${beer.brewery} ${beer.name}`;
+    if (tapNextTr[x] != undefined) {
+      tapNextTr[x].innerHTML = trInnerHTML;
+    }
+    x++;
+  });
+}
+//////////////////////////////////////////////////////
+// END EASY AJAX.JS updateOnTapNext()
+//////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 // START EASY AJAX.JS updateExample6()
 //////////////////////////////////////////////////////
