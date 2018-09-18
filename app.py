@@ -706,7 +706,6 @@ def edit_beer_list():
 # BEGIN ON_TAP_NEXT SCREEN
 ##############################################
 @app.route('/on_tap_next', methods=['GET', 'POST'])
-@is_logged_in
 def on_tap_next():
     currentBeers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
     currentBeers = currentBeers[0:16]
