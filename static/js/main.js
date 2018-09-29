@@ -326,7 +326,7 @@ function exampleSix(data) {
   let example6 = document.getElementById('example6');
   let example6HTML = '';
   example6HTML = `
-  <div class="row">
+  <div class="row mt-3">
     <div class="col-lg">
       <div class="list-group">
         <ul class="list-group-flush list-group-bts">`;
@@ -337,7 +337,7 @@ function exampleSix(data) {
                 <tr>
                   <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
                 </tr>
-                <tr class="left-spacer beer-screen-tr">
+                <tr class="left-spacer beer-screen-tr font-med">
                   <td class="bold-font w-third">${beer.style}</td>
                   <td class="w-fifth">ABV ${beer.abv}%</td>
                   <td class="italic-font bold-font w-third">${beer.brewery}</td>
@@ -359,7 +359,7 @@ function exampleSix(data) {
                 <tr>
                   <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
                 </tr>
-                <tr class="left-spacer beer-screen-tr">
+                <tr class="left-spacer beer-screen-tr font-med">
                   <td class="bold-font w-third">${beer.style}</td>
                   <td class="w-fifth">ABV ${beer.abv}%</td>
                   <td class="italic-font bold-font w-third">${beer.brewery}</td>

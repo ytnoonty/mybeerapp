@@ -3,13 +3,13 @@
 {% block body %}
 <div class="full-page">
   <div class="wrapper">
-    <div class="row justify-content-center">
+    <!-- <div class="row justify-content-center">
       <div class="row">
         <div  id="update-tv-screen" class="col-12 mt-2 mb-2">
           <img src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="image should be here">
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="row justify-content-center">
       <div class="row">
         <div class="col-12">
@@ -160,7 +160,7 @@
     </div> -->
 
     <div id=example6 class="container-fluid">
-      <div class="row">
+      <div class="row mt-3">
         <div class="col-lg">
           <div class="list-group">
             <ul id="" class="list-group-flush list-group-bts">
@@ -262,14 +262,14 @@
   <div class="row bts-coming-soon">
     <div class="ticker move-left">
       <ul class="list-bts-coming-soon bold-font">
-        <li class="info beer-month txt-clr-grn-shdw">Beer 'O the Month:</li>
+        <li class="info beer-month txt-clr-grn-shdw spacing-sml">Beer 'O the Month:</li>
         <li class="info info1 card-img txt-clr-ylw">{{beers1622[0].name}}</li>
-        <li class="info txt-clr-grn-shdw">Tapping Soon:</li>
+        <li class="info tap-soon txt-clr-grn-shdw spacing-sml">Tapping Soon:</li>
         <li class="info info2 card-img-before txt-clr-ylw">{{beers1622[1].name}}</li>
         <li class="info info3 card-img-before txt-clr-ylw">{{beers1622[2].name}}</li>
         <li class="info info4 card-img-before txt-clr-ylw">{{beers1622[3].name}}</li>
         <li class="info info5 card-img txt-clr-ylw">{{beers1622[4].name}}</li>
-        <li class="info txt-clr-grn-shdw">Shamrock News:</li>
+        <li class="info shams-news txt-clr-grn-shdw spacing-sml">Shamrock News:</li>
         <li class="info info6 card-img-after txt-clr-ylw">{{beers1622[5].description}}</li>
       </ul>
     </div>

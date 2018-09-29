@@ -57,7 +57,7 @@ body {
 }
 .cardvs  {
   background: linear-gradient(#333,#000);
-  height: 10vh;
+  height: 11vh;
 }
 .italic-font {
   font-style: italic;
@@ -72,19 +72,25 @@ body {
   font-weight: bolder;
 }
 .font-test {
-  font-size: 5em;
+  background-color: blue;
 }
 .font-sml {
   font-size: 1.25em;
 }
 .font-med {
   font-size: 1.5em;
+  /* background-color: green; */
 }
 .font-lrg {
   font-size: 1.75em;
+  /* background-color: red; */
 }
 .font-color-gray {
   color: #888;
+}
+.spacing-sml {
+  letter-spacing: .09em;
+  /* background-color: red; */
 }
 .no-btm-margin {
   margin-bottom: 0;
