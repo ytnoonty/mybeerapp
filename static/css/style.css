@@ -60,6 +60,7 @@ body {
 .cardvs  {
   background: linear-gradient(#333,#000);
   height: 11vh;
+  overflow: hidden;
 }
 .italic-font {
   font-style: italic;
