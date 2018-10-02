@@ -339,7 +339,7 @@ function exampleSix(data) {
                 </tr>
                 <tr class="left-spacer beer-screen-tr font-med">
                   <td class="bold-font w-third">${beer.style}</td>
-                  <td class="w-fifth"><span class="font-xxsml">ABV</span> ${beer.abv}<span class="font-xsml">%</span></td>
+                  <td class="w-fifth"><span class="font-xxsml"></span> ${beer.abv}<span class="font-xsml">%</span></td>
                   <td class="italic-font bold-font w-third">${beer.brewery}</td>
                 </tr>
               </table>
@@ -361,7 +361,7 @@ function exampleSix(data) {
                 </tr>
                 <tr class="left-spacer beer-screen-tr font-med">
                   <td class="bold-font w-third">${beer.style}</td>
-                  <td class="w-fifth"><span class="font-xxsml">ABV</span> ${beer.abv}<span class="font-xsml">%</span></td>
+                  <td class="w-fifth"><span class="font-xxsml"></span> ${beer.abv}<span class="font-xsml">%</span></td>
                   <td class="italic-font bold-font w-third">${beer.brewery}</td>
                 </tr>
               </table>
