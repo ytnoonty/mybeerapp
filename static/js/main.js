@@ -333,13 +333,13 @@ function exampleSix(data) {
           data0108.forEach(function(beer){
             example6HTML += `
             <li class="cardvs">
-              <table>
-                <tr>
+              <table class="beer-screen-table">
+                <tr class="beer-screen-tr">
                   <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
                 </tr>
                 <tr class="left-spacer beer-screen-tr font-med">
                   <td class="bold-font w-third">${beer.style}</td>
-                  <td class="w-fifth"><span class="font-xsml">ABV</span> ${beer.abv}%</td>
+                  <td class="w-fifth"><span class="font-xxsml">ABV</span> ${beer.abv}<span class="font-xsml">%</span></td>
                   <td class="italic-font bold-font w-third">${beer.brewery}</td>
                 </tr>
               </table>
@@ -361,7 +361,7 @@ function exampleSix(data) {
                 </tr>
                 <tr class="left-spacer beer-screen-tr font-med">
                   <td class="bold-font w-third">${beer.style}</td>
-                  <td class="w-fifth"><span class="font-xsml">ABV</span> ${beer.abv}%</td>
+                  <td class="w-fifth"><span class="font-xxsml">ABV</span> ${beer.abv}<span class="font-xsml">%</span></td>
                   <td class="italic-font bold-font w-third">${beer.brewery}</td>
                 </tr>
               </table>

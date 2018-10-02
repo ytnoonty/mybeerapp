@@ -40,6 +40,9 @@ body {
   width: 90vw;
   margin: 0 auto;
 }
+.d-inline {
+  display: inline;
+}
 
 
 /* beers_tv_screen.html */
@@ -79,6 +82,9 @@ body {
 }
 .font-test {
   background-color: blue;
+}
+.font-xxsml {
+  font-size: .5em;
 }
 .font-xsml {
   font-size: .75em;
@@ -120,7 +126,7 @@ body {
   /* background: blue; */
 }
 .w-third {
-  width: 400px;
+  width: 350px;
   /* background: green; */
 }
 .w-forth {
