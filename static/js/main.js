@@ -337,10 +337,10 @@ function exampleSix(data) {
                 <tr class="beer-screen-tr">
                   <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
                 </tr>
-                <tr class="left-spacer beer-screen-tr font-med">
-                  <td class="bold-font w-third">${beer.style}</td>
+                <tr class="left-spacer beer-screen-tr font-sml">
+                  <td class=" w-third">${beer.style}</td>
                   <td class="w-fifth"><span class="font-xxsml"></span> ${beer.abv}<span class="font-xsml">%</span></td>
-                  <td class="italic-font bold-font w-third">${beer.brewery}</td>
+                  <td class="italic-font  w-third">${beer.brewery}</td>
                 </tr>
               </table>
             </li>`
@@ -359,7 +359,7 @@ function exampleSix(data) {
                 <tr>
                   <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
                 </tr>
-                <tr class="left-spacer beer-screen-tr font-med">
+                <tr class="left-spacer beer-screen-tr font-sml">
                   <td class="bold-font w-third">${beer.style}</td>
                   <td class="w-fifth"><span class="font-xxsml"></span> ${beer.abv}<span class="font-xsml">%</span></td>
                   <td class="italic-font bold-font w-third">${beer.brewery}</td>

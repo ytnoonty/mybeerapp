@@ -90,7 +90,7 @@ body {
   font-size: .75em;
 }
 .font-sml {
-  font-size: 1.25em;
+  font-size: 1.20em;
 }
 .font-med {
   font-size: 1.65em;
@@ -101,7 +101,7 @@ body {
   /* background-color: red; */
 }
 .font-color-gray {
-  color: #888;
+  /* color: #888; */
 }
 .spacing-sml {
   letter-spacing: .09em;
@@ -126,7 +126,7 @@ body {
   /* background: blue; */
 }
 .w-third {
-  width: 350px;
+  width: 300px;
   /* background: green; */
 }
 .w-forth {
@@ -134,7 +134,7 @@ body {
   /* background: #555; */
 }
 .w-fifth {
-  width: 100px;
+  width: 75px;
   /* background: #ccc; */
 }
 .w-tenth {
