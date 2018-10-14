@@ -396,6 +396,52 @@ def add_beer():
 
     return render_template('add_beer.html', form=form)
 
+# Search beers from untappd
+@app.route('/beersearch', methods=['GET','POST'])
+@is_logged_in
+def beersearch():
+    return render_template('beersearch.html')
+
+# Add untappd beer info to DB
+@app.route('/addUntappd', methods=['POST'])
+def addUntappd():
+    data = request.get_json()
+    app.logger.info(data['id'])
+    app.logger.info(data['name'])
+    app.logger.info(data['style'])
+    app.logger.info(data['abv'])
+    app.logger.info(data['ibu'])
+    app.logger.info(data['brewery'])
+    app.logger.info(data['location'])
+    app.logger.info(data['website'])
+    app.logger.info(data['description'])
+    app.logger.info(data['draftbottleselection'])
+    print('Beer ' + data['id'] + ': ' + data['name'] + ' has been added to the database. Thank you for playing along. Have a "hoppy" day.')
+
+    name = data['name']
+    style = data['style']
+    abv = data['abv']
+    ibu = data['ibu']
+    brewery = data['brewery']
+    location = data['location']
+    website = data['website']
+    description = data['description']
+    draftBottle = data['draftbottleselection']
+
+    # Send data to DB
+    # mysqlQuery = "INSERT INTO list_history(name, style, abv, ibu, brewery, location, website, description, draft_bottle_selection) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)", (name, style, abv, ibu, brewery, location, website, description, draftBottle)
+    # mysqlQuerySend(mysqlQuery)
+
+    cur = mysql.connection.cursor()
+    # Execute
+    cur.execute("INSERT INTO list_history(name, style, abv, ibu, brewery, location, website, description, draft_bottle_selection) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)", (name, style, abv, ibu, brewery, location, website, description, draftBottle))
+    # Commit
+    mysql.connection.commit()
+    # Close connection
+    cur.close()
+
+    return jsonify(data)
+
 
 # Edit Beer
 @app.route('/edit_beer/<string:id>', methods=['GET', 'POST'])

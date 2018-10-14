@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+{% block body %}
+  <div class="searchContainer">
+    <div class="search card-body">
+      <h1>Search Untappd Beers</h1>
+      <p class="lead">Enter a beer to fetch beer information</p>
+      <input type="text" id="searchBeer" class="form-control" placeholder="Enter any combination of brewery and/or beer name....">
+    </div>
+    <div id="searchresults" class="container"></div>
+  </div>
+  <footer class="mt-5 p-3 text-center bg-light">
+    Beer Finder &copy;
+  </footer>
+{% endblock %}
