@@ -6,13 +6,19 @@ let refreshCount = 0;
 let form = document.getElementById('edit_form');
 let editList = document.getElementById('edit-beerlist');
 
+let editWinelistForm = document.getElementById('edit-winelist-form');
+let editWinelistBtn = document.getElementById('edit-winelist-btn');
+
 // flash message dissapear after 2.5seconds
-setTimeout(function(){
+setTimeout(() => {
   flashMsgDiv.style.display = 'none';
-  // flashMsgDiv.onload = updateScreens();
-},2500);
+}, 2500);
 
-
+if (editWinelistBtn != null) {
+  editWinelistBtn.addEventListener("click", function(e) {
+    editWinelistForm.submit();
+  });
+}
 
 // adds click to refresh on the shamrocks jacks logo on beer_tv_screen
 if (updateProcessPrint != null) {

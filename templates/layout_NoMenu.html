@@ -15,7 +15,6 @@
   <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,400i,600,600i,800,800i" rel="stylesheet">
 </head>
 <body>
-  <!-- {% include 'includes/_navbar.html' %} -->
   <div class="mx-auto">
     <div id="flash-msg-div">
       {% include 'includes/_messages.html' %}
@@ -26,12 +25,12 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <!-- <script src="//cdn.ckeditor.com/4.9.1/basic/ckeditor.js"></script> -->
-  <!-- <script type="text/javascript">
-    CKEDITOR.replace('editor')
-  </script> -->
   <script type="text/javascript" src="{{ url_for('static', filename='js/ajax.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/animations.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/untappd.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/wine.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/ui.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/app.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

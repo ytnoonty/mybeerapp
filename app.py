@@ -2,12 +2,14 @@
 #7/24/18-03:08pm
 
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, jsonify
-# from datahistory import BeersHistory
-# from data import Beers
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, RadioField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
+import feedparser
+import json
+import urllib
+import urllib2
 
 app = Flask(__name__)
 
@@ -33,9 +35,75 @@ def mysqlQuery(query, fetch):
     cur.close()
     return result
 
-@app.route('/testing')
-def testing():
-    return render_template('testing.html')
+# function to query database
+def mysqlQueryRecieve(queryString, fetch):
+    #Create cursor
+    cur = mysql.connection.cursor()
+
+    # Execute
+    query = cur.execute(queryString)
+    if fetch == 'all':
+        result = cur.fetchall()
+    else:
+        result = cur.fetchone()
+
+    # Close connection
+    cur.close()
+    return result
+
+def mysqlQuerySend(queryString):
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Execute
+    cur.execute(queryString)
+    # Commit
+    mysql.connection.commit()
+    # Close connection
+    cur.close()
+
+def mysqlQuerySelectAll(queryString):
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Execute
+    query = cur.execute(queryString)
+    result = cur.fetchall()
+    # Close connection
+    cur.close()
+    return result
+
+def mysqlQuerySelectOne(queryString, id):
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Execute
+    query = cur.execute(queryString, [id])
+    result = cur.fetchone()
+    # Close connection
+    cur.close()
+    return result
+
+def mysqlQueryDelete(queryString, id):
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Execute
+    query = cur.execute(queryString, [id])
+    # Commit
+    mysql.connection.commit()
+    # Close connection
+    cur.close()
+
+def mysqlQueryUpdate(queryString, data, id):
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Execute
+    query = cur.execute(queryString, (data, id))
+    # Commit
+    mysql.connection.commit()
+    # Close connection
+    cur.close()
+#############################
+# END MYSQL QUERY FUNCTIONS
+#############################
+
 
 @app.route('/')
 def index():
@@ -351,7 +419,7 @@ class BeerForm(Form):
     website = StringField('Website', [validators.Length(min=0, max=255)])
     description = TextAreaField('Description', [validators.Length(min=0)])
 #########################radio button to choose draft or bottle or both
-    draftBottle = RadioField(u'Beer Choice', choices=[('Draft','Draft'), ('Bottle','Bottle'), ('Both','Both')])
+    draftBottle = RadioField(u'Beer Choice', choices=[('Draft','Draft'), ('Bottle','Bottle'), ('Can','Can'), ('Draft & Bottle',' Draft & Bottle'), ('Draft & Can','Draft & Can'), ('Bottle & Can','Bottle & Can'), ('Draft, Bottle & Can','Draft, Bottle & Can')])
 
 # Add Beer
 @app.route('/add_beer', methods=['GET', 'POST'])
@@ -882,6 +950,403 @@ def on_tap_next_editor():
 ##############################################
 # END ON_TAP_NEXT SCREEN
 ##############################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##############################################
+# BEGIN WINE LIST
+##############################################
+
+# Wine Form Class
+class WineForm(Form):
+    name = StringField('Name', [validators.required(), validators.Length(min=1, max=100)])
+    location = StringField('Location', [validators.required(), validators.Length(min=1, max=100)])
+    varietal = StringField('Varietal', [validators.required(), validators.Length(min=1)])
+    glass = StringField('Glass', [validators.optional(), validators.Length(min=0)])
+    bottle = StringField('Bottle', [validators.optional(), validators.Length(min=0)])
+    description = TextAreaField('Description', [validators.optional(), validators.length(min=1)])
+    foodPairings = TextAreaField('Food Pairings', [validators.optional()])
+
+# Add Wine
+@app.route('/add_wine', methods=['GET', 'POST'])
+def add_wine():
+    form = WineForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        name = form.name.data
+        location = form.location.data
+        varietal = form.varietal.data
+        glass = form.glass.data
+        bottle = form.bottle.data
+        description = form.description.data
+        foodPairings = form.foodPairings.data
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+        # Execute
+        cur.execute("INSERT INTO wines(name, location, varietal, glass, bottle, description, foodPairings) VALUES(%s, %s, %s, %s, %s, %s, %s)", (name, location, varietal, glass, bottle, description, foodPairings))
+        # Commit
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+
+        flash('Wine Created', 'success')
+
+        return redirect(url_for('wine_dashboard'))
+    return render_template('add_wine.html', form=form)
+
+# Wine menu
+@app.route('/wine_dashboard', methods=['GET', 'POST'])
+def wine_dashboard():
+    data = mysqlQueryRecieve("SELECT * FROM wines ORDER BY name ASC", "all");
+    wines = data
+    return render_template('wine_dashboard.html', wines=wines)
+
+# Get all wines from db
+@app.route('/_getwines', methods=['GET','POST'])
+def _getwines():
+    data = mysqlQueryRecieve("SELECT * FROM wines ORDER BY name ASC", "all");
+    # app.logger.info(data)
+    return jsonify(data)
+
+# Edit wine
+@app.route('/edit_wine/<string:id>', methods=['GET', 'POST'])
+def edit_wine(id):
+
+    data = mysqlQuerySelectOne("SELECT * FROM wines WHERE id=%s", id)
+    wine = data
+    # Get form
+    form = WineForm(request.form)
+
+    # Populate wine form fields
+    form.name.data = wine['name']
+    form.location.data = wine['location']
+    form.varietal.data = wine['varietal']
+    form.glass.data = wine['glass']
+    form.bottle.data = wine['bottle']
+    form.description.data = wine['description']
+    form.foodPairings.data = wine['foodPairings']
+
+    if request.method == 'POST' and form.validate():
+        name = request.form['name']
+        location = request.form['location']
+        varietal = request.form['varietal']
+        glass = request.form['glass']
+        bottle = request.form['bottle']
+        description = request.form['description']
+        foodPairings = request.form['foodPairings']
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+        # Execute
+        cur.execute("UPDATE wines SET name=%s, location=%s, varietal=%s, glass=%s, bottle=%s, description=%s, foodPairings=%s WHERE id=%s", (name, location, varietal, glass, bottle, description, foodPairings, id))
+        # Commit
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+
+        flash('Wine Update!!!', 'success')
+
+        return redirect(url_for('wine_dashboard'))
+
+    return render_template('edit_wine.html', form=form)
+
+# Delete wine
+@app.route('/delete_wine/<string:id>', methods=['POST'])
+def delete_wine(id):
+    # Query the database funciton
+    mysqlQueryDelete("DELETE FROM wines WHERE id=%s", id)
+    # Flash message
+    flash('Wine Deleted!!!', 'success')
+    return redirect(url_for('wine_dashboard'))
+
+# Class for winelist
+class CurrentWinelistForm(Form):
+    winenum1 = '1'
+    wine1 = SelectField(u'Wine ' + winenum1, coerce=int, option_widget=None)
+    wine2 = SelectField(u'Wine 2', coerce=int, option_widget=None)
+    wine3 = SelectField(u'Wine 3', coerce=int, option_widget=None)
+    wine4 = SelectField(u'Wine 4', coerce=int, option_widget=None)
+    wine5 = SelectField(u'Wine 5', coerce=int, option_widget=None)
+    wine6 = SelectField(u'Wine 6', coerce=int, option_widget=None)
+    wine7 = SelectField(u'Wine 7', coerce=int, option_widget=None)
+    wine8 = SelectField(u'Wine 8', coerce=int, option_widget=None)
+    wine9 = SelectField(u'Wine 9', coerce=int, option_widget=None)
+    wine10 = SelectField(u'Wine 10', coerce=int, option_widget=None)
+    wine11 = SelectField(u'Wine 11', coerce=int, option_widget=None)
+    wine12 = SelectField(u'Wine 12', coerce=int, option_widget=None)
+    wine13 = SelectField(u'Wine 13', coerce=int, option_widget=None)
+    wine14 = SelectField(u'Wine 14', coerce=int, option_widget=None)
+    wine15 = SelectField(u'Wine 15', coerce=int, option_widget=None)
+    wine16 = SelectField(u'Wine 16', coerce=int, option_widget=None)
+    wine17 = SelectField(u'Wine 17', coerce=int, option_widget=None)
+    wine18 = SelectField(u'Wine 18', coerce=int, option_widget=None)
+    wine19 = SelectField(u'Wine 19', coerce=int, option_widget=None)
+    wine20 = SelectField(u'Wine 20', coerce=int, option_widget=None)
+    wine21 = SelectField(u'Wine 21', coerce=int, option_widget=None)
+    wine22 = SelectField(u'Wine 22', coerce=int, option_widget=None)
+    wine23 = SelectField(u'Wine 23', coerce=int, option_widget=None)
+    wine24 = SelectField(u'Wine 24', coerce=int, option_widget=None)
+    wine25 = SelectField(u'Wine 25', coerce=int, option_widget=None)
+    wine26 = SelectField(u'Wine 26', coerce=int, option_widget=None)
+    wine27 = SelectField(u'Wine 27', coerce=int, option_widget=None)
+    wine28 = SelectField(u'Wine 28', coerce=int, option_widget=None)
+
+
+def getDefaulCurrentWinelist(id):
+    data = mysqlQuerySelectOne("SELECT * FROM winelist_current WHERE id=%s", id)
+    return data
+
+# Winelist editor
+@app.route('/winelist_editor', methods=['GET','POST'])
+def winelist_editor():
+    data = mysqlQuerySelectAll("SELECT * FROM wines ORDER BY name ASC")
+    wines = data
+
+    wine1select = getDefaulCurrentWinelist('1')
+    wine2select = getDefaulCurrentWinelist('2')
+    wine3select = getDefaulCurrentWinelist('3')
+    wine4select = getDefaulCurrentWinelist('4')
+    wine5select = getDefaulCurrentWinelist('5')
+    wine6select = getDefaulCurrentWinelist('6')
+    wine7select = getDefaulCurrentWinelist('7')
+    wine8select = getDefaulCurrentWinelist('8')
+    wine9select = getDefaulCurrentWinelist('9')
+    wine10select = getDefaulCurrentWinelist('10')
+    wine11select = getDefaulCurrentWinelist('11')
+    wine12select = getDefaulCurrentWinelist('12')
+    wine13select = getDefaulCurrentWinelist('13')
+    wine14select = getDefaulCurrentWinelist('14')
+    wine15select = getDefaulCurrentWinelist('15')
+    wine16select = getDefaulCurrentWinelist('16')
+    wine17select = getDefaulCurrentWinelist('17')
+    wine18select = getDefaulCurrentWinelist('18')
+    wine19select = getDefaulCurrentWinelist('19')
+    wine20select = getDefaulCurrentWinelist('20')
+    wine21select = getDefaulCurrentWinelist('21')
+    wine22select = getDefaulCurrentWinelist('22')
+    wine23select = getDefaulCurrentWinelist('23')
+    wine24select = getDefaulCurrentWinelist('24')
+    wine25select = getDefaulCurrentWinelist('25')
+    wine26select = getDefaulCurrentWinelist('26')
+    wine27select = getDefaulCurrentWinelist('27')
+    wine28select = getDefaulCurrentWinelist('28')
+
+
+    form = CurrentWinelistForm(request.form,
+        wine1=wine1select['id_wine'],
+        wine2=wine2select['id_wine'],
+        wine3=wine3select['id_wine'],
+        wine4=wine4select['id_wine'],
+        wine5=wine5select['id_wine'],
+        wine6=wine6select['id_wine'],
+        wine7=wine7select['id_wine'],
+        wine8=wine8select['id_wine'],
+        wine9=wine9select['id_wine'],
+        wine10=wine10select['id_wine'],
+        wine11=wine11select['id_wine'],
+        wine12=wine12select['id_wine'],
+        wine13=wine13select['id_wine'],
+        wine14=wine14select['id_wine'],
+        wine15=wine15select['id_wine'],
+        wine16=wine16select['id_wine'],
+        wine17=wine17select['id_wine'],
+        wine18=wine18select['id_wine'],
+        wine19=wine19select['id_wine'],
+        wine20=wine20select['id_wine'],
+        wine21=wine21select['id_wine'],
+        wine22=wine22select['id_wine'],
+        wine23=wine23select['id_wine'],
+        wine24=wine24select['id_wine'],
+        wine25=wine25select['id_wine'],
+        wine26=wine26select['id_wine'],
+        wine27=wine27select['id_wine'],
+        wine28=wine28select['id_wine'],
+    )
+
+    form.wine1.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine2.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine3.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine4.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine5.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine6.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine7.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine8.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine9.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine10.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine11.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine12.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine13.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine14.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine15.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine16.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine17.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine18.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine19.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine20.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine21.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine22.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine23.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine24.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine25.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine26.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine27.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+    form.wine28.choices = [(wine['id'], wine['name'] + ' - ' + wine['varietal']) for wine in wines]
+
+
+    if request.method == 'POST' and form.validate():
+        wine1 = request.form['wine1']
+        wine2 = request.form['wine2']
+        wine3 = request.form['wine3']
+        wine4 = request.form['wine4']
+        wine5 = request.form['wine5']
+        wine6 = request.form['wine6']
+        wine7 = request.form['wine7']
+        wine8 = request.form['wine8']
+        wine9 = request.form['wine9']
+        wine10 = request.form['wine10']
+        wine11 = request.form['wine11']
+        wine12 = request.form['wine12']
+        wine13 = request.form['wine13']
+        wine14 = request.form['wine14']
+        wine15 = request.form['wine15']
+        wine16 = request.form['wine16']
+        wine17 = request.form['wine17']
+        wine18 = request.form['wine18']
+        wine19 = request.form['wine19']
+        wine20 = request.form['wine20']
+        wine21 = request.form['wine21']
+        wine22 = request.form['wine22']
+        wine23 = request.form['wine23']
+        wine24 = request.form['wine24']
+        wine25 = request.form['wine25']
+        wine26 = request.form['wine26']
+        wine27 = request.form['wine27']
+        wine28 = request.form['wine28']
+
+
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine1, "1")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine2, "2")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine3, "3")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine4, "4")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine5, "5")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine6, "6")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine7, "7")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine8, "8")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine9, "9")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine10, "10")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine11, "11")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine12, "12")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine13, "13")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine14, "14")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine15, "15")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine16, "16")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine17, "17")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine18, "18")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine19, "19")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine20, "20")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine21, "21")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine22, "22")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine23, "23")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine24, "24")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine25, "25")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine26, "26")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine27, "27")
+        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine28, "28")
+
+        # Flash success message on the screen
+        flash('Winelist Updated!!!', 'success')
+
+        return redirect(url_for('winelist_editor'))
+
+    return render_template('winelist_editor.html', form=form, wines=wines)
+
+# Get all wines from db
+@app.route('/_getCurrentWinelist', methods=['GET','POST'])
+def _getCurrentWinelist():
+    data = mysqlQuerySelectAll("SELECT wl.name, wl.location, wl.description, wl.glass, wl.bottle, wl.varietal, wl.foodPairings FROM winelist_current AS wc, wines AS wl WHERE wl.id=wc.id_wine")
+    return jsonify(data)
+
+# winelist menu
+@app.route('/winelist_menu')
+def winelist_menu():
+    data = mysqlQuerySelectAll("SELECT wl.name, wl.location, wl.description, wl.glass, wl.bottle, wl.varietal, wl.foodPairings FROM winelist_current AS wc, wines AS wl WHERE wl.id=wc.id_wine")
+    winelist = data
+    redWines = data[0:10]
+    whiteWines = data[10:18]
+    blushWines = data[18:20]
+    sparklingWines = data[20:22]
+    houseWines = data[22:29]
+    return render_template('winelist_menu.html',
+    winelist=winelist,
+    redWines=redWines,
+    whiteWines=whiteWines,
+    blushWines=blushWines,
+    sparklingWines=sparklingWines,
+    houseWines=houseWines)
+
+# winelist description menu
+@app.route('/winelist_description')
+def winelist_description():
+    data = mysqlQuerySelectAll("SELECT wl.name, wl.location, wl.description, wl.glass, wl.bottle, wl.varietal, wl.foodPairings FROM winelist_current AS wc, wines AS wl WHERE wl.id=wc.id_wine")
+    winelist = data
+    redWines = data[0:10]
+    whiteWines = data[10:18]
+    blushWines = data[18:20]
+    sparklingWines = data[20:22]
+    houseWines = data[22:29]
+    return render_template('winelist_description.html',
+    winelist=winelist,
+    redWines=redWines,
+    whiteWines=whiteWines,
+    blushWines=blushWines,
+    sparklingWines=sparklingWines,
+    houseWines=houseWines)
+
+##############################################
+# END WINE LIST
+##############################################
+
+
 
 if __name__ == '__main__':
     app.secret_key='secret123'

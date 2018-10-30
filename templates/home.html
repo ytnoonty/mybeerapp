@@ -2,20 +2,33 @@
 
 {% block body %}
   <div class="jumbotron jumbotron-fluid text-center">
-    <div class="container">
+    <div class="container mt-0 mb-0">
       <div class="row justify-content-center">
         <div class="row">
-          <div  id="update-print-page" class="col-12 mt-2 mb-2">
-            <img src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="Shamrock Jack's logo">
+          <div id="update-print-page" class="col-12">
+            <img class="row justify-content-center col-12" src="{{ url_for('static', filename='img/SHAMROCKS_LOGO.png') }}" alt="Shamrock Jack's logo">
           </div>
         </div>
       </div>
-      <h1 class="display-4">Beer List</h1>
-      <p class="lead">To show you what's on tap at your favorite bar.</p>
-      {% if session.logged_in == NULL %}
-        <a href="/register" class="btn btn-primary btn-lg">Register</a>
-        <a href="/login" class="btn btn-success btn-lg">Login</a>
-      {% endif %}
     </div>
+      <div>
+        <h1 class="display-4">Bar Menu</h1>
+        <p class="lead">A simple bar menu.</p>
+
+        <div class="">
+        {% if session.logged_in == NULL %}
+          <a href="/login" class="btn btn-success btn-lg">Login</a>
+        {% else %}
+          <div class="row justify-content-center">
+            <a href="/dashboard" class="btn btn-success btn-md ml-1 mr-1 mb-1 col-5">Beer Dashboard</a>
+            <a href="/wine_dashboard" class="btn btn-success btn-md ml-1 mr-1 mb-1 col-5">Wine Dashboard</a>
+          </div>
+          <div class="row justify-content-center">
+            <a href="/edit_beer_list" class="btn btn-success btn-md ml-1 mr-1 mt-1 col-5">Draftlist Editor</a>
+            <a href="/winelist_editor" class="btn btn-success btn-md ml-1 mr-1 mt-1 col-5">Winelist Editor</a>
+          </div>
+        {% endif %}
+        </div>
+      </div>
   </div>
 {% endblock %}

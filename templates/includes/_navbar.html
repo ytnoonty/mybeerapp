@@ -1,11 +1,12 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">Beer List App</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+  <a class="navbar-brand" href="/">Bar Menu</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+
+      <!-- <li class="nav-item active">
         <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
@@ -13,7 +14,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/beers">Beer List</a>
-      </li>
+      </li> -->
       <li class="nav-item">
         <a class="nav-link" href="/beers_print">Print</a>
       </li>
@@ -21,40 +22,54 @@
         <a class="nav-link" href="/beers_tv_screen">Beers On Screen</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/draft_beers">Draft Beer List</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/bottle_beers">Bottle Beer List</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link" href="/on_tap_next">On Tap Next</a>
       </li>
-    </ul>
-    <ul class="navbar-nav mr-right">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Tablet Screen
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="/draft_beers">Draft Beer List</a>
+            <a class="dropdown-item" href="/bottle_beers">Bottle Beer List</a>
+            <a class="dropdown-item" href="/winelist_menu">Wine Menu</a>
+            <a class="dropdown-item" href="/winelist_description">Wine Descriptions</a>
+        </div>
+      </li>
       {% if session.logged_in %}
-        <li class="nav-item">
-          <a class="nav-link" href="/dashboard">Dashboard</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Beer
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="/dashboard">Beer Dashboard</a>
+              <a class="dropdown-item" href="/edit_beer_list">Beerlist Editor</a>
+              <a class="dropdown-item" href="/beersearch">Search Beer to add</a>
+              <a class="dropdown-item" href="/add_beer">Add Beer Manually</a>
+              <a class="dropdown-item" href="/proccess_print">Beer List</a>
+              <a class="dropdown-item" href="/on_tap_next_editor">On Tap Next Editor</a>
+          </div>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/edit_beer_list">List Editor</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/on_tap_next_editor">On Tap Next Editor</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/proccess_print">Beer List</a>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Wine
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="/wine_dashboard">Wine Dashboard</a>
+              <a class="dropdown-item" href="/winelist_editor">Winelist Editor</a>
+              <a class="dropdown-item" href="/winelist_menu">Wine List</a>
+          </div>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/logout">Logout</a>
         </li>
+
       {% else %}
-        <li class="nav-item active">
-          <a class="nav-link" href="/register">Register <span class="sr-only">(current)</span></a>
-        </li>
         <li class="nav-item">
           <a class="nav-link" href="/login">Login</a>
         </li>
       {% endif %}
+
     </ul>
   </div>
 </nav>

@@ -1,7 +1,12 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-  <h1>Edit Beer</h1>
+<div>
+  <h1>Edit Beer
+    <a href="/dashboard" class="btn btn-danger">Beer Dashboard</a>
+    <a href="/dashboard" class="btn btn-success">Beerlist Editor</a>
+  </h1>
+</div>
   {% from "includes/_formhelpers.html" import  render_field %}
   <form method="POST" action="">
     <div class="form-group">
@@ -32,6 +37,9 @@
     <div class="form-group">
       {{ render_field(form.draftBottle, class_="form-control") }}
     </div>
-    <p><input class="btn btn-primary" type="submit" value="Submit"></p>
+    <p>
+      <input class="btn btn-primary" type="submit" value="Submit">
+      <a href="/dashboard" class="btn btn-danger">Cancel</a>
+    </p>
   </form>
 {% endblock %}

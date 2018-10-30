@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div>
+    <h1>Edit Wine
+      <a href="/wine_dashboard" class="btn btn-danger">Wine Dashboard</a>
+      <a href="/winelist_editor" class="btn btn-success">Winelist Editor</a>
+    </h1>
+  </div>
+  {% from "includes/_formhelpers.html" import render_field %}
+  <form action="" method="POST">
+    <div class="form-group">
+      {{ render_field(form.name, class='form-control') }}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.location, class='form-control')}}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.varietal, class='form-control')}}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.glass, class='form-control')}}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.bottle, class='form-control')}}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.description, class='form-control')}}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.foodPairings, class_="form-control", id="editor") }}
+    </div>
+    <p>
+      <input class="btn btn-primary" type="submit" value="Submit">
+      <a class="btn btn-danger" href="/wine_dashboard">Cancel</a>
+    </p>
+  </form>
+{% endblock %}

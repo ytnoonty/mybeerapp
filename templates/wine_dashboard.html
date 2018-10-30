@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+{% block body %}
+  <h1>Wine Dashboard</h1>
+  <a href="/add_wine" class="btn btn-success">Add Wine</a>
+  <a href="/winelist_editor" class="btn btn-danger">Winelist Editor</a>
+    <div class="row justify-content-center">
+      <div class="row">
+        <div class="col-12 mt-1 mt-2">
+          <table class="table table-striped">
+            <thead>
+              <tr class="update-wine-list">
+                <th scope="col">Wine</th>
+                <th scope="col">Varietal</th>
+                <th scope="col">Location</th>
+                <th scope="col">Glass</th>
+                <th scope="col">Bottle</th>
+                <th scope="col">Description</th>
+                <th scope="col">Food Pairings</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="dash-wine-list">
+              {% for wine in wines %}
+                <tr scope="row">
+                  <td>{{wine.name}}</td>
+                  <td>{{wine.varietal}}</td>
+                  <td>{{wine.location}}</td>
+                  <td>{{wine.glass}}</td>
+                  <td>{{wine.bottle}}</td>
+                  <td>{{wine.description}}</td>
+                  <td>{{wine.foodPairings}}</td>
+                  <td><a href="edit_wine/{{wine.id}}" class="btn btn-default pull-right">Edit</a></td>
+                  <td>
+                    <form action="{{url_for('delete_wine', id=wine.id)}}" method="post">
+                      <input type="hidden" name="_method" value="DELETE">
+                      <input type="submit" value="Delete" class="btn btn-danger">
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="row">
+        <div class="col-12 mt-1 mt-2">
+          <p>Shamrocks Winelist Info 2018 &copy;</p>
+        </div>
+      </div>
+    </div>
+{% endblock %}

@@ -4,7 +4,16 @@
     <div class="search card-body">
       <h1>Search Untappd Beers</h1>
       <p class="lead">Enter a beer to fetch beer information</p>
-      <input type="text" id="searchBeer" class="form-control" placeholder="Enter any combination of brewery and/or beer name....">
+      <div class="mb-3">
+        <input type="text" id="searchBeer" class="form-control" placeholder="Enter any combination of brewery and/or beer name....">
+      </div>
+      <div>
+        <input id="search-beer-btn" class="btn btn-primary" type="click" value="Search for Beer (s)">
+        <a class="btn btn-success" href="/add_beer"> Add Beer Manually</a>
+        <a class="btn btn-success" href="/edit_beer_list">Beerlist Editor</a>
+        <a class="btn btn-danger" href="/dashboard">Beer Dashboard</a>
+        <a class="btn btn-danger" href="/on_tap_next_editor">On Tap Next Editor</a>
+      </div>
     </div>
     <div id="searchresults" class="container"></div>
   </div>

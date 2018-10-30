@@ -86,6 +86,9 @@ body {
 .font-xxsml {
   font-size: .5em;
 }
+.font-xssml {
+  font-size: .7em;
+}
 .font-xsml {
   font-size: .75em;
 }
@@ -102,6 +105,9 @@ body {
 }
 .font-color-gray {
   /* color: #888; */
+}
+.font-color-lt-gray {
+  color: #999;
 }
 .spacing-sml {
   letter-spacing: .09em;
