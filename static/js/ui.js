@@ -313,7 +313,7 @@ class UI {
                   <span class="card-text mb-1 italic-font font-xsml">(${wine.location})</span>
                 </div>
                 <div class="font-xsml">Gls.....  <span> ${wine.glass}</span>
-                <span>Btl.....  </span><span> ${wine.bottle}</span></div>
+                </div>
               </div>
             </div>
           </div>
