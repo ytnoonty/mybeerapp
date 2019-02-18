@@ -24,7 +24,8 @@ try:
         sql = """CREATE TABLE IF NOT EXISTS myflaskapp.winelist_current (
                 id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 venue_db_id INT(255),
-                id_wine INT(100)
+                id_wine INT(100),
+                id_dropdown INT(100)
                 )"""
         cursor.execute(sql)
 
