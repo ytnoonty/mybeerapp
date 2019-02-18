@@ -83,7 +83,7 @@ try:
         sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "5", "5", "5")"""
         cursor.execute(sql)
         sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "6", "6", "6")"""
-        ursor.execute(sql)
+        cursor.execute(sql)
         sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "7", "7", "7")"""
         cursor.execute(sql)
         sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "8", "8", "8")"""
