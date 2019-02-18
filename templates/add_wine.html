@@ -3,8 +3,8 @@
 {% block body %}
   <div>
     <h1>Add Wine
-      <a href="/wine_dashboard" class="btn btn-danger">Wine Dashboard</a>
-      <a href="/wine_dashboard" class="btn btn-success">Winelist Editor</a>
+      <a href="/wine_dashboard" class="btn btn-sm btn-danger">Wine Dashboard</a>
+      <a href="/wine_dashboard" class="btn btn-sm btn-success">Winelist Editor</a>
     </h1>
   </div>
   {% from "includes/_formhelpers.html" import render_field %}
@@ -32,8 +32,8 @@
     </div>
 
     <p>
-      <input class="btn btn-primary" type="submit" value="Submit">
-      <a href="/wine_dashboard" class="btn btn-danger">Cancel</a>
+      <input class="btn btn-sm btn-primary" type="submit" value="Submit">
+      <a href="/wine_dashboard" class="btn btn-sm btn-danger">Cancel</a>
     </p>
   </form>
 {% endblock %}

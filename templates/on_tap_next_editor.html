@@ -2,10 +2,16 @@
 
 {% block body %}
   <h1>On Tap Next Editor</h1>
-  <a class="btn btn-success" href="/add_beer"> Add Beer</a>
-  <a class="btn btn-success" href="/beersearch">Search Beers</a>
-  <a class="btn btn-danger" href="/dashboard">Beer Dashboard</a>
-  <a class="btn btn-danger" href="/edit_beer_list">Beerlist Editor</a>
+  <div class="row my-3 mx-auto">
+    <div class="col-12 my-1">
+      <a class="btn btn-sm btn-success" href="/add_beer"> Add Beer</a>
+      <a class="btn btn-sm btn-success" href="/beersearch">Search Beers</a>
+    </div>
+    <div class="col-12 my-1">
+      <a class="btn btn-sm btn-danger" href="/dashboard">Beer Dashboard</a>
+      <a class="btn btn-sm btn-danger" href="/edit_beer_list">Beerlist Editor</a>
+    </div>
+  </div>
   <hr>
 
   {% from "includes/_formhelpers.html" import  render_field %}
@@ -182,7 +188,7 @@
         </tr>
       </table>
       <!-- <p><input id="edit-beerlist" class="btn btn-primary" type="submit" value="Submit"></p> -->
-      <p><input id="edit-beerlist" class="btn btn-primary" type="click" value="Submit"></p>
+      <p><input id="edit-beerlist" class="btn btn-sm btn-primary" type="click" value="Submit"></p>
     </form>
   </div>
 {% endblock %}

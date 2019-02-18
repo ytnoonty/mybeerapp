@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{% block body %}
+  <h1>Settings</h1>
+  <hr>
+  {% from "includes/_formhelpers.html" import render_field %}
+  <form id="settings_form" name="settings_form" action="" method="POST">
+    <div class="row">
+      <div class="col-5">
+            <div class="form-group">
+              <label for="fontColor">Font Color:</label>
+              <input id="fontColor" class="form-control" name="fontColor" type="color" value="{{ settings.fontColor }}">
+              {{ render_field(form.fontColor, class_="form-control", disabled=true) }}
+            </div>
+      </div>
+      <div class="col-6">
+          <div class="form-group">
+            <label for="backgroundColor">Background Color:</label>
+            <input id="backgroundColor" class="form-control" name="backgroundColor" type="color" value="{{ settings.backgroundColor }}">
+            {{ render_field(form.backgroundColor, class_="form-control", disabled=true) }}
+          </div>
+      </div>
+    </div>
+    <div class="form-group">
+      {{ render_field(form.nameFontSize, class_="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.abvIbuFontSize, class_="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.screenTemplate, class_="form-control") }}
+    </div>
+    <hr>
+    <button id="submit_settings_btn" name="submit_settings_btn" type="submit" class="btn btn-sm btn-primary">Save Settings</button>
+  </form>
+{% endblock %}

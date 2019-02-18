@@ -3,8 +3,8 @@
 {% block body %}
 <div>
   <h1>Edit Beer
-    <a href="/dashboard" class="btn btn-danger">Beer Dashboard</a>
-    <a href="/dashboard" class="btn btn-success">Beerlist Editor</a>
+    <a href="/dashboard" class="btn btn-sm btn-danger">Beer Dashboard</a>
+    <a href="/dashboard" class="btn btn-sm btn-success">Beerlist Editor</a>
   </h1>
 </div>
   {% from "includes/_formhelpers.html" import  render_field %}
@@ -39,7 +39,7 @@
     </div>
     <p>
       <input class="btn btn-primary" type="submit" value="Submit">
-      <a href="/dashboard" class="btn btn-danger">Cancel</a>
+      <a href="/dashboard" class="btn btn-sm btn-danger">Cancel</a>
     </p>
   </form>
 {% endblock %}

@@ -3,16 +3,23 @@
   <div class="searchContainer">
     <div class="search card-body">
       <h1>Search Untappd Beers</h1>
+      <div class="row my-3 mx-auto">
+        <div class="col-12">
+          <a class="btn btn-sm btn-success mb-2" href="/add_beer"> Add Beer Manually</a>
+          <a class="btn btn-sm btn-success mb-2" href="/edit_beer_list">Beerlist Editor</a>
+        </div>
+        <div class="col-12">
+          <a class="btn btn-sm btn-danger mb-2" href="/dashboard">Beer Dashboard</a>
+          <a class="btn btn-sm btn-danger mb-2" href="/on_tap_next_editor">On Tap Next Editor</a>
+        </div>
+      </div>
+
       <p class="lead">Enter a beer to fetch beer information</p>
       <div class="mb-3">
         <input type="text" id="searchBeer" class="form-control" placeholder="Enter any combination of brewery and/or beer name....">
       </div>
       <div>
-        <input id="search-beer-btn" class="btn btn-primary" type="click" value="Search for Beer (s)">
-        <a class="btn btn-success" href="/add_beer"> Add Beer Manually</a>
-        <a class="btn btn-success" href="/edit_beer_list">Beerlist Editor</a>
-        <a class="btn btn-danger" href="/dashboard">Beer Dashboard</a>
-        <a class="btn btn-danger" href="/on_tap_next_editor">On Tap Next Editor</a>
+        <input id="search-beer-btn" class="btn btn-sm btn-primary" type="click" value="Search for Beer (s)">
       </div>
     </div>
     <div id="searchresults" class="container"></div>

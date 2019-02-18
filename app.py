@@ -3,7 +3,7 @@
 
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, jsonify
 from flask_mysqldb import MySQL
-from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, RadioField, validators
+from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, RadioField, DateField, DateTimeField, DecimalField, IntegerField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
 import feedparser
@@ -81,6 +81,26 @@ def mysqlQuerySelectOne(queryString, id):
     cur.close()
     return result
 
+def mysqlQuerySelectOneByName(queryString, name, id):
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Execute
+    query = cur.execute(queryString, [name, id])
+    result = cur.fetchone()
+    # Close connection
+    cur.close()
+    return result
+
+def mysqlQuerySelectAllById(query, id):
+    cur = mysql.connection.cursor()
+    # Get beers
+    mysqlQuery = cur.execute(query, [id])
+    result = cur.fetchall()
+
+    # Close connection
+    cur.close()
+    return result
+
 def mysqlQueryDelete(queryString, id):
     # Create cursor
     cur = mysql.connection.cursor()
@@ -103,6 +123,17 @@ def mysqlQueryUpdate(queryString, data, id):
 #############################
 # END MYSQL QUERY FUNCTIONS
 #############################
+
+# Check if user logged in
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('Unauthorized, Please login', 'danger')
+            return redirect(url_for('login'))
+    return wrap
 
 
 @app.route('/')
@@ -127,7 +158,17 @@ def proccess_print():
 
 @app.route('/update', methods=['POST'])
 def update():
-    beers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get Beer info
+    queryStr = ("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description, lc.id_dropdown FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history AND lc.venue_db_id={}").format(venuedbid)
+    results = cur.execute(queryStr)
+    # Get single beer
+    beers = cur.fetchall()
+    # Close connection
+    cur.close()
+
     beers_01_16 = beers[0:16]
     beers_17_22 = beers[16:22]
     return jsonify(beers);
@@ -137,9 +178,42 @@ def updateBeers():
     beers = mysqlQuery("SELECT * FROM list_history ORDER BY name ASC", "all")
     return jsonify(beers)
 
+@app.route('/_updateBeersDashboard', methods=['GET','POST'])
+def updateBeersDashboard():
+    venuedbid = session['venuedbid']
+    beers = mysqlQuerySelectAllById("SELECT * FROM list_history WHERE venue_db_id=%s ORDER BY name ASC", venuedbid)
+    return jsonify(beers)
+
+@app.route('/_searchBeerlist/<string:name>/', methods=['GET','POST'])
+def searchBeerlist(name):
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get Beer info
+    queryStr = ("SELECT * FROM list_history WHERE name LIKE'"+ name +"%' AND venue_db_id={};").format(venuedbid)
+    results = cur.execute(queryStr)
+    # Get single beer
+    beers = cur.fetchall()
+    # Close connection
+    cur.close()
+
+    return jsonify(beers)
+
 @app.route('/updateTappingNext', methods=['POST'])
 def updateTappingNext():
-    nextBeers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_on_next", "all")
+    venuedbid = session['venuedbid']
+
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get Beer info
+    queryStr = ("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_on_next AND lc.venue_db_id={}").format(venuedbid)
+    results = cur.execute(queryStr)
+    # Get single beer
+    nextBeers = cur.fetchall()
+    nextBeers = nextBeers[0:16]
+    # Close connection
+    cur.close()
+
     return jsonify(nextBeers)
 #end testing AJAX
 ##########################
@@ -150,7 +224,7 @@ def updateTappingNext():
 ##############################################
 @app.route('/draft_beers', methods=['GET', 'POST'])
 def draft_beers():
-    beers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
+    beers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description, lc.id_dropdown FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
     beers_01_16 = beers[0:16]
     beers_17_22 = beers[16:22]
     if beers > 0:
@@ -160,16 +234,40 @@ def draft_beers():
     else:
         msg = 'No Beers Found'
     return render_template('draft_beers.html', msg=msg, beers=beers)
+
 @app.route('/bottle_beers', methods=['GET', 'POST'])
 def bottle_beers():
-    beers = mysqlQuery("SELECT * FROM list_history ORDER BY name ASC", "all")
-    app.logger.info(beers)
+    venuedbid = session['venuedbid']
+
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get Beer info
+    results = cur.execute("SELECT * FROM list_history WHERE venue_db_id=%s ORDER BY name ASC", [venuedbid])
+    # Get single beer
+    beers = cur.fetchall()
+    # Close connection
+    cur.close()
+
     if beers > 0:
         jsonify(beers);
         return render_template('bottle_beers.html', beers=beers)
     else:
         msg = 'No Beers Found'
     return render_template('bottle_beers.html', msg=msg, beers=beers)
+
+@app.route('/_bottle_beers', methods=['GET', 'POST'])
+def _bottle_beers():
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get Beer info
+    results = cur.execute("SELECT * FROM list_history WHERE venue_db_id=%s ORDER BY name ASC", [venuedbid])
+    # Get all beer
+    beers = cur.fetchall()
+    # Close connection
+    cur.close()
+
+    return jsonify(beers)
 ##############################################
 # END ALL MENU
 ##############################################
@@ -180,6 +278,7 @@ def bottle_beers():
 
 # Current list of whats on tap screen testing
 @app.route('/beers_tv_screen')
+@is_logged_in
 def beers_tv_screen():
     # Create cursor
     cur = mysql.connection.cursor()
@@ -226,6 +325,233 @@ def about():
     else:
         msg = 'No Beers Found'
     return render_template('about.html', msg=msg)
+
+class SettingsForm(Form):
+    fontColor = StringField('Font Color Code:')
+    backgroundColor = StringField('Background Color Code:')
+    nameFontSize = SelectField(u'Name Font Size', coerce=int, option_widget=None)
+    abvIbuFontSize = SelectField(u'Abv, Ibu, Font Size', coerce=int, option_widget=None)
+    screenTemplate = SelectField(u'Screen Template', [validators.optional()], coerce=int, option_widget=None)
+
+class FontSizeForm(Form):
+    fontSizeOptions = DecimalField('Font Size Options (Min: 0.0 - Max: 5.0)', [validators.DataRequired(), validators.NumberRange(min=0, max=5.0)])
+    fontSizes = SelectField(u'Font Sizes', [validators.optional()], coerce=int, option_widget=None)
+class TemplateForm(Form):
+    templateName = StringField('Name of Screen Template', [validators.Length(min=1, max=50)])
+    templateSelect = SelectField(u'Templates', [validators.optional()], option_widget=None)
+
+# Add template to DB
+@app.route('/add_template', methods=['GET', 'POST'])
+def _add_template():
+    venuedbid = session['venuedbid']
+    form = TemplateForm(request.form)
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get screen templates from DB
+    results = cur.execute("SELECT * FROM templates WHERE venue_db_id=%s", [venuedbid])
+    templates = cur.fetchall()
+    # Close connection
+    cur.close()
+
+    form.templateSelect.choices = [(template['id'], template['templates']) for template in templates]
+
+    if request.method == 'POST' and form.validate():
+        template = request.form['templateName']
+        # Create cursor
+        cur = mysql.connection.cursor()
+        # Execute query
+        cur.execute("INSERT INTO templates(templates, venue_db_id, active_template) VALUES(%s, %s, %s)", (template, venuedbid, 'disabled'))
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Get the total font_size_options
+        results = cur.execute("SELECT * FROM templates WHERE venue_db_id=%s", [venuedbid])
+        templates = cur.fetchall()
+        form = TemplateForm(request.form)
+        form.templateSelect.choices = [(template['id'], template['templates']) for template in templates]
+        # Close connection
+        cur.close()
+
+        render_template('add_template.html', form=form)
+    return render_template('add_template.html', form=form)
+
+# Add font size to DB
+@app.route('/add_font_size', methods=['GET','POST'])
+def _add_size():
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get the total font_size_options
+    results = cur.execute("SELECT * FROM font_size_options WHERE venue_db_id=%s", [venuedbid])
+    sizes = cur.fetchall()
+    # Close connection
+    cur.close()
+
+    form = FontSizeForm(request.form)
+    form.fontSizes.choices = [(size['id'], size['font_sizes']) for size in sizes]
+
+    if request.method == 'POST' and form.validate():
+        app.logger.info(request.form['fontSizeOptions'] + 'em')
+        fontSize = request.form['fontSizeOptions'] + 'em'
+        # Create cursor
+        cur = mysql.connection.cursor()
+        # Execute query
+        cur.execute("INSERT INTO font_size_options(font_sizes, venue_db_id) VALUES(%s, %s)", (fontSize, venuedbid))
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Get the total font_size_options
+        results = cur.execute("SELECT * FROM font_size_options WHERE venue_db_id=%s", [venuedbid])
+        sizes = cur.fetchall()
+        form = FontSizeForm(request.form)
+        form.fontSizes.choices = [(size['id'], size['font_sizes']) for size in sizes]
+        # Close connection
+        cur.close()
+        return render_template('add_font_size.html', form=form)
+
+    return render_template('add_font_size.html', form=form)
+
+
+# Settings page
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    venuedbid = session['venuedbid']
+    form = SettingsForm(request.form)
+    settings = {
+        "fontColor":"",
+        "backgroundColor":"",
+        "nameFontSize":"",
+        "abvIbuFontSize":"",
+        "screenTemplate":""
+    }
+
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get user saved user_settings
+    result = cur.execute("SELECT * FROM user_settings WHERE venue_db_id=%s", [venuedbid])
+    settings_db = cur.fetchone()
+    app.logger.info('##################### USER SETTINGS ########################')
+    app.logger.info(settings_db)
+
+    settings['fontColor'] = settings_db['font_color']
+    settings['backgroundColor'] = settings_db['background_color']
+    settings['nameFontSize'] = settings_db['name_font_size']
+    settings['abvIbuFontSize'] = settings_db['abv_ibu_font_size']
+    settings['screenTemplate'] = settings_db['screen_template']
+
+    form = SettingsForm(request.form,
+        fontColor = settings_db['font_color'],
+        backgroundColor = settings_db['background_color'],
+        nameFontSize = settings_db['name_font_size'],
+        abvIbuFontSize = settings_db['abv_ibu_font_size'],
+        screenTemplate = settings_db['screen_template'],
+    )
+
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get the font size options
+    results = cur.execute("SELECT * FROM font_size_options WHERE venue_db_id=%s ORDER BY font_sizes ASC", [venuedbid])
+    # Get the whole list of query results
+    sizes = cur.fetchall()
+    # Close connection
+    cur.close()
+
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get screen templates from DB
+    results = cur.execute("SELECT * FROM templates WHERE venue_db_id=%s", [venuedbid])
+    templates = cur.fetchall()
+    # Close connection
+    cur.close()
+
+    form.nameFontSize.choices = [(size['id'], size['font_sizes']) for size in sizes]
+    form.abvIbuFontSize.choices = [(size['id'], size['font_sizes']) for size in sizes]
+    form.screenTemplate.choices = [(template['id'], template['templates']) for template in templates]
+
+    if request.method == 'POST' and form.validate():
+
+        settings['fontColor'] = request.form['fontColor']
+        settings['backgroundColor'] = request.form['backgroundColor']
+        settings['nameFontSize'] = request.form['nameFontSize']
+        settings['abvIbuFontSize'] = request.form['abvIbuFontSize']
+        settings['screenTemplate'] = request.form['screenTemplate']
+        app.logger.info('################### DB USER SETTINGS ##################')
+        app.logger.info(settings)
+
+        # Create cursor
+        cur = mysql.connection.cursor()
+        # Execute
+        cur.execute("UPDATE user_settings SET font_color=%s, background_color=%s, name_font_size=%s, abv_ibu_font_size=%s, screen_template=%s WHERE venue_db_id=%s", (settings['fontColor'], settings['backgroundColor'], settings['nameFontSize'], settings['abvIbuFontSize'], settings['screenTemplate'], venuedbid))
+        # Commit query
+        mysql.connection.commit()
+
+        fontColor = settings['fontColor'],
+        backgroundColor = settings['backgroundColor'],
+        nameFontSize = settings['nameFontSize'],
+        abvIbuFontSize = settings['abvIbuFontSize'],
+        screenTemplate = settings['screenTemplate']
+
+        # Close connection
+        cur.close()
+        flash('Settings Updated', 'success')
+
+        return render_template('settings.html', form=form, settings=settings)
+
+    return render_template('settings.html', form=form, settings=settings)
+
+# Update screen display
+@app.route('/_screen_display', methods=['GET', 'POST'])
+def _screen_display():
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get beer screen current list and info
+    queryStr = ("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description, lc.id_dropdown FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history AND lc.venue_db_id={}").format(venuedbid)
+    results = cur.execute(queryStr)
+    beers = cur.fetchall()
+    # Get events
+    queryStr = ("SELECT * FROM events WHERE venue_db_id={}").format(venuedbid)
+    results = cur.execute(queryStr)
+    eventsDb = cur.fetchall()
+    events = []
+    for eventDb in eventsDb:
+        event = {
+            "id":eventDb['id'],
+            "venue_db_id":eventDb['venue_db_id'],
+            "name":eventDb['name'],
+            "artist":eventDb['artist'],
+            "date_of_event":str(eventDb['date_of_event']),
+            "time_of_event":str(eventDb['time_of_event']),
+            "location":eventDb['location']
+        }
+        events.append(event)
+    # Get name font size
+    queryStr = ("SELECT fso.font_sizes from user_settings as us INNER JOIN font_size_options as fso ON fso.id=us.name_font_size WHERE us.venue_db_id={}").format(venuedbid)
+    results = cur.execute(queryStr)
+    nameFontSize = cur.fetchone()
+    # Get abv ibu font size
+    queryStr = ("SELECT fso.font_sizes from user_settings as us INNER JOIN font_size_options as fso ON fso.id=us.abv_ibu_font_size WHERE us.venue_db_id={}").format(venuedbid)
+    results = cur.execute(queryStr)
+    abvIbuFontSize = cur.fetchone()
+    # Get user settings
+    queryStr = ("SELECT us.font_color, us.background_color, t.templates from user_settings as us INNER JOIN templates as t ON t.id=us.screen_template INNER JOIN font_size_options as fso ON fso.id=us.name_font_size WHERE us.venue_db_id={}").format(venuedbid)
+    results = cur.execute(queryStr)
+    userSettings = cur.fetchone()
+    userSettings['nameFontSize'] = nameFontSize
+    userSettings['abvIbuFontSize'] = abvIbuFontSize
+    # app.logger.info(userSettings)
+    settings = (
+        {
+            "beers":beers,
+            "events":events,
+            "userSettings":userSettings,
+        }
+    )
+    # app.logger.info(settings)
+    # Close Cursor
+    cur.close()
+    return jsonify(settings)
+
 
 # Screen to print list
 @app.route('/beers_print')
@@ -283,7 +609,7 @@ def beer(id):
     cur = mysql.connection.cursor()
 
     # Get article
-    result = cur.execute("SELECT * FROM list_history WHERE id = %s", [id])
+    result = cur.execute("SELECT * FROM list_history WHERE id=%s", [id])
 
     # Get single beer
     beer = cur.fetchone()
@@ -296,6 +622,7 @@ def beer(id):
 # Register Form Class
 class RegisterForm(Form):
     name = StringField('Name', [validators.Length(min=1, max=50)])
+    venuename = StringField('Venue Name', [validators.Length(min=1, max=100)])
     username = StringField('Username', [validators.Length(min=4, max=25)])
     email = StringField('Email', [validators.Length(min=6, max=50)])
     password = PasswordField('Password', [
@@ -310,17 +637,92 @@ def register():
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate():
         name = form.name.data
+        venuename = form.venuename.data
         email = form.email.data
         username = form.username.data
         password = sha256_crypt.encrypt(str(form.password.data))
 
         # Create cursor
         cur = mysql.connection.cursor()
+        # Execute query
+        cur.execute("INSERT INTO users(name, venue_name, email, username, password) VALUES(%s, %s, %s, %s, %s)", (name, venuename, email, username, password))
+        # Commit to DB
+        mysql.connection.commit()
 
         # Execute query
-        cur.execute("INSERT INTO users(name, email, username, password) VALUES(%s, %s, %s, %s)", (name, email, username, password))
-
+        cur.execute("INSERT INTO user_settings(venue_db_id, font_color, background_color, name_font_size, abv_ibu_font_size, screen_template) VALUES(%s, %s, %s, %s, %s, %s)", (venuedbid, '#ffffff', '#000000', '1', '1', '1'))
         # Commit to DB
+        mysql.connection.commit()
+
+        # Execute query
+        cur.execute("INSERT INTO font_size_options(venue_db_id, font_sizes) VALUES(%s, %s)", (venuedbid, '1.0em'))
+        # Commit to DB
+        mysql.connection.commit()
+
+
+        # Execute query
+        cur.execute("INSERT INTO templates(templates, venue_db_id, active_template) VALUES(%s, %s, %s)", ('2 Columns, Names, ABV, IBU', venuedbid, 'disabled'))
+        # Commit to DB
+        mysql.connection.commit()
+
+
+
+        # Get user id by username
+        result = cur.execute("SELECT id FROM users WHERE venue_name=%s", [venuename])
+        # Get data
+        data = cur.fetchone()
+        venuedbid = data['id']
+        app.logger.info(venuedbid)
+
+        # Init beer list_history table for a new venue
+        # Execute
+        cur.execute("INSERT INTO list_history (venue_db_id, name, style, abv, ibu, brewery, location, website, description, draft_bottle_selection) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (venuedbid, 'Guinness', 'Stout - Irish Dry', 4.2, 45, 'Guinness', "St. James's Gate, Dublin, Ireland", 'http://www.guinness.com', '','Draft'))
+        # Get user id by username
+        result = cur.execute("SELECT id FROM list_history WHERE venue_db_id=%s AND name=%s", [venuedbid, 'Guinness'])
+        # Get data
+        data = cur.fetchone()
+        beerId = data['id']
+
+        # Init list_current table for a new venue
+        # Execute
+        for x in range(1, 23, 1):
+            cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, x))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '1'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '2'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '3'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '4'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '5'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '6'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '7'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '8'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '9'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '10'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '11'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '12'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '13'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '14'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '15'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '16'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '17'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '18'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '19'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '20'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '21'))
+        # cur.execute("INSERT INTO list_current (id_history, id_on_next, venue_db_id, id_dropdown) VALUES(%s, %s, %s, %s)", (beerId, beerId, venuedbid, '22'))
+
+        # Init wines table for a new venue
+        # Execute
+        cur.execute("INSERT INTO wines (venue_db_id, name, location, description, glass, bottle, varietal, foodPairings) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", (venuedbid, 'Wine name', 'Wine location', 'Wine description', 'Glass $', 'Bottle $', 'Wine varietal', 'Wine food pairings'))
+        # Get user id by username
+        result = cur.execute("SELECT id FROM wines WHERE venue_db_id=%s AND name=%s", [venuedbid, 'Wine name'])
+        # Get data
+        data = cur.fetchone()
+        wineId = data['id']
+        for x in range(1, 29, 1):
+            cur.execute("INSERT INTO winelist_current (id_wine, venue_db_id, id_dropdown) VALUES(%s, %s, %s)", (wineId, venuedbid, x))
+
+
+        # Commit
         mysql.connection.commit()
         # Close connection
         cur.close()
@@ -348,12 +750,14 @@ def login():
             # Get stored hash
             data = cur.fetchone()
             password = data['password']
+            venuedbid = data['id']
 
             # Compare passwords
             if sha256_crypt.verify(password_candidate, password):
                 # Passed
                 session['logged_in'] = True
                 session['username'] = username
+                session['venuedbid'] = venuedbid
 
                 flash('You are now logged in', 'success')
                 return redirect(url_for('dashboard'))
@@ -367,16 +771,16 @@ def login():
             return render_template('login.html', error=error)
     return render_template('login.html')
 
-# Check if user logged in
-def is_logged_in(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash('Unauthorized, Please login', 'danger')
-            return redirect(url_for('login'))
-    return wrap
+# # Check if user logged in
+# def is_logged_in(f):
+#     @wraps(f)
+#     def wrap(*args, **kwargs):
+#         if 'logged_in' in session:
+#             return f(*args, **kwargs)
+#         else:
+#             flash('Unauthorized, Please login', 'danger')
+#             return redirect(url_for('login'))
+#     return wrap
 
 # Logout
 @app.route('/logout')
@@ -390,16 +794,17 @@ def logout():
 @app.route('/dashboard')
 @is_logged_in
 def dashboard():
+    venuedbid = session['venuedbid']
     # Create cursor
     cur = mysql.connection.cursor()
     # Get articles
-    result = cur.execute("SELECT * FROM list_history ORDER BY name ASC")
+    result = cur.execute("SELECT * FROM list_history WHERE venue_db_id=%s ORDER BY name ASC", [venuedbid])
     beers = cur.fetchall()
     # Close connection
     cur.close()
+    for beer in beers:
+        beer['dash_menu_id'] = list(beer['name'])[0].lower()
 
-    # Close connection
-    cur.close()
 
     if result > 0:
         return render_template('dashboard.html', beers=beers)
@@ -425,6 +830,7 @@ class BeerForm(Form):
 @app.route('/add_beer', methods=['GET', 'POST'])
 @is_logged_in
 def add_beer():
+    venuedbid = session['venuedbid']
     form = BeerForm(request.form)
 
     form.draftBottle.data = "Draft"
@@ -441,16 +847,30 @@ def add_beer():
 #########################radio button to choose draft or bottle or both
         # draftBottle = form.draftBottle.data
         draftBottle = request.form['draftBottle']
-        app.logger.info(draftBottle)
-        app.logger.info('name')
+        venuedbid = session['venuedbid']
 
-        app.logger.info(name)
-        app.logger.info(draftBottle)
+
+
+
+#################################################################
+#################################################################
+#################################################################
+#################################################################
+        # getting the first letter of the name of the beer to put in the database
+        # to use alphabet menu to navigate the dashboard list
+        firstLetter = list(name)
+        app.logger.info(firstLetter)
+#################################################################
+#################################################################
+#################################################################
+#################################################################
+#################################################################
+#################################################################
         # Create Cursor
         cur = mysql.connection.cursor()
 
         # Execute
-        cur.execute("INSERT INTO list_history(name, style, abv, ibu, brewery, location, website, description, draft_bottle_selection) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)", (name, style, abv, ibu, brewery, location, website, description, draftBottle))
+        cur.execute("INSERT INTO list_history(name, style, abv, ibu, brewery, location, website, description, draft_bottle_selection, venue_db_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (name, style, abv, ibu, brewery, location, website, description, draftBottle, venuedbid))
 
         # Commit
         mysql.connection.commit()
@@ -496,13 +916,15 @@ def addUntappd():
     description = data['description']
     draftBottle = data['draftbottleselection']
 
+    venuedbid = session['venuedbid']
+
     # Send data to DB
     # mysqlQuery = "INSERT INTO list_history(name, style, abv, ibu, brewery, location, website, description, draft_bottle_selection) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)", (name, style, abv, ibu, brewery, location, website, description, draftBottle)
     # mysqlQuerySend(mysqlQuery)
 
     cur = mysql.connection.cursor()
     # Execute
-    cur.execute("INSERT INTO list_history(name, style, abv, ibu, brewery, location, website, description, draft_bottle_selection) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)", (name, style, abv, ibu, brewery, location, website, description, draftBottle))
+    cur.execute("INSERT INTO list_history(name, style, abv, ibu, brewery, location, website, description, draft_bottle_selection, venue_db_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (name, style, abv, ibu, brewery, location, website, description, draftBottle, venuedbid))
     # Commit
     mysql.connection.commit()
     # Close connection
@@ -515,11 +937,12 @@ def addUntappd():
 @app.route('/edit_beer/<string:id>', methods=['GET', 'POST'])
 @is_logged_in
 def edit_beer(id):
+    venuedbid = session['venuedbid']
     # Create cursor
     cur = mysql.connection.cursor()
 
     # Get beer by id
-    result = cur.execute("SELECT * FROM list_history WHERE id = %s", [id])
+    result = cur.execute("SELECT * FROM list_history WHERE id=%s AND venue_db_id=%s", [id, venuedbid])
 
     beer = cur.fetchone()
 
@@ -552,7 +975,7 @@ def edit_beer(id):
         cur = mysql.connection.cursor()
 
         # Execute
-        cur.execute("UPDATE list_history SET name=%s, style=%s, abv=%s, ibu=%s, brewery=%s, location=%s, website=%s, description=%s, draft_bottle_selection=%s WHERE id=%s", (name, style, abv, ibu, brewery, location, website, description, draftBottle, id))
+        cur.execute("UPDATE list_history SET name=%s, style=%s, abv=%s, ibu=%s, brewery=%s, location=%s, website=%s, description=%s, draft_bottle_selection=%s WHERE id=%s AND venue_db_id=%s", (name, style, abv, ibu, brewery, location, website, description, draftBottle, id, venuedbid))
         # Commit
         mysql.connection.commit()
 
@@ -569,11 +992,12 @@ def edit_beer(id):
 @app.route('/delete_beer/<string:id>', methods=['POST'])
 @is_logged_in
 def delete_beer(id):
+    venuedbid = session['venuedbid']
     # Create cursor
     cur = mysql.connection.cursor()
 
     # Execute
-    cur.execute("DELETE FROM list_history WHERE id = %s", [id])
+    cur.execute("DELETE FROM list_history WHERE id=%s AND venue_db_id=%s", [id, venuedbid])
 
     # Commit
     mysql.connection.commit()
@@ -631,19 +1055,21 @@ class NextBeerListForm(Form):
     beer16 = SelectField(u'Beer 16', coerce=int, option_widget=None)
 
 def getDefaultSelect(currentId):
+    venuedbid = session['venuedbid']
     # Create cursor
     cur = mysql.connection.cursor()
     # Get the total beer list
-    result = cur.execute("SELECT id_history FROM list_current WHERE id=%s", [currentId])
+    result = cur.execute("SELECT id_history FROM list_current WHERE id_dropdown=%s AND venue_db_id=%s", [currentId, venuedbid])
     thisBeer = cur.fetchone()
     app.logger.info(thisBeer)
     return thisBeer
 
 def getDefaultNextSelect(nextId):
+    venuedbid = session['venuedbid']
     # Create cursor
     cur = mysql.connection.cursor()
     # Get the total beer list
-    result = cur.execute("SELECT id_on_next FROM list_current WHERE id=%s", [nextId])
+    result = cur.execute("SELECT id_on_next FROM list_current WHERE id_dropdown=%s AND venue_db_id=%s", [nextId, venuedbid])
     thisBeer = cur.fetchone()
     app.logger.info(thisBeer)
     return thisBeer
@@ -652,20 +1078,13 @@ def getDefaultNextSelect(nextId):
 @app.route('/edit_beer_list', methods=['GET', 'POST'])
 @is_logged_in
 def edit_beer_list():
+    venuedbid = session['venuedbid']
     # Create cursor
     cur = mysql.connection.cursor()
     # Get the total beer list
-    results = cur.execute("SELECT * FROM list_history ORDER BY name ASC")
+    results = cur.execute("SELECT * FROM list_history WHERE venue_db_id=%s ORDER BY name ASC", [venuedbid])
     # Gets the whole list of query results
     beers = cur.fetchall()
-
-    # results = cur.execute("""SELECT * FROM list_history WHERE id BETWEEN "1" AND "17" ORDER BY name ASC""")
-    # beers = cur.fetchall()
-    # results = cur.execute("""SELECT * FROM list_history WHERE id BETWEEN "17" AND "21" ORDER BY name ASC""")
-    # beers_17_21 = cur.fetchall()
-
-    # Creates a beerDefault object from the CurrentBeerListDefault() Class
-    # beerDefault = CurrentBeerListDefault()
 
     # Call the getDefaultSelect() method to get id_history from list_current table
     beer1select = getDefaultSelect('1')
@@ -718,6 +1137,7 @@ def edit_beer_list():
         #tickerHeadline
         beer22=beer22select['id_history'],
     )
+    app.logger.info(beers)
 
     form.beer1.choices = [(beer['id'], beer['name']) for beer in beers]
     form.beer2.choices = [(beer['id'], beer['name']) for beer in beers]
@@ -774,29 +1194,29 @@ def edit_beer_list():
         cur = mysql.connection.cursor()
 
         # Execute
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer1, '1'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer2, '2'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer3, '3'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer4, '4'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer5, '5'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer6, '6'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer7, '7'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer8, '8'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer9, '9'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer10, '10'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer11, '11'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer12, '12'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer13, '13'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer14, '14'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer15, '15'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer16, '16'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer17, '17'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer18, '18'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer19, '19'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer20, '20'))
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer21, '21'))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer1, '1', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer2, '2', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer3, '3', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer4, '4', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer5, '5', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer6, '6', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer7, '7', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer8, '8', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer9, '9', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer10, '10', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer11, '11', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer12, '12', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer13, '13', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer14, '14', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer15, '15', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer16, '16', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer17, '17', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer18, '18', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer19, '19', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer20, '20', venuedbid))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer21, '21', venuedbid))
         #tickerHeadline
-        cur.execute("UPDATE list_current SET id_history=%s WHERE id=%s", (beer22, '22'))
+        cur.execute("UPDATE list_current SET id_history=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer22, '22', venuedbid))
 
         # Commit
         mysql.connection.commit()
@@ -821,22 +1241,52 @@ def edit_beer_list():
 ##############################################
 @app.route('/on_tap_next', methods=['GET', 'POST'])
 def on_tap_next():
-    currentBeers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get the total beer list
+    ######results = cur.execute("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history AND lh.venue_db_id=lc.venue_db_id")
+    results = cur.execute("SELECT lc.id, lh.id, lh.name, lh.brewery FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history AND lh.venue_db_id=lc.venue_db_id AND lc.venue_db_id=%s", [venuedbid])
+    # Gets the whole list of query results
+    currentBeers = cur.fetchall()
     currentBeers = currentBeers[0:16]
-    nextBeers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_on_next", "all")
+
+
+    # Get the total beer list
+    ############## nextBeers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_on_next AND lh.venue_db_id=lc.venue_db_id", "all")
+    results = cur.execute("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_on_next AND lh.venue_db_id=lc.venue_db_id AND lc.venue_db_id=%s", [venuedbid])
+    # Gets the whole list of query results
+    nextBeers = cur.fetchall()
+    nextBeers = nextBeers[0:16]
+    # Close connection
+    cur.close()
+
     return render_template('on_tap_next.html', currentBeers=currentBeers, nextBeers=nextBeers)
 
 @app.route('/on_tap_next_editor', methods=['GET','POST'])
 @is_logged_in
 def on_tap_next_editor():
+    venuedbid = session['venuedbid']
     # Create cursor
     cur = mysql.connection.cursor()
     # Get the total beer list
-    results = cur.execute("SELECT * FROM list_history ORDER BY name ASC")
+    results = cur.execute("SELECT * FROM list_history WHERE venue_db_id=%s ORDER BY name ASC", [venuedbid])
     # Gets the whole list of query results
     beers = cur.fetchall()
 
-    currentBeers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get the total beer list
+    results = cur.execute("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history  AND lh.venue_db_id=lc.venue_db_id AND lc.venue_db_id=%s", [venuedbid])
+    # Gets the whole list of query results
+    currentBeers = cur.fetchall()
+
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get the total beer list
+    results = cur.execute("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_on_next  AND lh.venue_db_id=lc.venue_db_id AND lc.venue_db_id=%s", [venuedbid])
+    # Gets the whole list of query results
+    nextBeers = cur.fetchall()
 
     # Call the getDefaultNextSelect() method to get id_history from list_current table
     beer1select = getDefaultNextSelect('1')
@@ -856,8 +1306,6 @@ def on_tap_next_editor():
     beer15select = getDefaultNextSelect('15')
     beer16select = getDefaultNextSelect('16')
 
-
-    app.logger.info(beer1select)
     form = NextBeerListForm(request.form,
         beer1=beer1select['id_on_next'],
         beer2=beer2select['id_on_next'],
@@ -916,22 +1364,22 @@ def on_tap_next_editor():
         cur = mysql.connection.cursor()
 
         # Execute
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer1, '1'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer2, '2'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer3, '3'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer4, '4'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer5, '5'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer6, '6'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer7, '7'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer8, '8'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer9, '9'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer10, '10'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer11, '11'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer12, '12'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer13, '13'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer14, '14'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer15, '15'))
-        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id=%s", (beer16, '16'))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer1, '1', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer2, '2', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer3, '3', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer4, '4', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer5, '5', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer6, '6', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer7, '7', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer8, '8', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer9, '9', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer10, '10', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer11, '11', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer12, '12', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer13, '13', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer14, '14', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer15, '15', venuedbid))
+        cur.execute("UPDATE list_current SET id_on_next=%s WHERE id_dropdown=%s AND venue_db_id=%s", (beer16, '16', venuedbid))
 
         # Commit
         mysql.connection.commit()
@@ -951,7 +1399,125 @@ def on_tap_next_editor():
 # END ON_TAP_NEXT SCREEN
 ##############################################
 
+##############################################
+# BEGIN EVENT DASHBOARD
+##############################################
+class EventForm(Form):
+    eventName = StringField('Event Name:', [validators.Length(min=5, max=100)])
+    eventArtist = StringField('Event Artist:', [validators.Length(min=5, max=100)])
+    eventDate = DateField('Event Date:', format='%m-%d-%Y')
+    eventTime = DateTimeField('Event Time:', format='%H:%M:%S')
+    eventLocation = StringField('Event Location', [validators.Length(min=5, max=100)])
 
+@app.route('/event_dashboard', methods=['GET', 'POST'])
+def event_dashboard():
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get events
+    results = cur.execute("SELECT * FROM events WHERE venue_db_id=%s ORDER BY name ASC", [venuedbid])
+    events = cur.fetchall()
+    # Close connection
+    cur.close()
+    return render_template('event_dashboard.html', events=events)
+
+@app.route('/add_event', methods=['GET', 'POST'])
+def add_event():
+    venuedbid = session['venuedbid']
+    form = EventForm(request.form)
+
+    if request.method == 'POST':
+        eventName = request.form['eventname']
+        eventArtist = request.form['eventartist']
+        eventDate = request.form['eventdate']
+        eventTime = request.form['eventtime']
+        eventLocation = request.form['eventlocation']
+
+        # Open cursor
+        cur = mysql.connection.cursor()
+        # Execute
+        cur.execute("INSERT INTO events(venue_db_id, name, artist, date_of_event, time_of_event, location) VALUES(%s, %s, %s, %s, %s, %s)", (venuedbid, eventName, eventArtist, eventDate, eventTime, eventLocation))
+        # Commit
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        flash('Event created', 'success')
+
+        return redirect(url_for('event_dashboard'))
+    return render_template('add_event.html', form=form)
+
+@app.route('/edit_event/<string:id>', methods=['GET', 'POST'])
+def edit_event(id):
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get event
+    result = cur.execute("SELECT * FROM events WHERE venue_db_id=%s AND id=%s", [venuedbid, id])
+    event = cur.fetchone()
+    # Close connection
+    cur.close()
+    app.logger.info(event['name'])
+    app.logger.info(event['artist'])
+    app.logger.info(event['date_of_event'])
+    app.logger.info(event['time_of_event'])
+    app.logger.info(event['location'])
+    # Get form
+    form = EventForm(request.form)
+
+    # Populate event form fields
+    form.eventName.data = event['name']
+    form.eventArtist.data = event['artist']
+    ###### form.eventDate.data = event['date_of_event']
+    time = event['time_of_event']
+    time = str(time)
+    time = time.split(":")
+    hour = time[0]
+    if int(hour) < 10:
+        hour = "0" + str(hour)
+    min = time[1]
+    sec = time[2]
+    time = hour + ':' + min
+    event['time'] = time
+    form.eventLocation.data = event['location']
+    app.logger.info(event)
+
+    if request.method == 'POST':
+        eventName = request.form['eventname']
+        eventArtist = request.form['eventartist']
+        eventDate = request.form['eventdate']
+        eventTime = request.form['eventtime']
+        eventLocation = request.form['eventlocation']
+
+        # Open cursor
+        cur = mysql.connection.cursor()
+        # Execute
+        cur.execute("UPDATE events SET name=%s, artist=%s, date_of_event=%s, time_of_event=%s, location=%s WHERE venue_db_id=%s AND id=%s", (eventName, eventArtist, eventDate, eventTime, eventLocation, venuedbid, id))
+        # Commit
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
+        flash('Event changed', 'success')
+
+        return redirect(url_for('event_dashboard'))
+    return render_template('edit_event.html', form=form, event=event)
+
+@app.route('/delete_event/<string:id>', methods=['POST'])
+def delete_event(id):
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Execute
+    cur.execute("DELETE FROM events WHERE id=%s AND venue_db_id=%s", [id, venuedbid])
+    # Commit
+    mysql.connection.commit()
+    # Close connection
+    cur.close()
+    flash('Event Deleted', 'success')
+
+    return redirect(url_for('event_dashboard'))
+##############################################
+# END EVENT DASHBOARD
+##############################################
 
 
 
@@ -1009,6 +1575,7 @@ class WineForm(Form):
 # Add Wine
 @app.route('/add_wine', methods=['GET', 'POST'])
 def add_wine():
+    venuedbid = session['venuedbid']
     form = WineForm(request.form)
 
     if request.method == 'POST' and form.validate():
@@ -1023,7 +1590,7 @@ def add_wine():
         # Create cursor
         cur = mysql.connection.cursor()
         # Execute
-        cur.execute("INSERT INTO wines(name, location, varietal, glass, bottle, description, foodPairings) VALUES(%s, %s, %s, %s, %s, %s, %s)", (name, location, varietal, glass, bottle, description, foodPairings))
+        cur.execute("INSERT INTO wines(name, location, varietal, glass, bottle, description, foodPairings, venue_db_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)", (name, location, varietal, glass, bottle, description, foodPairings, venuedbid))
         # Commit
         mysql.connection.commit()
         # Close connection
@@ -1037,22 +1604,30 @@ def add_wine():
 # Wine menu
 @app.route('/wine_dashboard', methods=['GET', 'POST'])
 def wine_dashboard():
-    data = mysqlQueryRecieve("SELECT * FROM wines ORDER BY name ASC", "all");
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get all wines
+    result = cur.execute("SELECT * FROM wines WHERE venue_db_id=%s ORDER BY name ASC", [venuedbid])
+    data = cur.fetchall()
     wines = data
+    # Close connection
+    cur.close()
     return render_template('wine_dashboard.html', wines=wines)
 
 # Get all wines from db
 @app.route('/_getwines', methods=['GET','POST'])
 def _getwines():
-    data = mysqlQueryRecieve("SELECT * FROM wines ORDER BY name ASC", "all");
+    venuedbid = session['venuedbid']
+    data = mysqlQueryRecieve('"SELECT * FROM wines WHERE venue_db_id=%s ORDER BY name ASC", [venuedbid]', "all");
     # app.logger.info(data)
     return jsonify(data)
 
 # Edit wine
 @app.route('/edit_wine/<string:id>', methods=['GET', 'POST'])
 def edit_wine(id):
-
-    data = mysqlQuerySelectOne("SELECT * FROM wines WHERE id=%s", id)
+    venuedbid = session['venuedbid']
+    data = mysqlQuerySelectOne("SELECT * FROM wines WHERE id=%s AND venue_db_id=%s", [id, venuedbid])
     wine = data
     # Get form
     form = WineForm(request.form)
@@ -1078,7 +1653,7 @@ def edit_wine(id):
         # Create cursor
         cur = mysql.connection.cursor()
         # Execute
-        cur.execute("UPDATE wines SET name=%s, location=%s, varietal=%s, glass=%s, bottle=%s, description=%s, foodPairings=%s WHERE id=%s", (name, location, varietal, glass, bottle, description, foodPairings, id))
+        cur.execute("UPDATE wines SET name=%s, location=%s, varietal=%s, glass=%s, bottle=%s, description=%s, foodPairings=%s WHERE id=%s AND venue_db_id=%s", (name, location, varietal, glass, bottle, description, foodPairings, id, venuedbid))
         # Commit
         mysql.connection.commit()
         # Close connection
@@ -1093,8 +1668,9 @@ def edit_wine(id):
 # Delete wine
 @app.route('/delete_wine/<string:id>', methods=['POST'])
 def delete_wine(id):
+    venuedbid = session['venuedbid']
     # Query the database funciton
-    mysqlQueryDelete("DELETE FROM wines WHERE id=%s", id)
+    mysqlQueryDelete("DELETE FROM wines WHERE id=%s AND venue_db_id=%s", [id, venuedbid])
     # Flash message
     flash('Wine Deleted!!!', 'success')
     return redirect(url_for('wine_dashboard'))
@@ -1133,14 +1709,29 @@ class CurrentWinelistForm(Form):
 
 
 def getDefaulCurrentWinelist(id):
-    data = mysqlQuerySelectOne("SELECT * FROM winelist_current WHERE id=%s", id)
-    return data
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get all wines
+    result = cur.execute("SELECT * FROM winelist_current WHERE id_dropdown=%s AND venue_db_id=%s", [id, venuedbid])
+    data = cur.fetchone()
+    wine = data
+    # Close connection
+    cur.close()
+    return wine
 
 # Winelist editor
 @app.route('/winelist_editor', methods=['GET','POST'])
 def winelist_editor():
-    data = mysqlQuerySelectAll("SELECT * FROM wines ORDER BY name ASC")
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get all wines
+    result = cur.execute("SELECT * FROM wines WHERE venue_db_id=%s ORDER BY name ASC", [venuedbid])
+    data = cur.fetchall()
     wines = data
+    # Close connection
+    cur.close()
 
     wine1select = getDefaulCurrentWinelist('1')
     wine2select = getDefaulCurrentWinelist('2')
@@ -1263,35 +1854,43 @@ def winelist_editor():
         wine27 = request.form['wine27']
         wine28 = request.form['wine28']
 
+        # Create Cursor
+        cur = mysql.connection.cursor()
 
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine1, "1")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine2, "2")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine3, "3")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine4, "4")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine5, "5")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine6, "6")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine7, "7")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine8, "8")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine9, "9")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine10, "10")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine11, "11")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine12, "12")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine13, "13")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine14, "14")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine15, "15")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine16, "16")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine17, "17")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine18, "18")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine19, "19")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine20, "20")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine21, "21")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine22, "22")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine23, "23")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine24, "24")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine25, "25")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine26, "26")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine27, "27")
-        mysqlQueryUpdate("UPDATE winelist_current SET id_wine=%s WHERE id=%s", wine28, "28")
+        # Execute
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine1, "1", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine2, "2", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine3, "3", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine4, "4", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine5, "5", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine6, "6", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine7, "7", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine8, "8", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine9, "9", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine10, "10", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine11, "11", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine12, "12", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine13, "13", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine14, "14", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine15, "15", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine16, "16", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine17, "17", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine18, "18", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine19, "19", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine20, "20", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine21, "21", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine22, "22", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine23, "23", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine24, "24", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine25, "25", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine26, "26", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine27, "27", venuedbid))
+        cur.execute("UPDATE winelist_current SET id_wine=%s WHERE id_dropdown=%s AND venue_db_id=%s", (wine28, "28", venuedbid))
+
+        # Commit
+        mysql.connection.commit()
+        # Close connection
+        cur.close()
 
         # Flash success message on the screen
         flash('Winelist Updated!!!', 'success')
@@ -1303,13 +1902,28 @@ def winelist_editor():
 # Get all wines from db
 @app.route('/_getCurrentWinelist', methods=['GET','POST'])
 def _getCurrentWinelist():
-    data = mysqlQuerySelectAll("SELECT wl.name, wl.location, wl.description, wl.glass, wl.bottle, wl.varietal, wl.foodPairings FROM winelist_current AS wc, wines AS wl WHERE wl.id=wc.id_wine")
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get all wines
+    result = cur.execute("SELECT wl.name, wl.location, wl.description, wl.glass, wl.bottle, wl.varietal, wl.foodPairings FROM winelist_current AS wc, wines AS wl WHERE wl.id=wc.id_wine AND wl.venue_db_id=wc.venue_db_id AND wc.venue_db_id=%s", [venuedbid])
+    data = cur.fetchall()
+    # Close connection
+    cur.close()
     return jsonify(data)
 
 # winelist menu
 @app.route('/winelist_menu')
 def winelist_menu():
-    data = mysqlQuerySelectAll("SELECT wl.name, wl.location, wl.description, wl.glass, wl.bottle, wl.varietal, wl.foodPairings FROM winelist_current AS wc, wines AS wl WHERE wl.id=wc.id_wine")
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get all wines
+    result = cur.execute("SELECT wl.name, wl.location, wl.description, wl.glass, wl.bottle, wl.varietal, wl.foodPairings FROM winelist_current AS wc, wines AS wl WHERE wl.id=wc.id_wine AND wl.venue_db_id=wc.venue_db_id AND wc.venue_db_id=%s", [venuedbid])
+    data = cur.fetchall()
+    # Close connection
+    cur.close()
+
     winelist = data
     redWines = data[0:10]
     whiteWines = data[10:18]
@@ -1327,7 +1941,15 @@ def winelist_menu():
 # winelist description menu
 @app.route('/winelist_description')
 def winelist_description():
-    data = mysqlQuerySelectAll("SELECT wl.name, wl.location, wl.description, wl.glass, wl.bottle, wl.varietal, wl.foodPairings FROM winelist_current AS wc, wines AS wl WHERE wl.id=wc.id_wine")
+    venuedbid = session['venuedbid']
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get all wines
+    result = cur.execute("SELECT wl.name, wl.location, wl.description, wl.glass, wl.bottle, wl.varietal, wl.foodPairings FROM winelist_current AS wc, wines AS wl WHERE wl.id=wc.id_wine AND wl.venue_db_id=wc.venue_db_id AND wc.venue_db_id=%s", [venuedbid])
+    data = cur.fetchall()
+    # Close connection
+    cur.close()
+
     winelist = data
     redWines = data[0:10]
     whiteWines = data[10:18]

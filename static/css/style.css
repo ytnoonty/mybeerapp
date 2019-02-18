@@ -265,42 +265,40 @@ i {
   transform: rotate(-45deg);
 }
 
-
-/* ***************************** */
-/* BEGIN TESTING.HTML */
-/* ***************************** */
-.polling_message {
-  color: yellow;
-  float: left;
-  margin-right: 2%;
-  font-size: 3em;
+/* Dashboard alphabet side menu */
+.dashboard-alpha-side-menu {
+  left: -45px;
+  top: 65px;
+}
+.dashboard-alpha-side-menu ul {
+  list-style-type: none;
+}
+.dashboard-alpha-side-menu ul li {
+  /* padding: 0px 5px 0 15px; */
+}
+.dashboard-alpha-side-menu ul li a {
+  color: #000;
+  padding: 1px 15px 1px 15px;
+}
+.dashboard-alpha-side-menu ul li a:hover {
+  color: #000;
+  text-decoration: none;
 }
 
-.view_port {
-  background-color: black;
-  height: 75px;
-  width: 100%;
+
+.animate-table {
   overflow: hidden;
+  animation: slideOpen .2s ease-in-out 0s forwards;
 }
 
-.cylon_eye {
-  background-color: #aaa;
-  background-image: linear-gradient(to right,
-      rgba(0, 0, 0, .9) 10%,
-      rgba(0, 0, 0, .6) 25%,
-      rgba(0, 0, 0, .3) 50%,
-      rgba(0, 0, 0, .6) 75%,
-      rgba(0, 0, 0, .9) 90%);
-  color: white;
-  height: 100%;
-  width: 30%;
-
-  -webkit-animation: 15s linear 0s infinite alternate move_eye;
-          animation: 15s linear 0s infinite alternate move_eye;
+@keyframes slideOpen {
+  0% {
+    opacity: 0.0;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
 }
-
-@-webkit-keyframes move_eye { from { margin-left: -20%; } to { margin-left: 100%; }  }
-        @keyframes move_eye { from { margin-left: -20%; } to { margin-left: 100%; }  }
-/* ***************************** */
-/* END TESTING.HTML */
-/* ***************************** */

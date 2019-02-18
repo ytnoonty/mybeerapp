@@ -3,8 +3,8 @@
 {% block body %}
   <div>
     <h1>Edit Wine
-      <a href="/wine_dashboard" class="btn btn-danger">Wine Dashboard</a>
-      <a href="/winelist_editor" class="btn btn-success">Winelist Editor</a>
+      <a href="/wine_dashboard" class="btn btn-sm btn-danger">Wine Dashboard</a>
+      <a href="/winelist_editor" class="btn btn-sm btn-success">Winelist Editor</a>
     </h1>
   </div>
   {% from "includes/_formhelpers.html" import render_field %}
@@ -30,9 +30,13 @@
     <div class="form-group">
       {{ render_field(form.foodPairings, class_="form-control", id="editor") }}
     </div>
-    <p>
-      <input class="btn btn-primary" type="submit" value="Submit">
-      <a class="btn btn-danger" href="/wine_dashboard">Cancel</a>
-    </p>
+    <div class="row justify-content-between">
+      <div class="col-4">
+        <input class="btn btn-sm btn-primary" type="submit" value="Submit">
+      </div>
+      <div class="col-4">
+        <a class="btn btn-sm btn-danger" href="/wine_dashboard">Cancel</a>
+      </div>
+    </div>
   </form>
 {% endblock %}

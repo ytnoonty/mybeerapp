@@ -211,3 +211,210 @@ function animateTicker(el, movement, duration) {
     iterations: Infinity
   });
 }
+
+
+
+
+
+// Init Beer
+const beer = new Beer();
+// Search input for beer on the dashboard
+const searchBeerDashboard = document.getElementById('dashboard-search-beer');
+const dashboardBeerInfo = document.getElementById('dashboard-beer-info');
+const dashboardClearSearchBtn = document.getElementById('clear-dash-search');
+
+document.addEventListener('click', (e)=>{
+  if (e.target.classList.contains('toggle-table')){
+    console.log('TOGGLE-TABLE');
+    e.target.parentElement.nextElementSibling.firstElementChild.classList.toggle('d-none');
+  }
+  // e.preventDefault();
+});
+
+if (searchBeerDashboard !== null) {
+  // Search input event listener
+  searchBeerDashboard.addEventListener('keyup', (e) => {
+    // Get input text
+    const userText = e.target.value;
+    if (userText !== ''){
+      // console.log(userText);
+      // Clear dashboard beers
+      uiClearBeerInfo();
+      // Make http call to get searched beer
+      beer.getBeer(userText)
+        .then(data => {
+          if (data.result === null){
+            // Show alert if not found
+            console.log('results === null');
+          } else {
+            // Show beer info
+            uiPopulateBeersInfo(data.result);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    } else {
+      // Clear dashboard beers
+      uiClearBeerInfo();
+      // Make http call to get all beers
+      console.log('CLEARING UI NOW');
+      beer.getBeerList()
+        .then(data => {
+          console.log('DATA IS GOOD');
+          // Populate dashboard
+          uiPopulateBeersInfo(data.results);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+
+    }
+  });
+}
+
+if (dashboardClearSearchBtn !== null) {
+  dashboardClearSearchBtn.addEventListener('click', (e) => {
+    // Clear dashboard search input
+    if (searchBeerDashboard.value !== ''){
+        // Clear dashboard beers
+        uiClearBeerInfo();
+        // Make http call to get all beers
+        console.log('CLEARING UI NOW');
+        beer.getBeerList()
+          .then(data => {
+            console.log('DATA IS GOOD');
+            // Populate dashboard
+            uiPopulateBeersInfo(data.results);
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    }
+    searchBeerDashboard.value = '';
+    searchBeerDashboard.focus();
+  });
+}
+
+function uiPopulateBeersInfo(beers) {
+  let dashboardTable = document.createElement('table');
+  dashboardTable.className = 'mt-3 table table-striped';
+  beers.forEach(beer => {
+    console.log(beer);
+    dashboardTable.innerHTML += `
+      <tr>
+        <th class="toggle-table">${beer.name}</th>
+        <td><a href="edit_beer/${beer.id}" class="btn btn-default pull-right">Edit</a></td>
+        <td>
+          <form action="/delete_beer/${beer.id}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="submit" value="Delete" class="btn btn-danger">
+          </form>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="d-none animate-table">
+          <div class="row">
+            <div class="col-5">ID:</div>
+            <div class="col-7">${beer.id}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">Style:</div>
+            <div class="col-7">${beer.style}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">ABV:</div>
+            <div class="col-7">${beer.abv}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">IBU:</div>
+            <div class="col-7">${beer.ibu}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">Brewery:</div>
+            <div class="col-7">${beer.brewery}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">Location:</div>
+            <div class="col-7">${beer.location}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">Website:</div>
+            <div class="col-7">${beer.website}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">Description:</div>
+            <div class="col-7">${beer.description}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">Draft / Bottle:</div>
+            <div class="col-7">${beer.draft_bottle_selection}</div>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+  dashboardBeerInfo.appendChild(dashboardTable);
+}
+
+function uiClearBeerInfo() {
+  dashboardBeerInfo.innerHTML = '';
+}
+
+function uiShowBeerInfo(beer){
+  beer = beer.result;
+  console.log(beer);
+  dashboardBeerInfo.innerHTML = `
+    <table class="mt-3 table table-striped">
+      <tr>
+        <th class="toggle-table">${beer.name}</th>
+        <td><a href="edit_beer/${beer.id}" class="btn btn-default pull-right">Edit</a></td>
+        <td>
+          <form action="/delete_beer/${beer.id}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="submit" value="Delete" class="btn btn-danger">
+          </form>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="d-none animate-table">
+          <div class="row">
+            <div class="col-5">ID:</div>
+            <div class="col-7">${beer.id}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">Style:</div>
+            <div class="col-7">${beer.style}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">ABV:</div>
+            <div class="col-7">${beer.abv}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">IBU:</div>
+            <div class="col-7">${beer.ibu}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">Brewery:</div>
+            <div class="col-7">${beer.brewery}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">Location:</div>
+            <div class="col-7">${beer.location}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">Website:</div>
+            <div class="col-7">${beer.website}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">Description:</div>
+            <div class="col-7">${beer.description}</div>
+          </div>
+          <div class="row">
+            <div class="col-5">Draft / Bottle:</div>
+            <div class="col-7">${beer.draft_bottle_selection}</div>
+          </div>
+        </td>
+      </tr>
+    </table>`;
+}

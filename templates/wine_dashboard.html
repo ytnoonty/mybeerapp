@@ -1,8 +1,8 @@
 {% extends 'layout.html' %}
 {% block body %}
   <h1>Wine Dashboard</h1>
-  <a href="/add_wine" class="btn btn-success">Add Wine</a>
-  <a href="/winelist_editor" class="btn btn-danger">Winelist Editor</a>
+  <a href="/add_wine" class="btn btn-sm btn-success">Add Wine</a>
+  <a href="/winelist_editor" class="btn btn-sm btn-danger">Winelist Editor</a>
     <div class="row justify-content-center">
       <div class="row">
         <div class="col-12 mt-1 mt-2">
@@ -30,11 +30,11 @@
                   <td>{{wine.bottle}}</td>
                   <td>{{wine.description}}</td>
                   <td>{{wine.foodPairings}}</td>
-                  <td><a href="edit_wine/{{wine.id}}" class="btn btn-default pull-right">Edit</a></td>
+                  <td><a href="edit_wine/{{wine.id}}" class="btn btn-sm btn-default pull-right">Edit</a></td>
                   <td>
                     <form action="{{url_for('delete_wine', id=wine.id)}}" method="post">
                       <input type="hidden" name="_method" value="DELETE">
-                      <input type="submit" value="Delete" class="btn btn-danger">
+                      <input type="submit" value="Delete" class="btn btn-sm btn-danger">
                     </form>
                   </td>
                 </tr>
