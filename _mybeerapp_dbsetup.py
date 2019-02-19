@@ -80,6 +80,14 @@ try:
         cursor.execute(sql)
         sql = """INSERT INTO myflaskapp.templates (venue_db_id, templates, active_template) VALUES ("1", "1 Column", "disabled")"""
         cursor.execute(sql)
+        sql = """INSERT INTO myflaskapp.templates (venue_db_id, templates, active_template) VALUES ("1", "2 Columns, Names", "disabled")"""
+        cursor.execute(sql)
+        sql = """INSERT INTO myflaskapp.templates (venue_db_id, templates, active_template) VALUES ("1", "2 Columns, Artist Time", "disabled")"""
+        cursor.execute(sql)
+        sql = """INSERT INTO myflaskapp.templates (venue_db_id, templates, active_template) VALUES ("1", "2 Columns, Names, ABV", "disabled")"""
+        cursor.execute(sql)
+        sql = """INSERT INTO myflaskapp.templates (venue_db_id, templates, active_template) VALUES ("1", "2 Columns, Names, ABV, IBU", "disabled")"""
+        cursor.execute(sql)
 
 
         sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "1")"""
