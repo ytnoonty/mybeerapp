@@ -50,6 +50,8 @@ try:
                 create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )"""
         cursor.execute(sql)
+        sql = """INSERT INTO myflaskapp.list_history (venue_db_id, name, style, abv, ibu, brewery, location, website, description, draft_bottle_selection) VALUES ("1", "name", "style", "0.0", "0", "brewery", "location", "website", "description", "draft/bottle")"""
+        cursor.execute(sql)
 
         sql = """CREATE TABLE IF NOT EXISTS myflaskapp.list_current (
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -63,10 +65,10 @@ try:
         sql = """CREATE TABLE IF NOT EXISTS myflaskapp.font_size_options (
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 venue_db_id INT(255),
-                font_size VARCHAR(100)
+                font_sizes VARCHAR(100)
                 )"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.font_size_options (venue_db_id, font_sizes) VALUES ("0", "1.0em")"""
+        sql = """INSERT INTO myflaskapp.font_size_options (venue_db_id, font_sizes) VALUES ("1", "1.0em")"""
         cursor.execute(sql)
 
         sql = """CREATE TABLE IF NOT EXISTS myflaskapp.templates (
