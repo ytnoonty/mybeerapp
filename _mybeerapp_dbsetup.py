@@ -19,16 +19,20 @@ try:
                 register_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )"""
         cursor.execute(sql)
+        sql = """INSERT INTO myflaskapp.users (venue_name, name, username, password, email) VALUES ("admin", "admin", "admin", "", "admin@emdail.com")"""
+        cursor.execute(sql)
 
         sql = """CREATE TABLE IF NOT EXISTS myflaskapp.user_settings (
                 id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                venue_db_id VARCHAR(255),
+                venue_db_id INT(255),
                 font_color VARCHAR(100),
                 background_color VARCHAR(100),
                 name_font_size INT(10),
-                abv_ibu_fron_size INT(10),
+                abv_ibu_font_size INT(10),
                 screen_template INT(10)
                 )"""
+        cursor.execute(sql)
+        sql = """INSERT INTO myflaskapp.user_settings (venue_db_id, font_color, background_color, name_font_size, abv_ibu_font_size, screen_template) VALUES ("1", "#000000", "#000000", "1", "1", "1")"""
         cursor.execute(sql)
 
         sql = """CREATE TABLE IF NOT EXISTS myflaskapp.list_history (
@@ -56,10 +60,13 @@ try:
                 )"""
         cursor.execute(sql)
 
-        sql = """CREATE TABLE IF NOT EXISTS myflaskapp.font_sizes (
+        sql = """CREATE TABLE IF NOT EXISTS myflaskapp.font_size_options (
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                venue_db_id INT(255),
                 font_size VARCHAR(100)
                 )"""
+        cursor.execute(sql)
+        sql = """INSERT INTO myflaskapp.font_size_options (venue_db_id, font_sizes) VALUES ("0", "1.0em")"""
         cursor.execute(sql)
 
         sql = """CREATE TABLE IF NOT EXISTS myflaskapp.templates (
@@ -69,52 +76,53 @@ try:
                 active_template VARCHAR(100)
                 )"""
         cursor.execute(sql)
+        sql = """INSERT INTO myflaskapp.templates (venue_db_id, templates, active_template) VALUES ("1", "1 Column", "disabled")"""
+        cursor.execute(sql)
 
 
-
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "1", "1", "1")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "1")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "2", "2", "2")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "2")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "3", "3", "3")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "3")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "4", "4", "4")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "4")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "5", "5", "5")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "5")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "6", "6", "6")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "6")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "7", "7", "7")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "7")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "8", "8", "8")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "8")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "9", "9", "9")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "9")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "10", "10", "10")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "10")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "11", "11", "11")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "11")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "12", "12", "12")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "12")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "13", "13", "13")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "13")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "14", "14", "14")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "14")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "15", "15", "15")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "15")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "16", "16", "16")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "16")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "17", "17", "17")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "17")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "18", "18", "18")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "18")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "19", "19", "19")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "19")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "20", "20", "20")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "20")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "21", "21", "21")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "21")"""
         cursor.execute(sql)
-        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("0", "22", "22", "22")"""
+        sql = """INSERT INTO myflaskapp.list_current (venue_db_id, id_history, id_on_next, id_dropdown) VALUES ("1", "1", "1", "22")"""
         cursor.execute(sql)
         connection.commit()
 
