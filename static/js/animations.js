@@ -222,6 +222,8 @@ const beer = new Beer();
 const searchBeerDashboard = document.getElementById('dashboard-search-beer');
 const dashboardBeerInfo = document.getElementById('dashboard-beer-info');
 const dashboardClearSearchBtn = document.getElementById('clear-dash-search');
+const dashboardTable = document.querySelectorAll('table tr');
+const dashboardTableRowName = document.querySelectorAll('.row-name');
 
 document.addEventListener('click', (e)=>{
   if (e.target.classList.contains('toggle-table')){
@@ -235,39 +237,59 @@ if (searchBeerDashboard !== null) {
   // Search input event listener
   searchBeerDashboard.addEventListener('keyup', (e) => {
     // Get input text
-    const userText = e.target.value;
+    const userText = e.target.value.toLowerCase();
     if (userText !== ''){
       // console.log(userText);
+      // console.log(dashboardTable);
+      dashboardTableRowName.forEach(tableRow => {
+        let name = tableRow.innerText.split('\t')[0];
+        // console.log(name);
+        if (name.toLowerCase().indexOf(userText) > -1) {
+          // console.log(name);
+          // console.log(tableRow);
+          tableRow.classList.remove('d-none');
+        } else {
+          tableRow.classList.add('d-none');
+        }
+      });
+      // dashboardTable.forEach(table => {
+      //   console.log(table.firstElementChild);
+      // });
+
+
       // Clear dashboard beers
-      uiClearBeerInfo();
-      // Make http call to get searched beer
-      beer.getBeer(userText)
-        .then(data => {
-          if (data.result === null){
-            // Show alert if not found
-            console.log('results === null');
-          } else {
-            // Show beer info
-            uiPopulateBeersInfo(data.result);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
+      // uiClearBeerInfo();
+      // // Make http call to get searched beer
+      // beer.getBeer(userText)
+      //   .then(data => {
+      //     if (data.result === null){
+      //       // Show alert if not found
+      //       console.log('results === null');
+      //     } else {
+      //       // Show beer info
+      //       uiPopulateBeersInfo(data.result);
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.log(err);
+      //   })
     } else {
+      dashboardTableRowName.forEach(tableRow => {
+        tableRow.classList.remove('d-none');
+      });
       // Clear dashboard beers
-      uiClearBeerInfo();
+      // uiClearBeerInfo();
       // Make http call to get all beers
-      console.log('CLEARING UI NOW');
-      beer.getBeerList()
-        .then(data => {
-          console.log('DATA IS GOOD');
-          // Populate dashboard
-          uiPopulateBeersInfo(data.results);
-        })
-        .catch(err => {
-          console.log(err);
-        })
+      // console.log('CLEARING UI NOW');
+      // beer.getBeerList()
+      //   .then(data => {
+      //     console.log('DATA IS GOOD');
+      //     // Populate dashboard
+      //     uiPopulateBeersInfo(data.results);
+      //   })
+      //   .catch(err => {
+      //     console.log(err);
+      //   })
 
     }
   });
