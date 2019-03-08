@@ -173,6 +173,7 @@ class ScreenTemplate {
             </tr>
             </table>
             </li>`;
+
             eventData.forEach(function(event){
               let eventStartMonth = parseInt(event.date_of_event.split("-")[1]);
               let eventStartDate = parseInt(event.date_of_event.split("-")[2]);
@@ -183,6 +184,12 @@ class ScreenTemplate {
               let currentHour = new Date().getHours();
               let currentMin = new Date().getMinutes();
 
+
+              console.log('^^^^^^^^^^^^^ TIME LOGGING ^^^^^^^^^^^^^^');
+              console.log(`currentHour: ${currentHour}, currentMin: ${currentMin}`);
+              console.log(`eventStartHour: ${eventStartHour}, eventStartMin: ${eventStartMin}`);
+              console.log(`eventEndHour: ${eventEndHour}, eventEndMin: ${eventEndMin}`);
+              console.log('^^^^^^^^^^^^^ TIME LOGGING ^^^^^^^^^^^^^^');
 
 
               if (eventStartMonth == parseInt(new Date().getMonth()) + 1) {
