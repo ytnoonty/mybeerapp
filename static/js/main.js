@@ -1,5 +1,6 @@
 // Init ScreenUpdater
 const screen = new ScreenUpdater;
+const screenTemplate = new ScreenTemplate;
 
 let flashMsgDiv = document.getElementById('flash-msg-div');
 let updateProcessPrint = document.getElementById('update-tv-screen');
@@ -44,6 +45,36 @@ if (editList != null) {
   });
   // updateScreens();
 }
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// BEGIN LOGIN FORM FOR STORAGE
+///////////////////////////////////////////////////////////////////////////////
+let loginForm = document.querySelector("#login-form");
+let loginFormSubmitBtn = document.querySelector("#login-form-submit-button");
+let loginUsername = document.querySelector("#login-username");
+let loginPassword = document.querySelector("#login-password");
+let stayLoggedIn = document.querySelector("#stay-check");
+if (loginForm !== null) {
+  console.log("login");
+  loginUsername.value = "HELLO There";
+  loginPassword.value = "PASSWORD";
+  loginFormSubmitBtn.addEventListener("click", e => {
+    console.log("CLICKING LOGIN NOW");
+    if (stayLoggedIn.checked) {
+      if (stayLoggedIn.value == "true"){
+        console.log("THIS IS IT");
+        console.log(stayLoggedIn.value);
+      }
+    }
+    loginForm.submit();
+    e.preventDefault();
+  });
+}
+///////////////////////////////////////////////////////////////////////////////
+// END LOGIN FORM FOR STORAGE
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 
 // if (divTicker) {
@@ -371,20 +402,20 @@ function updateExample6() {
 
         if (templates == '2 Columns, Names') {
           // console.log("2 Columns, Names");
-          updateDisplayScreen(beers, events, settings);
+          screenTemplate.updateDisplayScreen(beers, events, settings);
           // console.log(beers);
         } else if (templates == '2 Columns, Artist Time') {
-          updateDisplayScreenArtistTime(beers, events, settings);
+          screenTemplate.updateDisplayScreenArtistTime(beers, events, settings);
         } else if (templates == '2 Columns, Names, ABV') {
           // console.log('2 Columns, Names, ABV');
-          twoColNameAbv(beers, settings);
+          screenTemplate.twoColNameAbv(beers, settings);
           // console.log(beers);
         } else if (templates == '2 Columns, Names, ABV, IBU'){
           // console.log('2 Columns, Names, ABV, IBU');
-          exampleSix(beers, settings);
+          screenTemplate.exampleSix(beers, settings);
           // console.log(beers);
         } else {
-          exampleSix(beers, settings);
+          screenTemplate.exampleSix(beers, settings);
           // console.log(beers);
         }
       }
@@ -426,401 +457,6 @@ function updateExample6() {
 // END ASYNC AWAIT
 //???????????????????????????????????????????????????
 } // END FUNCTION updateExample6()
-
-function updateDisplayScreenArtistTime(data, eventData, settings) {
-  // console.log(settings);
-  let data0116 = data.slice(0,16);
-  let data1722 = data.slice(16,22);
-  let data0108 = data.slice(0,8);
-  let data0816 = data.slice(8,16);
-  let example6 = document.getElementById('example6');
-  let example6HTML = '';
-  // console.log(eventData);
-  example6HTML = `
-  <div class="row mt-3">
-    <div class="col-lg">
-      <div class="list-group">
-        <ul class="list-group-flush list-group-bts">`;
-          data0108.forEach(function(beer){
-            example6HTML += `
-            <li class="cardvs">
-              <table class="beer-screen-table">
-                <tr class="beer-screen-tr">
-                  <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
-                </tr>
-                <tr class="left-spacer beer-screen-tr font-sml">
-                  <td class=" w-third">${beer.style}</td>
-                  <td class="w-fifth"><span class="font-xxsml"></span> ${beer.abv}<span class="font-xsml">%</span></td>
-                  <td class="italic-font  w-third">${beer.brewery}</td>
-                </tr>
-              </table>
-            </li>`
-          });
-  example6HTML += `
-        </ul>
-      </div>
-    </div>
-    <div class="col-lg">
-      <div class="list-group">
-        <ul class="list-group-flush list-group-bts">
-            <li class="cardvs backgrounds">
-              <table>
-                <tr>
-                  <h1 class="text-center italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="events-heading">EVENTS OF THE DAY</span></h1>
-                </tr>
-                <tr class="beer-screen-tr event-details">
-                  <h3 class="text-center bold-font">March ${new Date().getDate()}th ${new Date().getFullYear()}</h3>
-                </tr>
-              </table>
-            </li>
-        </ul>
-      </div>
-      <div class="list-group">
-        <ul class="list-group-flush list-group-bts">`;
-          eventData.forEach(function(event){
-            let etoe = event.time_of_event;
-            etoe = etoe.split(':');
-            let etoeHour = parseInt(etoe[0]);
-            let etoeMin = parseInt(etoe[1]);
-            if (etoeHour > 0 && etoeHour < 13) {
-              console.log(`${etoeHour}:${etoeMin} AM`);
-            } else {
-              etoeHour -= 12;
-              console.log(`${etoeHour}:${etoeMin} PM`);
-            }
-
-            example6HTML += `
-            <li class="cardvs backgrounds">
-              <table>
-                <tr>
-                  <td><h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="event-artist">${event.artist}</span></h1></td>
-                  <td><h1 class="italic-font bold-font left-spacer no-btm-margin><span class="event-details">${event.time_of_event}</span></h1></td>
-                </tr>
-              </table>
-            </li>`
-          });
-  example6HTML += `
-        </ul>
-      </div>
-    </div>
-  </div>`;
-  if (example6 !== null) {
-    example6HTML += `<div></div>`;
-    example6.innerHTML = example6HTML;
-    let backgrounds = document.querySelectorAll('.backgrounds');
-    // console.log(backgrounds);
-    let eventsHeading = document.querySelector('.events-heading');
-    let eventArtist = document.querySelectorAll('.event-artist');
-    let eventDetails = document.querySelectorAll('.event-details');
-    eventsHeading.style.color = `${settings.font_color}`;
-    eventArtist.forEach(eArtist => {
-      eArtist.style.color = `${settings.font_color}`;
-      eArtist.style.fontSize = `${settings.nameFontSize.font_sizes}`;
-    });
-    eventDetails.forEach(eventDetail => {
-      eventDetail.style.fontSize = `${settings.abvIbuFontSize.font_sizes}`;
-    });
-    backgrounds.forEach(background => {
-      background.style.backgroundImage = `linear-gradient(to bottom, #333, ${settings.background_color})`;
-    });
-  }
-  ///////////////////////////////////////////////
-  // END  UPDATE
-  ///////////////////////////////////////////////
-}
-
-
-function updateDisplayScreen(data, eventData, settings) {
-  // console.log(settings);
-  let data0116 = data.slice(0,16);
-  let data1722 = data.slice(16,22);
-  let data0108 = data.slice(0,8);
-  let data0816 = data.slice(8,16);
-  let example6 = document.getElementById('example6');
-  let example6HTML = '';
-  // console.log(eventData);
-  example6HTML = `
-  <div class="row mt-3">
-    <div class="col-lg">
-      <div class="list-group">
-        <ul class="list-group-flush list-group-bts">`;
-          data0108.forEach(function(beer){
-            example6HTML += `
-            <li class="cardvs">
-              <table class="beer-screen-table">
-                <tr class="beer-screen-tr">
-                  <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
-                </tr>
-                <tr class="left-spacer beer-screen-tr font-sml">
-                  <td class=" w-third">${beer.style}</td>
-                  <td class="w-fifth"><span class="font-xxsml"></span> ${beer.abv}<span class="font-xsml">%</span></td>
-                  <td class="italic-font  w-third">${beer.brewery}</td>
-                </tr>
-              </table>
-            </li>`
-          });
-  example6HTML += `
-        </ul>
-      </div>
-    </div>
-    <div class="col-lg">
-
-
-
-
-      <div class="list-group">
-        <ul class="list-group-flush list-group-bts">
-            <li class="cardvs backgrounds">
-              <table>
-                <tr>
-                  <h1 class="text-center italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="events-heading">EVENTS OF THE DAY</span></h1>
-                </tr>
-                <tr class="beer-screen-tr event-details">
-                  <h3 class="text-center bold-font">March ${new Date().getDate()}th ${new Date().getFullYear()}</h3>
-                </tr>
-              </table>
-            </li>
-        </ul>
-      </div>
-
-
-      <div class="list-group">
-        <ul class="list-group-flush list-group-bts">`;
-          eventData.forEach(function(event){
-            example6HTML += `
-            <li class="cardvs backgrounds">
-              <table>
-                <tr>
-                  <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="event-artist">${event.artist}</span></h1>
-                </tr>
-                <tr class="left-spacer beer-screen-tr font-sml event-details">
-                  <td class="bold-font w-third">${event.location}</td>
-                  <td class="italic-font bold-font w-third">${event.time_of_event}</td>
-                  <td class="w-fifth mr-"><span class="font-xxsml"></span> ${event.date_of_event}<span class="font-xsml"></span></td>
-                </tr>
-              </table>
-            </li>`
-          });
-  example6HTML += `
-        </ul>
-      </div>
-    </div>
-  </div>`;
-  if (example6 !== null) {
-    example6HTML += `<div></div>`;
-    example6.innerHTML = example6HTML;
-    let backgrounds = document.querySelectorAll('.backgrounds');
-    // console.log(backgrounds);
-    let eventsHeading = document.querySelector('.events-heading');
-    let eventArtist = document.querySelectorAll('.event-artist');
-    let eventDetails = document.querySelectorAll('.event-details');
-    eventsHeading.style.color = `${settings.font_color}`;
-    eventArtist.forEach(eArtist => {
-      eArtist.style.color = `${settings.font_color}`;
-      eArtist.style.fontSize = `${settings.nameFontSize.font_sizes}`;
-    });
-    eventDetails.forEach(eventDetail => {
-      eventDetail.style.fontSize = `${settings.abvIbuFontSize.font_sizes}`;
-    });
-    backgrounds.forEach(background => {
-      background.style.backgroundImage = `linear-gradient(to bottom, #333, ${settings.background_color})`;
-    });
-  }
-  ///////////////////////////////////////////////
-  // END  UPDATE
-  ///////////////////////////////////////////////
-}
-//////////////////////////////////////////////////////
-// END ASYNC AWAIT updateExample6()
-//////////////////////////////////////////////////////
-
-
-
-//////////////////////////////////////////////////////
-// START EASY AJAX.JS updateExample6()
-//////////////////////////////////////////////////////
-
-// function updateExample6() {
-//   const http = new easyHTTP;
-//
-//   // Create POST
-//   http.postRecieve('/update', function(err, post) {
-//     // console.log('************NEW POST BEGIN postRecieve***************');
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       exampleSix(post);
-//     }
-//   }); // END function http.postRecieve()
-// } // END FUNCTION updateExample6()
-
-//////////////////////////////////////////////////////
-// END EASY AJAX.JS updateExample6()
-//////////////////////////////////////////////////////
-function exampleSix(data, settings) {
-  // console.log("WHAT IS IN THE POST VAR: " + data);
-  // console.log('**********NEW POST END OF NEW POST REQUEST**********');
-  // console.log("NEW POST this.responseText: " + data);
-    // data = JSON.parse(data);
-  // console.log('data: ' + data);
-  // console.log('******************NEW POST  END OF PARSING JSON DATA *****************');
-    let data0116 = data.slice(0,16);
-    let data1722 = data.slice(16,22);
-    let data0108 = data.slice(0,8);
-    let data0816 = data.slice(8,16);
-  // console.log("data0116: " + data0116);
-  // console.log('data0116[0]: ' + data0116[0].name, data0116[0].style);
-  // console.log('data0116[1]: ' + data0116[1].name, data0116[1].style);
-  // console.log('******************NEW POST  END OF DATA0116 *****************');
-  // console.log('******************NEW POST  END postRecieve *****************');
-  ///////////////////////////////////////////////
-  // START  UPDATE
-  ///////////////////////////////////////////////
-  let example6 = document.getElementById('example6');
-  let example6HTML = '';
-  example6HTML = `
-  <div class="row mt-3">
-    <div class="col-lg">
-      <div class="list-group">
-        <ul class="list-group-flush list-group-bts">`;
-          data0108.forEach(function(beer){
-            example6HTML += `
-            <li class="cardvs">
-              <table class="beer-screen-table">
-                <tr class="beer-screen-tr">
-                  <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
-                </tr>
-                <tr class="left-spacer beer-screen-tr font-sml">
-                  <td class=" w-third">${beer.style}</td>
-                  <td class="w-fifth"><span class="font-xxsml"></span> ${beer.abv}<span class="font-xsml">%</span></td>
-                  <td class="italic-font  w-third">${beer.brewery}</td>
-                </tr>
-              </table>
-            </li>`
-          });
-  example6HTML += `
-        </ul>
-      </div>
-    </div>
-    <div class="col-lg">
-      <div class="list-group">
-        <ul class="list-group-flush list-group-bts">`;
-          data0816.forEach(function(beer){
-            example6HTML += `
-            <li class="cardvs">
-              <table>
-                <tr>
-                  <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
-                </tr>
-                <tr class="left-spacer beer-screen-tr font-sml">
-                  <td class="bold-font w-third">${beer.style}</td>
-                  <td class="w-fifth"><span class="font-xxsml"></span> ${beer.abv}<span class="font-xsml">%</span></td>
-                  <td class="italic-font bold-font w-third">${beer.brewery}</td>
-                </tr>
-              </table>
-            </li>`
-          });
-  example6HTML += `
-        </ul>
-      </div>
-    </div>
-  </div>`;
-  if (example6 !== null) {
-    // console.log(example6HTML);
-    //USED FOR TESTING THE ajax update
-    //uncomment line below and reload browser or reboot pi
-    example6HTML += `<div></div>`;
-    example6.innerHTML = example6HTML;
-  }
-  // console.log(example6HTML);
-  ///////////////////////////////////////////////
-  // END  UPDATE
-  ///////////////////////////////////////////////
-}
-
-function twoColNameAbv (data, settings) {
-  // console.log("WHAT IS IN THE POST VAR: " + data);
-  // console.log('**********NEW POST END OF NEW POST REQUEST**********');
-  // console.log("NEW POST this.responseText: " + data);
-    // data = JSON.parse(data);
-  // console.log('data: ' + data);
-  // console.log('******************NEW POST  END OF PARSING JSON DATA *****************');
-    let data0116 = data.slice(0,16);
-    let data1722 = data.slice(16,22);
-    let data0108 = data.slice(0,8);
-    let data0816 = data.slice(8,16);
-  // console.log("data0116: " + data0116);
-  // console.log('data0116[0]: ' + data0116[0].name, data0116[0].style);
-  // console.log('data0116[1]: ' + data0116[1].name, data0116[1].style);
-  // console.log('******************NEW POST  END OF DATA0116 *****************');
-  // console.log('******************NEW POST  END postRecieve *****************');
-  ///////////////////////////////////////////////
-  // START  UPDATE
-  ///////////////////////////////////////////////
-  let example6 = document.getElementById('example6');
-  let example6HTML = '';
-  example6HTML = `
-  <div class="row mt-3">
-    <div class="col-lg">
-      <div class="list-group">
-        <ul class="list-group-flush list-group-bts">`;
-          data0108.forEach(function(beer){
-            example6HTML += `
-            <li class="cardvs">
-              <table class="beer-screen-table">
-                <tr class="beer-screen-tr">
-                  <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
-                </tr>
-                <tr class="left-spacer beer-screen-tr font-sml">
-                  <td class=" w-third">${beer.style}</td>
-                  <td class="w-fifth"><span class="font-xxsml"></span> ${beer.abv}<span class="font-xsml">%</span></td>
-
-                </tr>
-              </table>
-            </li>`
-          });
-  example6HTML += `
-        </ul>
-      </div>
-    </div>
-    <div class="col-lg">
-      <div class="list-group">
-        <ul class="list-group-flush list-group-bts">`;
-          data0816.forEach(function(beer){
-            example6HTML += `
-            <li class="cardvs">
-              <table>
-                <tr>
-                  <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
-                </tr>
-                <tr class="left-spacer beer-screen-tr font-sml">
-                  <td class="bold-font w-third">${beer.style}</td>
-                  <td class="w-fifth"><span class="font-xxsml"></span> ${beer.abv}<span class="font-xsml">%</span></td>
-
-                </tr>
-              </table>
-            </li>`
-          });
-  example6HTML += `
-        </ul>
-      </div>
-    </div>
-  </div>`;
-  if (example6 !== null) {
-    // console.log(example6HTML);
-    //USED FOR TESTING THE ajax update
-    //uncomment line below and reload browser or reboot pi
-    example6HTML += `<div></div>`;
-    example6.innerHTML = example6HTML;
-  }
-  // console.log(example6HTML);
-  ///////////////////////////////////////////////
-  // END  UPDATE
-  ///////////////////////////////////////////////
-}
-
-
-
 
 
 

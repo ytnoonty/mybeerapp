@@ -12,9 +12,9 @@ database = MySQLdb.connect (host="localhost", user="root", passwd="qwerty", db="
 cursor = database.cursor()
 
 # Create the INSERT INTO sql query
-query = """INSERT INTO beerlist_main(name, style, abv, ibu, brewery, location, website, description) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"""
+query = """INSERT INTO list_history(name, style, abv, ibu, brewery, location, website, description, draft_bottle_selection) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 # Create a For loop to itereate through each row in the XLS file, starting at row 2 to skip the headers
-for r in range(0, 219):#sheet.nrows):
+for r in range(0, 365):#sheet.nrows):
     name = sheet.cell(r,0).value
     style = sheet.cell(r,1).value
     abv = sheet.cell(r,2).value
@@ -23,9 +23,10 @@ for r in range(0, 219):#sheet.nrows):
     location = sheet.cell(r,5).value
     website = sheet.cell(r,6).value
     description = sheet.cell(r,7).value
+    draft_bottle_selection = sheet.cell(r,8).value
 
 # Assign values from each row
-    values = (name, style, abv, ibu, brewery, location, website, description)
+    values = (name, style, abv, ibu, brewery, location, website, description, draft_bottle_selection)
 
 # Execute sql query
     cursor.execute(query, values)

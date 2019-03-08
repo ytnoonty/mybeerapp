@@ -68,6 +68,17 @@ body {
   height: 11vh;
   overflow: hidden;
 }
+.card-bottom-margin-5vh {
+  height: 5vh;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+}
+.card-vh-control {
+  height: 8vh;
+  margin-top: .5vh;
+  margin-bottom: .5vh;
+}
+
 .italic-font {
   font-style: italic;
 }

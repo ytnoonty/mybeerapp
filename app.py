@@ -144,6 +144,7 @@ def index():
 #testing AJAX
 @app.route('/proccess_print', methods=['GET', 'POST'])
 def proccess_print():
+    venuedbid = session['venuedbid']
     beers = mysqlQuery("SELECT lc.id, lh.id, lh.name, lh.style, lh.abv, lh.ibu, lh.brewery, lh.location, lh.website, lh.description FROM list_history AS lh, list_current AS lc WHERE lh.id=lc.id_history", "all")
     beers_01_16 = beers[0:16]
     beers_17_22 = beers[16:22]
@@ -278,7 +279,6 @@ def _bottle_beers():
 
 # Current list of whats on tap screen testing
 @app.route('/beers_tv_screen')
-@is_logged_in
 def beers_tv_screen():
     # Create cursor
     cur = mysql.connection.cursor()
@@ -342,6 +342,7 @@ class TemplateForm(Form):
 
 # Add template to DB
 @app.route('/add_template', methods=['GET', 'POST'])
+@is_logged_in
 def _add_template():
     venuedbid = session['venuedbid']
     form = TemplateForm(request.form)
@@ -377,6 +378,7 @@ def _add_template():
 
 # Add font size to DB
 @app.route('/add_font_size', methods=['GET','POST'])
+@is_logged_in
 def _add_size():
     venuedbid = session['venuedbid']
     # Create cursor
@@ -414,6 +416,7 @@ def _add_size():
 
 # Settings page
 @app.route('/settings', methods=['GET', 'POST'])
+@is_logged_in
 def settings():
     venuedbid = session['venuedbid']
     form = SettingsForm(request.form)
@@ -510,7 +513,7 @@ def _screen_display():
     results = cur.execute(queryStr)
     beers = cur.fetchall()
     # Get events
-    queryStr = ("SELECT * FROM events WHERE venue_db_id={}").format(venuedbid)
+    queryStr = ("SELECT * FROM events WHERE venue_db_id={} ORDER BY time_of_event ASC").format(venuedbid)
     results = cur.execute(queryStr)
     eventsDb = cur.fetchall()
     events = []
@@ -522,6 +525,7 @@ def _screen_display():
             "artist":eventDb['artist'],
             "date_of_event":str(eventDb['date_of_event']),
             "time_of_event":str(eventDb['time_of_event']),
+            "endtime_of_event":str(eventDb['endtime_of_event']),
             "location":eventDb['location']
         }
         events.append(event)
@@ -1407,9 +1411,11 @@ class EventForm(Form):
     eventArtist = StringField('Event Artist:', [validators.Length(min=5, max=100)])
     eventDate = DateField('Event Date:', format='%m-%d-%Y')
     eventTime = DateTimeField('Event Time:', format='%H:%M:%S')
+    eventEndTime = DateTimeField('Event End Time:', format='%H:%M:%S')
     eventLocation = StringField('Event Location', [validators.Length(min=5, max=100)])
 
 @app.route('/event_dashboard', methods=['GET', 'POST'])
+@is_logged_in
 def event_dashboard():
     venuedbid = session['venuedbid']
     # Create cursor
@@ -1422,6 +1428,7 @@ def event_dashboard():
     return render_template('event_dashboard.html', events=events)
 
 @app.route('/add_event', methods=['GET', 'POST'])
+@is_logged_in
 def add_event():
     venuedbid = session['venuedbid']
     form = EventForm(request.form)
@@ -1431,12 +1438,13 @@ def add_event():
         eventArtist = request.form['eventartist']
         eventDate = request.form['eventdate']
         eventTime = request.form['eventtime']
+        eventEndTime = request.form['eventendtime']
         eventLocation = request.form['eventlocation']
 
         # Open cursor
         cur = mysql.connection.cursor()
         # Execute
-        cur.execute("INSERT INTO events(venue_db_id, name, artist, date_of_event, time_of_event, location) VALUES(%s, %s, %s, %s, %s, %s)", (venuedbid, eventName, eventArtist, eventDate, eventTime, eventLocation))
+        cur.execute("INSERT INTO events(venue_db_id, name, artist, date_of_event, time_of_event, endtime_of_event, location) VALUES(%s, %s, %s, %s, %s, %s, %s)", (venuedbid, eventName, eventArtist, eventDate, eventTime, eventEndTime, eventLocation))
         # Commit
         mysql.connection.commit()
         # Close connection
@@ -1447,6 +1455,7 @@ def add_event():
     return render_template('add_event.html', form=form)
 
 @app.route('/edit_event/<string:id>', methods=['GET', 'POST'])
+@is_logged_in
 def edit_event(id):
     venuedbid = session['venuedbid']
     # Create cursor
@@ -1460,6 +1469,7 @@ def edit_event(id):
     app.logger.info(event['artist'])
     app.logger.info(event['date_of_event'])
     app.logger.info(event['time_of_event'])
+    app.logger.info(event['endtime_of_event'])
     app.logger.info(event['location'])
     # Get form
     form = EventForm(request.form)
@@ -1478,6 +1488,16 @@ def edit_event(id):
     sec = time[2]
     time = hour + ':' + min
     event['time'] = time
+    endTime = event['endtime_of_event']
+    endTime = str(endTime)
+    endTime = endTime.split(":")
+    hour = endTime[0]
+    if int(hour) < 10:
+        hour = "0" + str(hour)
+    min = endTime[1]
+    sec = endTime[2]
+    endTime = hour + ':' + min
+    event['endTime'] = endTime
     form.eventLocation.data = event['location']
     app.logger.info(event)
 
@@ -1486,12 +1506,13 @@ def edit_event(id):
         eventArtist = request.form['eventartist']
         eventDate = request.form['eventdate']
         eventTime = request.form['eventtime']
+        eventEndTime = request.form['eventendtime']
         eventLocation = request.form['eventlocation']
 
         # Open cursor
         cur = mysql.connection.cursor()
         # Execute
-        cur.execute("UPDATE events SET name=%s, artist=%s, date_of_event=%s, time_of_event=%s, location=%s WHERE venue_db_id=%s AND id=%s", (eventName, eventArtist, eventDate, eventTime, eventLocation, venuedbid, id))
+        cur.execute("UPDATE events SET name=%s, artist=%s, date_of_event=%s, time_of_event=%s, endtime_of_event=%s, location=%s WHERE venue_db_id=%s AND id=%s", (eventName, eventArtist, eventDate, eventTime, eventEndTime, eventLocation, venuedbid, id))
         # Commit
         mysql.connection.commit()
         # Close connection
@@ -1502,6 +1523,7 @@ def edit_event(id):
     return render_template('edit_event.html', form=form, event=event)
 
 @app.route('/delete_event/<string:id>', methods=['POST'])
+@is_logged_in
 def delete_event(id):
     venuedbid = session['venuedbid']
     # Create cursor

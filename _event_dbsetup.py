@@ -17,6 +17,7 @@ try:
                 artist VARCHAR(100),
                 date_of_event DATE,
                 time_of_event TIME,
+                endtime_of_event TIME,
                 location VARCHAR(255)
                 )"""
         cursor.execute(sql)
@@ -25,3 +26,6 @@ try:
 
 finally:
         connection.close()
+
+## NEED TO ADD TO DB
+## ALTER TABLE events ADD COLUMN endtime_of_event TIME;

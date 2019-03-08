@@ -2,14 +2,14 @@
 
 {% block body %}
   <h1>Login</h1>
-  <form method="POST" action="">
+  <form method="POST" action="" id="login-form">
     <div class="form-group">
       <div class="row d-flex justify-content-between">
         <label>Username</label>
         <a href="">Forgot Username</a>
       </div>
       <div class="row">
-        <input type="text" name="username" class="form-control" value={{request.form.username}}>
+        <input type="text" name="username" id="login-username" class="form-control" value={{request.form.username}}>
       </div>
     </div>
     <div class="form-group">
@@ -18,7 +18,7 @@
           <a href="">Forgot Password</a>
       </div>
       <div class="row">
-        <input type="password" name="password" class="form-control" value={{request.form.password}}>
+        <input type="password" name="password" id="login-password" class="form-control" value={{request.form.password}}>
       </div>
     </div>
     <div class="row">
@@ -32,9 +32,9 @@
       </div>
       <div class="col-3 form-group">
         <label for="stay-check">Stay logged in</label>
-        <input class="" id="stay-check" type="checkbox">
+        <input class="" id="stay-check" type="checkbox" value="true">
       </div>
     </div>
-    <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+    <button type="click" id="login-form-submit-button" class="btn btn-sm btn-primary">Submit</button>
   </form>
 {% endblock %}

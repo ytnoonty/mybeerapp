@@ -31,6 +31,11 @@
     <input id="eventTime" class="form-control" name="eventtime" type="time" value="{{event.time}}">
   </div>
   <div class="form-group">
+    <!-- {{ render_field(form.eventTime, class_="form-control") }} -->
+    <label for="eventEndTime">Event End Time:</label>
+    <input id="eventEndTime" class="form-control" name="eventendtime" type="time" value="{{event.endTime}}">
+  </div>
+  <div class="form-group">
     <!-- {{ render_field(form.eventLocation, class_="form-control") }} -->
     <label for="eventLocation">Event Location:</label>
     <input id="eventLocation" class="form-control" name="eventlocation" type="text" value="{{event.location}}">
