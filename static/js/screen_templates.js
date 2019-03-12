@@ -184,23 +184,27 @@ class ScreenTemplate {
               let currentHour = new Date().getHours();
               let currentMin = new Date().getMinutes();
 
+              let eventStartDateTime = new Date(new Date().getFullYear(), eventStartMonth - 1, eventStartDate, eventStartHour, eventStartMin, 0, 0);
+              let eventEndDateTime = new Date(new Date().getFullYear(), eventStartMonth - 1, eventStartDate, eventEndHour, eventEndMin, 0, 0);
+              let currentDateTime = new Date();
 
-              console.log('^^^^^^^^^^^^^ TIME LOGGING ^^^^^^^^^^^^^^');
-              console.log(`currentHour: ${currentHour}, currentMin: ${currentMin}`);
-              console.log(`eventStartHour: ${eventStartHour}, eventStartMin: ${eventStartMin}`);
-              console.log(`eventEndHour: ${eventEndHour}, eventEndMin: ${eventEndMin}`);
-              console.log('^^^^^^^^^^^^^ TIME LOGGING ^^^^^^^^^^^^^^');
+              // console.log(eventStartDateTime.valueOf());
+              // console.log(eventEndDateTime.valueOf());
+              // console.log(currentDateTime.valueOf());
+              // console.log(eventStartDateTime);
+              // console.log(eventEndDateTime);
+              // console.log(currentDateTime);
+              //
+              //
+              // console.log('^^^^^^^^^^^^^ TIME LOGGING ^^^^^^^^^^^^^^');
+              // console.log(`new Date(): ${new Date()}`);
+              // console.log(`eventStartDateTime: ${eventStartDateTime}`);
+              // console.log(`currentHour: ${currentHour}, currentMin: ${currentMin}`);
+              // console.log(`eventStartHour: ${eventStartHour}, eventStartMin: ${eventStartMin}`);
+              // console.log(`eventEndHour: ${eventEndHour}, eventEndMin: ${eventEndMin}`);
+              // console.log('^^^^^^^^^^^^^ TIME LOGGING ^^^^^^^^^^^^^^');
 
-
-              if (eventStartMonth == parseInt(new Date().getMonth()) + 1) {
-                if (eventStartDate == parseInt(new Date().getDate())) {
-                  if ((currentHour >= eventStartHour && currentHour <= eventEndHour) &&  currentMin >= eventStartMin && currentMin < eventEndMin) {
-
-                    console.log('^^^^^^^^^^^^^ON STAGE NOW^^^^^^^^^^^^^^');
-                    console.log(`currentHour: ${currentHour}, currentMin: ${currentMin}`);
-                    console.log(`eventStartHour: ${eventStartHour}, eventStartMin: ${eventStartMin}`);
-                    console.log(`eventEndHour: ${eventEndHour}, eventEndMin: ${eventEndMin}`);
-                    console.log('^^^^^^^^^^^^^ON STAGE NOW^^^^^^^^^^^^^^');
+              if ( currentDateTime.valueOf() > eventStartDateTime.valueOf() && currentDateTime.valueOf() < eventEndDateTime.valueOf() ) {
 
                     example6HTML += `
                     <li class="cardvs card-vh-control backgrounds">
@@ -215,8 +219,7 @@ class ScreenTemplate {
                     </tr>
                     </table>
                     </li>`;
-                  }
-                }
+
               }
             });
 
