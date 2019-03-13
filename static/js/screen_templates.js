@@ -169,7 +169,7 @@ class ScreenTemplate {
             <li class="card-bottom-margin-5vh backgrounds">
             <table>
             <tr>
-            <h1 class="text-center italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="events-heading"> - Currently on Stage - </span></h1>
+            <h1 class="text-center italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="events-heading"> - Now Playing - </span></h1>
             </tr>
             </table>
             </li>`;
@@ -240,44 +240,32 @@ class ScreenTemplate {
               let currentHour = new Date().getHours();
               let currentMin = new Date().getMinutes();
 
-              if (eventStartMonth == parseInt(new Date().getMonth()) + 1) {
-                if (eventStartDate == parseInt(new Date().getDate())) {
-                  if ((currentHour <= eventStartHour && currentMin < eventStartMin) ) {
+              let eventStartDateTime = new Date(new Date().getFullYear(), eventStartMonth - 1, eventStartDate, eventStartHour, eventStartMin, 0, 0);
+              let eventEndDateTime = new Date(new Date().getFullYear(), eventStartMonth - 1, eventStartDate, eventEndHour, eventEndMin, 0, 0);
+              let currentDateTime = new Date();
 
-                    console.log('^^^^^^^^^^^^^ON STAGE SOON^^^^^^^^^^^^^^');
-                    console.log(`currentHour: ${currentHour}, currentMin: ${currentMin}`);
-                    console.log(`eventStartHour: ${eventStartHour}, eventStartMin: ${eventStartMin}`);
-                    console.log(`eventEndHour: ${eventEndHour}, eventEndMin: ${eventEndMin}`);
-                    console.log('^^^^^^^^^^^^^ON STAGE SOON^^^^^^^^^^^^^^');
+              if ( currentDateTime.valueOf() <= eventStartDateTime.valueOf() ) {
+                //       console.log('^^^^^^^^^^^^^ON STAGE SOON^^^^^^^^^^^^^^');
+                //       console.log(`currentHour: ${currentHour}, currentMin: ${currentMin}`);
+                //       console.log(`eventStartHour: ${eventStartHour}, eventStartMin: ${eventStartMin}`);
+                //       console.log(`eventEndHour: ${eventEndHour}, eventEndMin: ${eventEndMin}`);
+                //       console.log('^^^^^^^^^^^^^ON STAGE SOON^^^^^^^^^^^^^^');
 
-                    example6HTML += `
-
-                    <li class="cardvs card-vh-control backgrounds">
-                    <table>
-                    <tr>
-                    <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="event-artist">${event.artist}</span></h1>
-                    </tr>
-                    <tr class="left-spacer beer-screen-tr font-sml event-details">
-                    <td class="bold-font w-third">${event.location}</td>
-                    <td class="italic-font bold-font w-third">${eventStartHour}:${eventStartMin}</td>
-                    <td class="w-fifth mr-"><span class="font-xxsml"></span> ${event.date_of_event}<span class="font-xsml"></span></td>
-                    </tr>
-                    </table>
-                    </li>`;
-
-                  }
-                }
+                example6HTML += `
+                <li class="cardvs card-vh-control backgrounds">
+                <table>
+                <tr>
+                <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="event-artist">${event.artist}</span></h1>
+                </tr>
+                <tr class="left-spacer beer-screen-tr font-sml event-details">
+                <td class="bold-font w-third">${event.location}</td>
+                <td class="italic-font bold-font w-third">${eventStartHour}:${eventStartMin}</td>
+                <td class="w-fifth mr-"><span class="font-xxsml"></span> ${event.date_of_event}<span class="font-xsml"></span></td>
+                </tr>
+                </table>
+                </li>`;
               }
             });
-
-
-
-
-
-
-
-
-
 
 
     example6HTML += `
