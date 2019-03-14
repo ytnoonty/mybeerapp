@@ -73,8 +73,13 @@ body {
   margin-top: 1vh;
   margin-bottom: 1vh;
 }
-.card-vh-control {
+.card-8vh {
   height: 8vh;
+  margin-top: .5vh;
+  margin-bottom: .5vh;
+}
+.card-9vh {
+  height: 9.25vh;
   margin-top: .5vh;
   margin-bottom: .5vh;
 }

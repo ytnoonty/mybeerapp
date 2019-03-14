@@ -119,18 +119,44 @@ class ScreenTemplate {
     <div class="row mt-3">
       <div class="col-lg">
         <div class="list-group">
+
+          <div class="list-group">
+            <ul class="list-group-flush list-group-bts">
+                <li class="cardvs card-bottom-margin-5vh backgrounds">
+                  <table>
+                    <tr>
+                      <h1 class="text-center italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="events-heading">DRAFT BEERS OF THE WEEKEND</span></h1>
+                    </tr>
+                  </table>
+                </li>
+            </ul>
+          </div>
+
+
+
           <ul class="list-group-flush list-group-bts">`;
             data0108.forEach(function(beer){
+              // example6HTML += `
+              // <li class="cardvs">
+              //   <table class="beer-screen-table">
+              //     <tr class="beer-screen-tr">
+              //       <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
+              //     </tr>
+              //     <tr class="left-spacer beer-screen-tr font-sml">
+              //       <td class=" w-third">${beer.style}</td>
+              //       <td class="w-fifth"><span class="font-xxsml"></span> ${beer.abv}<span class="font-xsml">%</span></td>
+              //       <td class="italic-font  w-third">${beer.brewery}</td>
+              //     </tr>
+              //   </table>
+              // </li>`
               example6HTML += `
-              <li class="cardvs">
+              <li class="cardvs card-9vh">
                 <table class="beer-screen-table">
                   <tr class="beer-screen-tr">
-                    <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="">${beer.name}</span></h1>
-                  </tr>
-                  <tr class="left-spacer beer-screen-tr font-sml">
-                    <td class=" w-third">${beer.style}</td>
-                    <td class="w-fifth"><span class="font-xxsml"></span> ${beer.abv}<span class="font-xsml">%</span></td>
-                    <td class="italic-font  w-third">${beer.brewery}</td>
+                    <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin">
+                      <span class="beer-name event-artist">${beer.name}</span>
+                      <span class=" w-third"> - ${beer.style}</span>
+                    </h1>
                   </tr>
                 </table>
               </li>`
@@ -167,11 +193,11 @@ class ScreenTemplate {
 
             example6HTML += `
             <li class="card-bottom-margin-5vh backgrounds">
-            <table>
-            <tr>
-            <h1 class="text-center italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="events-heading"> - Now Playing - </span></h1>
-            </tr>
-            </table>
+              <table>
+                <tr>
+                  <h1 class="text-center italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="events-heading"> - Now Playing - </span></h1>
+                </tr>
+              </table>
             </li>`;
 
             eventData.forEach(function(event){
@@ -206,30 +232,44 @@ class ScreenTemplate {
 
               if ( currentDateTime.valueOf() > eventStartDateTime.valueOf() && currentDateTime.valueOf() < eventEndDateTime.valueOf() ) {
 
+                    // example6HTML += `
+                    // <li class="cardvs card-vh-control backgrounds">
+                      // <table>
+                      // <tr>
+                        // <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="event-artist">${event.artist}</span></h1>
+                      // </tr>
+                      // <tr class="left-spacer beer-screen-tr font-sml event-details">
+                        // <td class="bold-font w-third">${event.location}</td>
+                        // <td class="italic-font bold-font w-third">${eventStartHour}:${eventStartMin}</td>
+                        // <td class="w-fifth mr-"><span class="font-xxsml"></span> ${event.date_of_event}<span class="font-xsml"></span></td>
+                      // </tr>
+                    // </table>
+                    // </li>`;
+
                     example6HTML += `
-                    <li class="cardvs card-vh-control backgrounds">
-                    <table>
-                    <tr>
-                    <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="event-artist">${event.artist}</span></h1>
-                    </tr>
-                    <tr class="left-spacer beer-screen-tr font-sml event-details">
-                    <td class="bold-font w-third">${event.location}</td>
-                    <td class="italic-font bold-font w-third">${eventStartHour}:${eventStartMin}</td>
-                    <td class="w-fifth mr-"><span class="font-xxsml"></span> ${event.date_of_event}<span class="font-xsml"></span></td>
-                    </tr>
-                    </table>
-                    </li>`;
+                      <li class="cardvs card-9vh backgrounds">
+                        <table>
+                          <tr>
+                            <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin">
+                              <span class="event-artist">${event.artist}  </span>
+                              <span class="italic-font">${eventStartHour}:${eventStartMin} - </span>
+                              <span class="">${event.location}</span>
+                            </h1>
+                          </tr>
+                        </table>
+                      </li>`;
 
               }
             });
 
-            example6HTML += `<li class=" card-bottom-margin-5vh backgrounds">
-            <table>
-            <tr>
-            <h1 class="text-center italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="events-heading"> - On Stage Soon - </span></h1>
-            </tr>
-            </table>
-            </li>`;
+            example6HTML += `
+              <li class=" card-bottom-margin-5vh backgrounds">
+                <table>
+                  <tr>
+                    <h1 class="text-center italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="events-heading"> - On Stage Soon - </span></h1>
+                  </tr>
+                </table>
+              </li>`;
             eventData.forEach(function(event){
               let eventStartMonth = parseInt(event.date_of_event.split("-")[1]);
               let eventStartDate = parseInt(event.date_of_event.split("-")[2]);
@@ -256,19 +296,32 @@ class ScreenTemplate {
                     //       console.log(`eventEndHour: ${eventEndHour}, eventEndMin: ${eventEndMin}`);
                     //       console.log('^^^^^^^^^^^^^ON STAGE SOON^^^^^^^^^^^^^^');
 
+                    // example6HTML += `
+                    // <li class="cardvs card-vh-control backgrounds">
+                    //   <table>
+                    //     <tr>
+                    //       <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="event-artist">${event.artist}</span></h1>
+                    //     </tr>
+                    //     <tr class="left-spacer beer-screen-tr font-sml event-details">
+                    //       <td class="bold-font w-third">${event.location}</td>
+                    //       <td class="italic-font bold-font w-third">${eventStartHour}:${eventStartMin}</td>
+                    //       <td class="w-fifth mr-"><span class="font-xxsml"></span> ${event.date_of_event}<span class="font-xsml"></span></td>
+                    //     </tr>
+                    //   </table>
+                    // </li>`;
+
                     example6HTML += `
-                    <li class="cardvs card-vh-control backgrounds">
-                    <table>
-                    <tr>
-                    <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="event-artist">${event.artist}</span></h1>
-                    </tr>
-                    <tr class="left-spacer beer-screen-tr font-sml event-details">
-                    <td class="bold-font w-third">${event.location}</td>
-                    <td class="italic-font bold-font w-third">${eventStartHour}:${eventStartMin}</td>
-                    <td class="w-fifth mr-"><span class="font-xxsml"></span> ${event.date_of_event}<span class="font-xsml"></span></td>
-                    </tr>
-                    </table>
-                    </li>`;
+                      <li class="cardvs card-vh-control backgrounds">
+                        <table>
+                          <tr>
+                            <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin">
+                              <span class="event-artist">${event.artist}  </span>
+                              <span class="italic-font bold-font w-third"> ${eventStartHour}:${eventStartMin}</span>
+                              <span class="bold-font w-third"> - ${event.location}</span>
+                            </h1>
+                          </tr>
+                        </table>
+                      </li>`;
                   }
                 }
               }
@@ -283,11 +336,16 @@ class ScreenTemplate {
     if (example6 !== null) {
       example6HTML += `<div></div>`;
       example6.innerHTML = example6HTML;
+
+      let beerNames = document.querySelectorAll('.beer-name');
       let backgrounds = document.querySelectorAll('.backgrounds');
       // console.log(backgrounds);
       let eventsHeadings = document.querySelectorAll('.events-heading');
       let eventArtist = document.querySelectorAll('.event-artist');
       let eventDetails = document.querySelectorAll('.event-details');
+      beerNames.forEach(names => {
+        names.style.fontSize = `${settings.nameFontSize.font_sizes}`;
+      });
       eventsHeadings.forEach(eventsHeading => {
         eventsHeading.style.color = `${settings.font_color}`;
       });
