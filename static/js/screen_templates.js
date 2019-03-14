@@ -155,7 +155,7 @@ class ScreenTemplate {
                   <tr class="beer-screen-tr">
                     <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin">
                       <span class="beer-name event-artist">${beer.name}</span>
-                      <span class=" w-third"> - ${beer.style}</span>
+                      <span class="beer-style"> - ${beer.style}</span>
                     </h1>
                   </tr>
                 </table>
@@ -338,6 +338,7 @@ class ScreenTemplate {
       example6.innerHTML = example6HTML;
 
       let beerNames = document.querySelectorAll('.beer-name');
+      let beerStyle = document.querySelectorAll('.beer-style');
       let backgrounds = document.querySelectorAll('.backgrounds');
       // console.log(backgrounds);
       let eventsHeadings = document.querySelectorAll('.events-heading');
@@ -345,6 +346,9 @@ class ScreenTemplate {
       let eventDetails = document.querySelectorAll('.event-details');
       beerNames.forEach(names => {
         names.style.fontSize = `${settings.nameFontSize.font_sizes}`;
+      });
+      beerStyle.forEach(styles => {
+        styles.style.fontSize = `${settings.abvIbuFontSize.font_sizes}`;
       });
       eventsHeadings.forEach(eventsHeading => {
         eventsHeading.style.color = `${settings.font_color}`;
