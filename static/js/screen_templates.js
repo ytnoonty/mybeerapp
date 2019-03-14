@@ -252,8 +252,8 @@ class ScreenTemplate {
                           <tr>
                             <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin">
                               <span class="event-artist">${event.artist}  </span>
-                              <span class="italic-font">${eventStartHour}:${eventStartMin} - </span>
-                              <span class="">${event.location}</span>
+                              <span class="italic-font event-time">${eventStartHour}:${eventStartMin} - </span>
+                              <span class="event-location">${event.location}</span>
                             </h1>
                           </tr>
                         </table>
@@ -343,6 +343,8 @@ class ScreenTemplate {
       // console.log(backgrounds);
       let eventsHeadings = document.querySelectorAll('.events-heading');
       let eventArtist = document.querySelectorAll('.event-artist');
+      let eventTimes = document.querySelectorAll('.event-time');
+      let eventLocations = document.querySelectorAll('.event-location');
       let eventDetails = document.querySelectorAll('.event-details');
       beerNames.forEach(names => {
         names.style.fontSize = `${settings.nameFontSize.font_sizes}`;
@@ -356,6 +358,12 @@ class ScreenTemplate {
       eventArtist.forEach(eArtist => {
         eArtist.style.color = `${settings.font_color}`;
         eArtist.style.fontSize = `${settings.nameFontSize.font_sizes}`;
+      });
+      eventTimes.forEach(time => {
+        time.style.fontSize = `${settings.abvIbuFontSize.font_sizes}`;
+      });
+      eventLocations.forEach(location => {
+        location.style.fontSize = `${settings.abvIbuFontSize.font_sizes}`;
       });
       eventDetails.forEach(eventDetail => {
         eventDetail.style.fontSize = `${settings.abvIbuFontSize.font_sizes}`;
