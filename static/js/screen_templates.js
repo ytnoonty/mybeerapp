@@ -237,6 +237,8 @@ class ScreenTemplate {
               let eventStartMin = event.time_of_event.split(":")[1];
               let eventEndHour = event.endtime_of_event.split(":")[0];
               let eventEndMin = event.endtime_of_event.split(":")[1];
+              let currentMonth = new Date().getMonth() + 1;
+              let currentDate = new Date().getDate();
               let currentHour = new Date().getHours();
               let currentMin = new Date().getMinutes();
 
@@ -244,26 +246,31 @@ class ScreenTemplate {
               let eventEndDateTime = new Date(new Date().getFullYear(), eventStartMonth - 1, eventStartDate, eventEndHour, eventEndMin, 0, 0);
               let currentDateTime = new Date();
 
-              if ( currentDateTime.valueOf() <= eventStartDateTime.valueOf() ) {
-                //       console.log('^^^^^^^^^^^^^ON STAGE SOON^^^^^^^^^^^^^^');
-                //       console.log(`currentHour: ${currentHour}, currentMin: ${currentMin}`);
-                //       console.log(`eventStartHour: ${eventStartHour}, eventStartMin: ${eventStartMin}`);
-                //       console.log(`eventEndHour: ${eventEndHour}, eventEndMin: ${eventEndMin}`);
-                //       console.log('^^^^^^^^^^^^^ON STAGE SOON^^^^^^^^^^^^^^');
 
-                example6HTML += `
-                <li class="cardvs card-vh-control backgrounds">
-                <table>
-                <tr>
-                <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="event-artist">${event.artist}</span></h1>
-                </tr>
-                <tr class="left-spacer beer-screen-tr font-sml event-details">
-                <td class="bold-font w-third">${event.location}</td>
-                <td class="italic-font bold-font w-third">${eventStartHour}:${eventStartMin}</td>
-                <td class="w-fifth mr-"><span class="font-xxsml"></span> ${event.date_of_event}<span class="font-xsml"></span></td>
-                </tr>
-                </table>
-                </li>`;
+              if (eventStartMonth == currentMonth) {
+                if (eventStartDate == currentDate) {
+                  if ( currentDateTime.valueOf() <= eventStartDateTime.valueOf() ) {
+                    //       console.log('^^^^^^^^^^^^^ON STAGE SOON^^^^^^^^^^^^^^');
+                    //       console.log(`currentHour: ${currentHour}, currentMin: ${currentMin}`);
+                    //       console.log(`eventStartHour: ${eventStartHour}, eventStartMin: ${eventStartMin}`);
+                    //       console.log(`eventEndHour: ${eventEndHour}, eventEndMin: ${eventEndMin}`);
+                    //       console.log('^^^^^^^^^^^^^ON STAGE SOON^^^^^^^^^^^^^^');
+
+                    example6HTML += `
+                    <li class="cardvs card-vh-control backgrounds">
+                    <table>
+                    <tr>
+                    <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin"><span class="event-artist">${event.artist}</span></h1>
+                    </tr>
+                    <tr class="left-spacer beer-screen-tr font-sml event-details">
+                    <td class="bold-font w-third">${event.location}</td>
+                    <td class="italic-font bold-font w-third">${eventStartHour}:${eventStartMin}</td>
+                    <td class="w-fifth mr-"><span class="font-xxsml"></span> ${event.date_of_event}<span class="font-xsml"></span></td>
+                    </tr>
+                    </table>
+                    </li>`;
+                  }
+                }
               }
             });
 
