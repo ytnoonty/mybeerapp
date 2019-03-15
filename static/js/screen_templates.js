@@ -3,6 +3,7 @@ class ScreenTemplate {
 
   }
 
+
   updateDisplayScreenArtistTime(data, eventData, settings) {
     // console.log(settings);
     let data0116 = data.slice(0,16);
@@ -213,6 +214,7 @@ class ScreenTemplate {
               let eventStartDateTime = new Date(new Date().getFullYear(), eventStartMonth - 1, eventStartDate, eventStartHour, eventStartMin, 0, 0);
               let eventEndDateTime = new Date(new Date().getFullYear(), eventStartMonth - 1, eventStartDate, eventEndHour, eventEndMin, 0, 0);
               let currentDateTime = new Date();
+              let eventStartTime;
 
               // console.log(eventStartDateTime.valueOf());
               // console.log(eventEndDateTime.valueOf());
@@ -246,13 +248,23 @@ class ScreenTemplate {
                     // </table>
                     // </li>`;
 
+                    if (eventStartHour >= 12) {
+                      eventStartHour = Math.abs(eventStartHour - 12);
+                      eventStartTime = (`${eventStartHour}:${eventStartMin}pm`);
+                    } else if (eventStartHour < 1) {
+                      eventStartHour = 12;
+                      eventStartTime = (`${eventStartHour}:${eventStartMin}am`);
+                    } else {
+                      eventStartTime = (`${eventStartHour}:${eventStartMin}am`);
+                    }
+
                     example6HTML += `
                       <li class="cardvs card-9vh backgrounds">
                         <table>
                           <tr>
                             <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin">
                               <span class="event-artist">${event.artist}  </span>
-                              <span class="italic-font event-time">${eventStartHour}:${eventStartMin} - </span>
+                              <span class="italic-font event-time">${eventStartTime} - </span>
                               <span class="event-location">${event.location}</span>
                             </h1>
                           </tr>
@@ -285,7 +297,7 @@ class ScreenTemplate {
               let eventStartDateTime = new Date(new Date().getFullYear(), eventStartMonth - 1, eventStartDate, eventStartHour, eventStartMin, 0, 0);
               let eventEndDateTime = new Date(new Date().getFullYear(), eventStartMonth - 1, eventStartDate, eventEndHour, eventEndMin, 0, 0);
               let currentDateTime = new Date();
-
+              let eventStartTime;
 
               if (eventStartMonth == currentMonth) {
                 if (eventStartDate == currentDate) {
@@ -309,6 +321,15 @@ class ScreenTemplate {
                     //     </tr>
                     //   </table>
                     // </li>`;
+                    if (eventStartHour >= 12) {
+                      eventStartHour = Math.abs(eventStartHour - 12);
+                      eventStartTime = (`${eventStartHour}:${eventStartMin}pm`);
+                    } else if (eventStartHour < 1) {
+                      eventStartHour = 12;
+                      eventStartTime = (`${eventStartHour}:${eventStartMin}am`);
+                    } else {
+                      eventStartTime = (`${eventStartHour}:${eventStartMin}am`);
+                    }
 
                     example6HTML += `
                       <li class="cardvs card-vh-control backgrounds">
@@ -316,7 +337,7 @@ class ScreenTemplate {
                           <tr>
                             <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin">
                               <span class="event-artist">${event.artist}  </span>
-                              <span class="italic-font bold-font w-third"> ${eventStartHour}:${eventStartMin}</span>
+                              <span class="italic-font bold-font w-third">${eventStartTime}</span>
                               <span class="bold-font w-third"> - ${event.location}</span>
                             </h1>
                           </tr>
