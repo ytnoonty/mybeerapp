@@ -259,7 +259,7 @@ class ScreenTemplate {
                     }
 
                     example6HTML += `
-                      <li class="cardvs card-9vh backgrounds">
+                      <li id="now-playing" class="cardvs card-9vh backgrounds">
                         <table>
                           <tr>
                             <h1 class="italic-font bold-font txt-clr-ylw left-spacer no-btm-margin">
@@ -358,6 +358,8 @@ class ScreenTemplate {
       example6HTML += `<div></div>`;
       example6.innerHTML = example6HTML;
 
+      let nowPlayingColor = document.querySelector('#now-playing');
+
       let beerNames = document.querySelectorAll('.beer-name');
       let beerStyle = document.querySelectorAll('.beer-style');
       let backgrounds = document.querySelectorAll('.backgrounds');
@@ -367,6 +369,8 @@ class ScreenTemplate {
       let eventTimes = document.querySelectorAll('.event-time');
       let eventLocations = document.querySelectorAll('.event-location');
       let eventDetails = document.querySelectorAll('.event-details');
+
+
       beerNames.forEach(names => {
         names.style.fontSize = `${settings.nameFontSize.font_sizes}`;
       });
@@ -392,6 +396,7 @@ class ScreenTemplate {
       backgrounds.forEach(background => {
         background.style.backgroundImage = `linear-gradient(to bottom, #333, ${settings.background_color})`;
       });
+      nowPlayingColor.style.backgroundImage = `linear-gradient(to bottom, #fff, ${settings.background_color})`;
     }
     ///////////////////////////////////////////////
     // END  UPDATE
