@@ -397,7 +397,7 @@ class ScreenTemplate {
         background.style.backgroundImage = `linear-gradient(to bottom, #333, ${settings.background_color})`;
       });
       // nowPlayingColor.style.backgroundImage = `linear-gradient(to bottom, ${settings.background_color}, #fff, ${settings.background_color})`;
-      nowPlayingColor.style.backgroundImage = `linear-gradient(to bottom, #fff, ${settings.background_color}, #fff)`;
+      nowPlayingColor.style.backgroundImage = `linear-gradient(to bottom, #fff, ${settings.background_color})`;
     }
     ///////////////////////////////////////////////
     // END  UPDATE
